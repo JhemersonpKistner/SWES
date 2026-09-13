@@ -1,10 +1,174 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+
+
+<div class="dashboard">
+
+    <!-- MENU LATERAL -->
+    <aside class="sidebar">
+
+        <div class="sidebar-header">
+
+    <img src="~/images/logo.unidesc.webp"
+         alt="Logo da UNIDESC"
+         class="logo-faculdade" />
+
+    <h2>SISTEMA DE ESTÁGIOS</h2>
+
+</div>
+
+        <nav class="menu">
+
+            <a href="#" class="menu-item">
+    <span><i class="bi bi-people"></i></span>
+    Usuários
+</a>
+
+<a href="#" class="menu-item">
+    <span><i class="bi bi-mortarboard"></i></span>
+    Alunos
+</a>
+
+<a href="#" class="menu-item">
+    <span><i class="bi bi-person-workspace"></i></span>
+    Professores
+</a>
+
+<a href="#" class="menu-item">
+    <span><i class="bi bi-building"></i></span>
+    Concedentes
+</a>
+
+<a href="#" class="menu-item">
+    <span><i class="bi bi-bank"></i></span>
+    Instituições
+</a>
+
+<a href="#" class="menu-item">
+    <span><i class="bi bi-file-earmark-text"></i></span>
+    Documentos
+</a>
+
+<a href="#" class="menu-item">
+    <span><i class="bi bi-briefcase"></i></span>
+    Estágios
+</a>
+
+<a href="#" class="menu-item">
+    <span><i class="bi bi-star"></i></span>
+    Avaliações
+</a>
+
+        </nav>
+
+        <div class="menu-bottom">
+            <a href="#" class="menu-item">
+            <span><i class="bi bi-gear"></i></span>
+            Configuração
+        </a>
+        </div>
+
+    </aside>
+
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="main-content">
+
+        <header class="dashboard-header">
+            <h1>Dashboard</h1>
+
+            <p>
+                Visão geral do sistema de gerenciamento de estágios
+            </p>
+
+            <span class="admin-label">
+                Administrador
+            </span>
+        </header>
+
+
+        <!-- CARDS -->
+        <section class="cards">
+
+            <div class="card">
+                <h3>ALUNOS</h3>
+                <strong>248</strong>
+            </div>
+
+            <div class="card">
+                <h3>ESTÁGIOS</h3>
+                <strong>86</strong>
+            </div>
+
+            <div class="card">
+                <h3>DOCUMENTOS</h3>
+                <strong>32</strong>
+            </div>
+
+            <div class="card">
+                <h3>EMPRESAS</h3>
+                <strong>54</strong>
+            </div>
+
+        </section>
+
+
+        <!-- ÁREA DOS GRÁFICOS -->
+        <section class="charts">
+
+            <div class="chart-box">
+                <h3>Estágios por Situação</h3>
+
+                <div class="chart-placeholder">
+                    Gráfico
+                </div>
+            </div>
+
+
+            <div class="chart-box">
+                <h3>Estágios Cadastrados por mês</h3>
+
+                <div class="chart-placeholder">
+                    Gráfico
+                </div>
+            </div>
+
+
+            <div class="chart-box">
+                <h3>Estágios por Status</h3>
+
+                <div class="chart-placeholder">
+                    Gráfico
+                </div>
+            </div>
+
+
+            <!-- ATIVIDADES RECENTES -->
+            <div class="activities">
+
+                <h3>Atividades Recentes</h3>
+
+                <div class="activity">
+                    João Silva
+                </div>
+
+                <div class="activity">
+                    Maria Souza
+                </div>
+
+                <div class="activity">
+                    Pedro Santos
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
 </div>
