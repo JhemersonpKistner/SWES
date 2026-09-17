@@ -14,63 +14,61 @@
 
         <div class="sidebar-header">
 
-    <img src="~/images/logo.unidesc.webp"
-         alt="Logo da UNIDESC"
-         class="logo-faculdade" />
+            <img src="~/images/logo.unidesc.webp" alt="Logo da UNIDESC" class="logo-faculdade" />
 
-    <h2>SISTEMA DE ESTÁGIOS</h2>
+            <h2>SISTEMA DE ESTÁGIOS</h2>
 
-</div>
+        </div>
 
         <nav class="menu">
 
             <a href="#" class="menu-item">
-    <span><i class="bi bi-people"></i></span>
-    Usuários
-</a>
+                <span><i class="bi bi-people"></i></span>
+                Usuários
+            </a>
 
-<a href="#" class="menu-item">
-    <span><i class="bi bi-mortarboard"></i></span>
-    Alunos
-</a>
+            <a href="#" class="menu-item">
+                <span><i class="bi bi-mortarboard"></i></span>
+                Alunos
+            </a>
 
-<a href="#" class="menu-item">
-    <span><i class="bi bi-person-workspace"></i></span>
-    Professores
-</a>
+            <a href="#" class="menu-item">
+                <span><i class="bi bi-person-workspace"></i></span>
+                Professores
+            </a>
 
-<a href="#" class="menu-item">
-    <span><i class="bi bi-building"></i></span>
-    Concedentes
-</a>
+            <a href="#" class="menu-item">
+                <span><i class="bi bi-building"></i></span>
+                Concedentes
+            </a>
 
-<a href="#" class="menu-item">
-    <span><i class="bi bi-bank"></i></span>
-    Instituições
-</a>
+            <a href="#" class="menu-item">
+                <span><i class="bi bi-bank"></i></span>
+                Instituições
+            </a>
 
-<a href="#" class="menu-item">
-    <span><i class="bi bi-file-earmark-text"></i></span>
-    Documentos
-</a>
+            <a href="#" class="menu-item">
+                <span><i class="bi bi-file-earmark-text"></i></span>
+                Documentos
+            </a>
 
-<a href="#" class="menu-item">
-    <span><i class="bi bi-briefcase"></i></span>
-    Estágios
-</a>
+            <a href="#" class="menu-item">
+                <span><i class="bi bi-briefcase"></i></span>
+                Estágios
+            </a>
 
-<a href="#" class="menu-item">
-    <span><i class="bi bi-star"></i></span>
-    Avaliações
-</a>
+            <a href="#" class="menu-item">
+                <span><i class="bi bi-star"></i></span>
+                Avaliações
+            </a>
 
         </nav>
 
         <div class="menu-bottom">
             <a href="#" class="menu-item">
-            <span><i class="bi bi-gear"></i></span>
-            Configuração
-        </a>
+                <span><i class="bi bi-gear"></i></span>
+                Configuração
+            </a>
         </div>
 
     </aside>
@@ -124,8 +122,8 @@
             <div class="chart-box">
                 <h3>Estágios por Situação</h3>
 
-                <div class="chart-placeholder">
-                    Gráfico
+                <div class="chart-container">
+                    <canvas id="graficoSituacao"></canvas>
                 </div>
             </div>
 
@@ -133,17 +131,17 @@
             <div class="chart-box">
                 <h3>Estágios Cadastrados por mês</h3>
 
-                <div class="chart-placeholder">
-                    Gráfico
+                <div class="chart-container">
+                    <canvas id="graficoMensal"></canvas>
                 </div>
             </div>
 
 
             <div class="chart-box">
-                <h3>Estágios por Status</h3>
+                <h3>Estágios por tipo</h3>
 
-                <div class="chart-placeholder">
-                    Gráfico
+                <div class="chart-container">
+                    <canvas id="graficoTipo"></canvas>
                 </div>
             </div>
 
@@ -172,3 +170,129 @@
     </main>
 
 </div>
+
+
+@section Scripts {
+
+    <script>
+
+        // Dados fictícios para os gráficos
+
+        // GRÁFICO 1 - ESTÁGIOS POR SITUAÇÃO
+
+        const ctxSituacao = document
+            .getElementById('graficoSituacao');
+
+        new Chart(ctxSituacao, {
+            type: 'doughnut',
+
+            data: {
+                labels: [
+                    'Em andamento',
+                    'Concluídos',
+                    'Cancelados'
+                ],
+
+                datasets: [{
+                    data: [42, 35, 9]
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // GRÁFICO 2 - ESTÁGIOS CADASTRADOS POR MÊS
+
+        const ctxMensal = document
+            .getElementById('graficoMensal');
+
+        new Chart(ctxMensal, {
+            type: 'line',
+
+            data: {
+                labels: [
+                    'Abr',
+                    'Mai',
+                    'Jun',
+                    'Jul',
+                    'Ago',
+                    'Set'
+                ],
+
+                datasets: [{
+                    label: 'Estágios cadastrados',
+
+                    data: [
+                        8,
+                        12,
+                        15,
+                        10,
+                        18,
+                        23
+                    ],
+
+                    tension: 0.3,
+
+                    fill: true
+                }]
+            },
+
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // GRÁFICO 3 - ESTÁGIOS POR STATUS
+
+        const ctxTipo = document.getElementById('graficoTipo');
+
+        new Chart(ctxTipo, {
+            type: 'bar',
+            data: {
+                labels: ['Interno', 'Externo'],
+                datasets: [{
+                    label: 'Quantidade',
+                    data: [34, 52]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+    </script>
+
+}

@@ -100,9 +100,7 @@ body {
 }
 
 
-/* =========================
-   CONTEÚDO PRINCIPAL
-========================= */
+/* CONTEÚDO PRINCIPAL */
 
 .main-content {
     flex: 1;
@@ -139,9 +137,7 @@ body {
     font-weight: bold;
 }
 
-/* =========================
-   CARDS
-========================= */
+/* CARDS */
 
 .cards {
     display: grid;
@@ -172,9 +168,7 @@ body {
     color: #0050A0;
 }
 
-/* =========================
-   GRÁFICOS E ATIVIDADES
-========================= */
+/* GRÁFICOS E ATIVIDADES */
 
 .charts {
     display: grid;
@@ -198,15 +192,10 @@ body {
     text-align: center;
 }
 
-.chart-placeholder {
+.chart-container {
+    position: relative;
     height: 220px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f4f7fb;
-    border-radius: 8px;
-    color: #8a9aa5;
-    font-size: 14px;
+    width: 100%;
 }
 
 
@@ -222,9 +211,7 @@ body {
     border-bottom: none;
 }
 
-/* =========================
-   LOGO DA FACULDADE
-========================= */
+/* LOGO DA FACULDADE */
 
 .logo-faculdade {
     width: 150px;
