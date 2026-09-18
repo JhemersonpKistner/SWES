@@ -4,17 +4,8 @@ using System.Linq;
 
 namespace SWES.Models
 {
-    public class Aluno
+    public class Aluno : Usuario
     {
-        public int Id { get; private set; }
-
-        // Referência ao usuário do ASP.NET Identity (AspNetUsers.Id)
-        public string UserId { get; private set; }
-
-        public string Nome { get; private set; }
-        public string Email { get; private set; }
-        public string Telefone { get; private set; }
-
         public string Matricula { get; private set; }
         public string Curso { get; private set; }
         public string Turno { get; private set; }
@@ -25,13 +16,18 @@ namespace SWES.Models
 
         private Aluno() { }
 
-        public Aluno(string userId, string nome, string email, string telefone,
-            string matricula, string curso, string turno, string semestre, DateTime dataNasc)
+        public Aluno(
+            string userId,
+            string nome,
+            string email,
+            string telefone,
+            string matricula,
+            string curso,
+            string turno,
+            string semestre,
+            DateTime dataNasc)
+            : base(userId, nome, email, telefone)
         {
-            UserId = userId;
-            Nome = nome;
-            Email = email;
-            Telefone = telefone;
             Matricula = matricula;
             Curso = curso;
             Turno = turno;
