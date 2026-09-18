@@ -1,27 +1,21 @@
 using System;
-using System.Collections.Generic;
 
 namespace SWES.Models
 {
-    public class ProfessorOrientador
+    public class ProfessorOrientador : Usuario
     {
-        public int Id { get; private set; }
-
-        public string UserId { get; private set; }
-
-        public string Nome { get; private set; }
-        public string Email { get; private set; }
-        public string Telefone { get; private set; }
         public string Registro { get; private set; }
 
         private ProfessorOrientador() { }
 
-        public ProfessorOrientador(string userId, string nome, string email, string telefone, string registro)
+        public ProfessorOrientador(
+            string userId,
+            string nome,
+            string email,
+            string telefone,
+            string registro)
+            : base(userId, nome, email, telefone)
         {
-            UserId = userId;
-            Nome = nome;
-            Email = email;
-            Telefone = telefone;
             Registro = registro;
         }
 

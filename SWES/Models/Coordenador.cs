@@ -1,28 +1,22 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SWES.Models
 {
-    public class Coordenador
+    public class Coordenador : Usuario
     {
-        public int Id { get; private set; }
-
-        public string UserId { get; private set; }
-
-        public string Nome { get; private set; }
-        public string Email { get; private set; }
-        public string Telefone { get; private set; }
         public string Setor { get; private set; }
 
         private Coordenador() { }
 
-        public Coordenador(string userId, string nome, string email, string telefone, string setor)
+        public Coordenador(
+            string userId,
+            string nome,
+            string email,
+            string telefone,
+            string setor)
+            : base(userId, nome, email, telefone)
         {
-            UserId = userId;
-            Nome = nome;
-            Email = email;
-            Telefone = telefone;
             Setor = setor;
         }
 
@@ -44,7 +38,9 @@ namespace SWES.Models
 
         public List<Documento> ConsultarRelatorio(Estagio estagio)
         {
-            return estagio.Documentos.Where(d => d.Tipo == "Relatorio").ToList();
+            return estagio.Documentos
+                .Where(d => d.Tipo == "Relatorio")
+                .ToList();
         }
     }
 }
