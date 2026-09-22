@@ -1,0 +1,171 @@
+@page
+@model SWES.Pages.Usuarios.CadastroModel
+
+@if (Model.Usuario.Id.HasValue)
+{
+    <h1>Editar Usuário</h1>
+}
+else
+{
+    <h1>Cadastrar Usuário</h1>
+}
+
+@if (!string.IsNullOrEmpty(Model.Erro))
+{
+    <div style="color: red; margin-bottom: 15px;">
+        <strong>Erro ao cadastrar:</strong>
+        @Model.Erro
+    </div>
+}
+
+<div asp-validation-summary="All" style="color: red;"></div>
+
+<form method="post">
+
+    <input type="hidden" asp-for="Usuario.Id" />
+
+    <div>
+        <label asp-for="Usuario.Nome">Nome</label>
+        <input asp-for="Usuario.Nome" />
+    </div>
+
+    <div>
+        <label asp-for="Usuario.Email">E-mail</label>
+        <input asp-for="Usuario.Email" type="email" />
+    </div>
+
+    <div>
+        <label asp-for="Usuario.Senha">Senha</label>
+        <input asp-for="Usuario.Senha" type="password" />
+    </div>
+
+    <div>
+        <label asp-for="Usuario.Telefone">Telefone</label>
+        <input asp-for="Usuario.Telefone" />
+    </div>
+
+    <div>
+        <label asp-for="Usuario.Tipo">Tipo de usuário</label>
+
+        <select asp-for="Usuario.Tipo" id="tipoUsuario">
+            <option value="">Selecione...</option>
+            <option value="Aluno">Aluno</option>
+            <option value="Professor">Professor</option>
+            <option value="Supervisor">Supervisor</option>
+            <option value="Coordenador">Coordenador</option>
+        </select>
+    </div>
+
+    <hr />
+
+    <div id="camposAluno" style="display: none;">
+
+        <h3>Dados do Aluno</h3>
+
+        <div>
+            <label asp-for="Usuario.Matricula">Matrícula</label>
+            <input asp-for="Usuario.Matricula" />
+        </div>
+
+        <div>
+            <label asp-for="Usuario.Curso">Curso</label>
+            <input asp-for="Usuario.Curso" />
+        </div>
+
+        <div>
+            <label asp-for="Usuario.Turno">Turno</label>
+            <input asp-for="Usuario.Turno" />
+        </div>
+
+        <div>
+            <label asp-for="Usuario.Semestre">Semestre</label>
+            <input asp-for="Usuario.Semestre" />
+        </div>
+
+        <div>
+            <label asp-for="Usuario.DataNasc">Data de nascimento</label>
+            <input asp-for="Usuario.DataNasc" type="date" />
+        </div>
+
+    </div>
+
+
+    <div id="camposProfessor" style="display: none;">
+
+        <h3>Dados do Professor</h3>
+
+        <div>
+            <label asp-for="Usuario.Registro">Registro</label>
+            <input asp-for="Usuario.Registro" />
+        </div>
+
+    </div>
+
+
+    <div id="camposSupervisor" style="display: none;">
+
+        <h3>Dados do Supervisor</h3>
+
+        <div>
+            <label asp-for="Usuario.Cargo">Cargo</label>
+            <input asp-for="Usuario.Cargo" />
+        </div>
+
+        <div>
+            <label asp-for="Usuario.Empresa">Empresa</label>
+            <input asp-for="Usuario.Empresa" />
+        </div>
+
+    </div>
+
+
+    <div id="camposCoordenador" style="display: none;">
+
+        <h3>Dados do Coordenador</h3>
+
+        <div>
+            <label asp-for="Usuario.Setor">Setor</label>
+            <input asp-for="Usuario.Setor" />
+        </div>
+
+    </div>
+
+    <br />
+
+    <button type="submit">
+        @(Model.Usuario.Id.HasValue ? "Salvar Alterações" : "Cadastrar")
+    </button>
+
+    <a asp-page="/Usuarios/Index">Voltar</a>
+
+</form>
+
+<script>
+    function atualizarCamposEspecificos() {
+
+        const tipo = document.getElementById("tipoUsuario").value;
+
+        document.getElementById("camposAluno").style.display = "none";
+        document.getElementById("camposProfessor").style.display = "none";
+        document.getElementById("camposSupervisor").style.display = "none";
+        document.getElementById("camposCoordenador").style.display = "none";
+
+        if (tipo === "Aluno") {
+            document.getElementById("camposAluno").style.display = "block";
+        }
+        else if (tipo === "Professor") {
+            document.getElementById("camposProfessor").style.display = "block";
+        }
+        else if (tipo === "Supervisor") {
+            document.getElementById("camposSupervisor").style.display = "block";
+        }
+        else if (tipo === "Coordenador") {
+            document.getElementById("camposCoordenador").style.display = "block";
+        }
+    }
+
+    document.getElementById("tipoUsuario")
+        .addEventListener("change", atualizarCamposEspecificos);
+
+    atualizarCamposEspecificos();
+</script>

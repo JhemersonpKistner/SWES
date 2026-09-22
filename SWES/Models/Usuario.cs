@@ -7,6 +7,7 @@ namespace SWES.Models
         public string Nome { get; private set; }
         public string Email { get; private set; }
         public string Telefone { get; private set; }
+        public bool Ativo { get; private set; }
 
         protected Usuario() { }
 
@@ -16,6 +17,25 @@ namespace SWES.Models
             Nome = nome;
             Email = email;
             Telefone = telefone;
+            Ativo = true;
         }
+
+        public void AtualizarDados(string nome, string email, string telefone)
+        {
+            Nome = nome;
+            Email = email;
+            Telefone = telefone;
+        }
+
+        public void Inativar()
+        {
+            Ativo = false;
+        }
+
+        public void Ativar()
+        {
+            Ativo = true;
+        }
+
     }
 }

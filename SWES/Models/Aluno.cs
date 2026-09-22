@@ -40,5 +40,14 @@ namespace SWES.Models
             var estagioAtivo = Estagios.FirstOrDefault(e => e.EstaAtivo());
             return estagioAtivo?.Situacao ?? "Sem estágio ativo";
         }
+
+        public void AtualizarDadosAcademicos(string matricula, string curso, string turno, string semestre, DateTime dataNasc)
+        {
+            Matricula = matricula;
+            Curso = curso;
+            Turno = turno;
+            Semestre = semestre;
+            DataNasc = dataNasc;
+        }
     }
 }

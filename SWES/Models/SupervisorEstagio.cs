@@ -3,27 +3,22 @@ using System.Collections.Generic;
 
 namespace SWES.Models
 {
-    public class SupervisorEstagio
+    public class SupervisorEstagio : Usuario
     {
-        public int Id { get; private set; }
-
-        public string UserId { get; private set; }
-
-        public string Nome { get; private set; }
-        public string Email { get; private set; }
-        public string Telefone { get; private set; }
         public string Cargo { get; private set; }
         public string Empresa { get; private set; }
 
         private SupervisorEstagio() { }
 
-        public SupervisorEstagio(string userId, string nome, string email, string telefone,
-            string cargo, string empresa)
+        public SupervisorEstagio(
+            string userId,
+            string nome,
+            string email,
+            string telefone,
+            string cargo,
+            string empresa)
+            : base(userId, nome, email, telefone)
         {
-            UserId = userId;
-            Nome = nome;
-            Email = email;
-            Telefone = telefone;
             Cargo = cargo;
             Empresa = empresa;
         }
@@ -46,6 +41,12 @@ namespace SWES.Models
         public void EmitirParecer()
         {
             // Gerar parecer do supervisor sobre o estágio
+        }
+
+        public void AtualizarDadosProfissionais(string cargo, string empresa)
+        {
+            Cargo = cargo;
+            Empresa = empresa;
         }
     }
 }

@@ -42,5 +42,10 @@ namespace SWES.Models
                 .Where(d => d.Tipo == "Relatorio")
                 .ToList();
         }
+
+        public void AtualizarSetor(string setor)
+        {
+            Setor = setor;
+        }
     }
 }

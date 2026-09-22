@@ -22,5 +22,20 @@ namespace SWES.Data
         public DbSet<SupervisorEstagio> SupervisoresEstagio { get; set; }
         public DbSet<Coordenador> Coordenadores { get; set; }
         public DbSet<Avaliacao> Avaliacoes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Avaliacao>()
+                .Property(a => a.Nota)
+                .HasPrecision(4, 2);
+
+            builder.Entity<Avaliacao>()
+                .HasOne(a => a.ProfessorOrientador)
+                .WithMany()
+                .HasForeignKey(a => a.ProfessorOrientadorId)
+                .OnDelete(DeleteBehavior.NoAction);
+        }
     }
 }
