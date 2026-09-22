@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SWES.Data;
+using SWES.Services;
 
 namespace SWES
 {
@@ -19,6 +20,7 @@ namespace SWES
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddRazorPages();
+            builder.Services.AddScoped<UsuarioService>();
 
             var app = builder.Build();
 

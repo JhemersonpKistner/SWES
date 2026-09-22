@@ -38,5 +38,10 @@ namespace SWES.Models
         {
             estagio.Avaliacoes.Add(avaliacao);
         }
+
+        public void AtualizarRegistro(string registro)
+        {
+            Registro = registro;
+        }
     }
 }
