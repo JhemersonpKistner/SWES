@@ -1,133 +1,214 @@
 @page
 @model SWES.Pages.Usuarios.IndexModel
 
-<h1>Gerenciamento de Usuários</h1>
+<div class="usuarios-container">
 
-<a asp-page="/Usuarios/Cadastro">Cadastrar Usuário</a>
+    <div class="usuarios-header">
+    <div>
+        <h1>Gerenciamento de Usuários</h1>
+        <p class="usuarios-subtitulo">
+            Gerencie os usuários cadastrados no sistema
+        </p>
+    </div>
 
-@if (Model.Usuarios.Count == 0)
-{
-    <p>Nenhum usuário cadastrado.</p>
-}
-else
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>Perfil</th>
-                <th>Telefone</th>
-                <th>Situação</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
+    <div class="usuarios-botoes">
+        <a asp-page="/Index" class="btn-voltar-dashboard">
+            <i class="bi bi-arrow-left"></i>
+            Voltar
+        </a>
 
-        <tbody>
-            @foreach (var usuario in Model.Usuarios)
-            {
-                <tr>
-                    <td>@usuario.Nome</td>
-                    <td>@usuario.Email</td>
-                    <td>@usuario.Tipo</td>
-                    <td>@usuario.Telefone</td>
-                    <td>
-                        @(usuario.Ativo ? "Ativo" : "Inativo")
-                    </td>
-                    <td>
-                        <a asp-page="/Usuarios/Cadastro" asp-route-id="@usuario.Id" asp-route-tipo="@usuario.Tipo">
-                            Editar
-                        </a>
+        <a asp-page="/Usuarios/Cadastro" class="btn-cadastrar">
+            <i class="bi bi-person-plus"></i>
+            Cadastrar Usuário
+        </a>
+    </div>
+</div>
 
-                        @if (usuario.Ativo)
-                        {
-                            <button type="button" onclick="abrirModalInativacao(
-                                @usuario.Id,
-                                '@usuario.Tipo',
-                                '@usuario.Nome'
-                                )">
-                                Inativar
-                            </button>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div id="modalInativacao" style="
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-        justify-content: center;
-        align-items: center;
-        ">
+    @if (Model.Usuarios.Count == 0)
+    {
+        <div class="usuarios-vazio">
+            <i class="bi bi-people"></i>
+            <p>Nenhum usuário cadastrado.</p>
+        </div>
+    }
+    else
+    {
+        <div class="tabela-wrapper">
 
-        <div style="
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            width: 350px;
-            text-align: center;
-            ">
+            <table class="tabela-usuarios">
 
-            <h2>Inativar usuário</h2>
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Perfil</th>
+                        <th>Telefone</th>
+                        <th>Situação</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
 
-            <p>
-                Tem certeza que deseja inativar este usuário?
-            </p>
+                <tbody>
 
-            <p>
-                <strong>Nome:</strong>
-                <span id="nomeUsuarioModal"></span>
-            </p>
+                    @foreach (var usuario in Model.Usuarios)
+                    {
+                        <tr>
 
-            <p>
-                <strong>Perfil:</strong>
-                <span id="tipoUsuarioModal"></span>
-            </p>
+                            <td>@usuario.Nome</td>
 
-            <form method="post" asp-page-handler="Inativar">
+                            <td>@usuario.Email</td>
 
-                <input type="hidden" id="idUsuarioModal" name="id" />
+                            <td>@usuario.Tipo</td>
 
-                <input type="hidden" id="tipoUsuarioModalInput" name="tipo" />
+                            <td>@usuario.Telefone</td>
 
-                <button type="button" onclick="fecharModalInativacao()">
-                    Cancelar
-                </button>
+                            <td>
+                                @if (usuario.Ativo)
+                                {
+                                    <span class="status status-ativo">
+                                        Ativo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status status-inativo">
+                                        Inativo
+                                    </span>
+                                }
+                            </td>
 
-                <button type="submit">
-                    Inativar
-                </button>
+                            <td>
+                                <div class="acoes">
 
-            </form>
+                                    <a asp-page="/Usuarios/Cadastro"
+                                       asp-route-id="@usuario.Id"
+                                       asp-route-tipo="@usuario.Tipo"
+                                       class="btn-editar">
+
+                                        <i class="bi bi-pencil"></i>
+                                        Editar
+
+                                    </a>
+
+                                    @if (usuario.Ativo)
+                                    {
+                                        <button type="button"
+                                                class="btn-inativar"
+                                                onclick="abrirModalInativacao(
+                                                    @usuario.Id,
+                                                    '@usuario.Tipo',
+                                                    '@usuario.Nome'
+                                                )">
+
+                                            <i class="bi bi-person-x"></i>
+                                            Inativar
+
+                                        </button>
+                                    }
+
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
 
         </div>
-    </div>
-    <script>
-
-        function abrirModalInativacao(id, tipo, nome) {
-
-            document.getElementById("idUsuarioModal").value = id;
-
-            document.getElementById("tipoUsuarioModalInput").value = tipo;
-
-            document.getElementById("nomeUsuarioModal").textContent = nome;
-
-            document.getElementById("tipoUsuarioModal").textContent = tipo;
-
-            document.getElementById("modalInativacao").style.display = "flex";
-        }
 
 
-        function fecharModalInativacao() {
+        <!-- MODAL DE INATIVAÇÃO -->
 
-            document.getElementById("modalInativacao").style.display = "none";
-        }
+        <div id="modalInativacao" class="modal-inativacao">
 
-    </script>
-}
+            <div class="modal-conteudo">
+
+                <div class="modal-icone">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+
+                <h2>Inativar usuário</h2>
+
+                <p>
+                    Tem certeza que deseja inativar este usuário?
+                </p>
+
+                <div class="modal-dados">
+
+                    <p>
+                        <strong>Nome:</strong>
+                        <span id="nomeUsuarioModal"></span>
+                    </p>
+
+                    <p>
+                        <strong>Perfil:</strong>
+                        <span id="tipoUsuarioModal"></span>
+                    </p>
+
+                </div>
+
+                <form method="post" asp-page-handler="Inativar">
+
+                    <input type="hidden"
+                           id="idUsuarioModal"
+                           name="id" />
+
+                    <input type="hidden"
+                           id="tipoUsuarioModalInput"
+                           name="tipo" />
+
+                    <div class="modal-acoes">
+
+                        <button type="button"
+                                class="btn-cancelar"
+                                onclick="fecharModalInativacao()">
+
+                            Cancelar
+
+                        </button>
+
+                        <button type="submit"
+                                class="btn-confirmar">
+
+                            Inativar
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    }
+
+</div>
+
+
+<script>
+
+    function abrirModalInativacao(id, tipo, nome) {
+
+        document.getElementById("idUsuarioModal").value = id;
+
+        document.getElementById("tipoUsuarioModalInput").value = tipo;
+
+        document.getElementById("nomeUsuarioModal").textContent = nome;
+
+        document.getElementById("tipoUsuarioModal").textContent = tipo;
+
+        document.getElementById("modalInativacao").style.display = "flex";
+    }
+
+
+    function fecharModalInativacao() {
+
+        document.getElementById("modalInativacao").style.display = "none";
+
+    }
+
+</script>

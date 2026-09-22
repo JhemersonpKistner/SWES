@@ -11,7 +11,9 @@
 
     <!-- MENU LATERAL -->
     <aside class="sidebar">
-
+<button class="btn-fechar-menu" onclick="abrirMenu()">
+    X 
+</button>
         <div class="sidebar-header">
 
             <img src="~/images/logo.unidesc.webp" alt="Logo da UNIDESC" class="logo-faculdade" />
@@ -22,9 +24,9 @@
 
         <nav class="menu">
 
-            <a href="#" class="menu-item">
-                <span><i class="bi bi-people"></i></span>
-                Usuários
+            <a href="/Usuarios/Index" class="menu-item">
+             <span><i class="bi bi-people"></i></span>
+             Usuários
             </a>
 
             <a href="#" class="menu-item">
@@ -77,18 +79,22 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="main-content">
 
-        <header class="dashboard-header">
-            <h1>Dashboard</h1>
+       <header class="dashboard-header">
 
-            <p>
-                Visão geral do sistema de gerenciamento de estágios
-            </p>
+       <button class="btn-menu-mobile" onclick="abrirMenu()">
+        ☰
+       </button>
+    <h1>Dashboard</h1>
 
-            <span class="admin-label">
-                Administrador
-            </span>
-        </header>
+    <p>
+        Visão geral do sistema de gerenciamento de estágios
+    </p>
 
+    <span class="admin-label">
+        Administrador
+    </span>
+
+</header>
 
         <!-- CARDS -->
         <section class="cards">
@@ -171,6 +177,11 @@
 
 </div>
 
+<script>
+    function abrirMenu() {
+        document.querySelector(".sidebar").classList.toggle("menu-aberto");
+    }
+</script>
 
 @section Scripts {
 
