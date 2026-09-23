@@ -1,38 +1,18 @@
+/* =========================================================
+   CONFIGURAÇÕES GERAIS
+========================================================= */
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
-
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
-}
-
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
-}
-
-/* =========================
-   LAYOUT DO DASHBOARD
-========================= */
 
 body {
     margin: 0;
@@ -40,15 +20,39 @@ body {
     background-color: #f4f7fb;
 }
 
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
+
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
 .dashboard {
     display: flex;
     min-height: 100vh;
 }
 
 
-/* =========================
+/* =========================================================
    MENU LATERAL
-========================= */
+========================================================= */
 
 .sidebar {
     width: 220px;
@@ -67,6 +71,13 @@ body {
     font-size: 18px;
     color: #1f3b4d;
     margin: 0;
+}
+
+.logo-faculdade {
+    width: 150px;
+    height: auto;
+    display: block;
+    margin: 0 auto 20px;
 }
 
 .menu {
@@ -95,18 +106,29 @@ body {
     text-align: center;
 }
 
+.menu-item i {
+    font-size: 18px;
+}
+
 .menu-bottom {
     margin-top: auto;
 }
 
 
-/* CONTEÚDO PRINCIPAL */
+/* =========================================================
+   CONTEÚDO PRINCIPAL
+========================================================= */
 
 .main-content {
     flex: 1;
     padding: 35px 40px;
     box-sizing: border-box;
 }
+
+
+/* =========================================================
+   CABEÇALHO DO DASHBOARD
+========================================================= */
 
 .dashboard-header {
     position: relative;
@@ -137,7 +159,28 @@ body {
     font-weight: bold;
 }
 
-/* CARDS */
+
+/* =========================================================
+   BOTÃO HAMBÚRGUER
+========================================================= */
+
+.btn-menu-mobile {
+    display: none;
+}
+
+
+/* =========================================================
+   BOTÃO FECHAR MENU
+========================================================= */
+
+.btn-fechar-menu {
+    display: none;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
 
 .cards {
     display: grid;
@@ -168,7 +211,10 @@ body {
     color: #0050A0;
 }
 
-/* GRÁFICOS E ATIVIDADES */
+
+/* =========================================================
+   GRÁFICOS E ATIVIDADES
+========================================================= */
 
 .charts {
     display: grid;
@@ -198,8 +244,6 @@ body {
     width: 100%;
 }
 
-
-
 .activity {
     padding: 12px 0;
     border-bottom: 1px solid #e5e9ed;
@@ -211,15 +255,747 @@ body {
     border-bottom: none;
 }
 
-/* LOGO DA FACULDADE */
 
-.logo-faculdade {
-    width: 150px;
-    height: auto;
-    display: block;
-    margin: 0 auto 20px;
+/* =========================================================
+   GERENCIAMENTO DE USUÁRIOS
+========================================================= */
+
+.usuarios-container {
+    padding: 30px;
+    width: 100%;
 }
 
-.menu-item i {
-    font-size: 18px;
+.usuarios-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.usuarios-header h1 {
+    margin: 0;
+    color: #0050A0;
+    font-size: 28px;
+}
+
+.usuarios-subtitulo {
+    margin-top: 5px;
+    color: #6c757d;
+}
+
+.usuarios-botoes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+/* =========================================================
+   BOTÕES DE USUÁRIOS
+========================================================= */
+
+.btn-cadastrar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background-color: #0050A0;
+    color: white;
+    padding: 11px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-cadastrar:hover {
+    background-color: #009BE3;
+    color: white;
+}
+
+.btn-voltar-dashboard {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background-color: #e9f2f9;
+    color: #0050A0;
+    padding: 11px 18px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-voltar-dashboard:hover {
+    background-color: #d8eaf7;
+    color: #0050A0;
+}
+
+
+/* =========================================================
+   TABELA DE USUÁRIOS
+========================================================= */
+
+.tabela-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.tabela-usuarios {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabela-usuarios th {
+    background-color: #0050A0;
+    color: white;
+    padding: 14px;
+    text-align: left;
+}
+
+.tabela-usuarios td {
+    padding: 14px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.tabela-usuarios tbody tr:hover {
+    background-color: #f4f8fc;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status-ativo {
+    background-color: #dff5e7;
+    color: #198754;
+}
+
+.status-inativo {
+    background-color: #eeeeee;
+    color: #6c757d;
+}
+
+
+/* =========================================================
+   AÇÕES DA TABELA
+========================================================= */
+
+.acoes {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-editar,
+.btn-inativar {
+    border: none;
+    border-radius: 6px;
+    padding: 7px 11px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-editar {
+    background-color: #009BE3;
+    color: white;
+}
+
+.btn-editar:hover {
+    background-color: #007bb5;
+    color: white;
+}
+
+.btn-inativar {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-inativar:hover {
+    background-color: #bb2d3b;
+}
+
+
+/* =========================================================
+   USUÁRIOS VAZIOS
+========================================================= */
+
+.usuarios-vazio {
+    background: white;
+    padding: 50px;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+}
+
+.usuarios-vazio i {
+    font-size: 45px;
+    color: #0050A0;
+}
+
+.usuarios-vazio p {
+    margin-top: 15px;
+    color: #6c757d;
+}
+
+
+/* =========================================================
+   MODAL DE INATIVAÇÃO
+========================================================= */
+
+.modal-inativacao {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.55);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-conteudo {
+    background: white;
+    width: 400px;
+    max-width: 90%;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-icone {
+    font-size: 40px;
+    color: #dc3545;
+    margin-bottom: 10px;
+}
+
+.modal-conteudo h2 {
+    color: #0050A0;
+}
+
+.modal-dados {
+    background-color: #f4f7fb;
+    padding: 12px;
+    border-radius: 8px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.modal-dados p {
+    margin: 5px 0;
+}
+
+.modal-acoes {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-cancelar,
+.btn-confirmar {
+    border: none;
+    padding: 10px 18px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-cancelar {
+    background-color: #e9ecef;
+    color: #333;
+}
+
+.btn-confirmar {
+    background-color: #dc3545;
+    color: white;
+}
+
+
+/* =========================================================
+   CADASTRO / EDIÇÃO DE USUÁRIO
+========================================================= */
+
+.cadastro-container {
+    width: 100%;
+    padding: 30px;
+}
+
+.cadastro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.cadastro-header h1 {
+    margin: 0;
+    color: #0050A0;
+    font-size: 28px;
+}
+
+.cadastro-header p {
+    margin-top: 5px;
+    color: #6c757d;
+}
+
+.btn-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background-color: #e9f2f9;
+    color: #0050A0;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btn-voltar:hover {
+    background-color: #d8eaf7;
+    color: #0050A0;
+}
+
+.cadastro-card {
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+
+/* =========================================================
+   FORMULÁRIO
+========================================================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo label {
+    margin-bottom: 7px;
+    font-weight: 600;
+    color: #333;
+}
+
+.campo input,
+.campo select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 7px;
+    font-size: 15px;
+    box-sizing: border-box;
+    background-color: white;
+}
+
+.campo input:focus,
+.campo select:focus {
+    outline: none;
+    border-color: #009BE3;
+    box-shadow: 0 0 0 2px rgba(0, 155, 227, 0.15);
+}
+
+.campo-tipo {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   CAMPOS ESPECÍFICOS
+========================================================= */
+
+.campos-especificos {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.titulo-secao {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.titulo-secao i {
+    font-size: 22px;
+    color: #009BE3;
+}
+
+.titulo-secao h3 {
+    margin: 0;
+    color: #0050A0;
+    font-size: 20px;
+}
+
+
+/* =========================================================
+   AÇÕES DO FORMULÁRIO
+========================================================= */
+
+.form-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e5e5;
+}
+
+.btn-salvar {
+    border: none;
+    padding: 11px 20px;
+    border-radius: 7px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    background-color: #0050A0;
+    color: white;
+}
+
+.btn-salvar:hover {
+    background-color: #009BE3;
+    color: white;
+}
+
+
+/* =========================================================
+   MENSAGENS
+========================================================= */
+
+.mensagem-erro {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background-color: #f8d7da;
+    color: #842029;
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.mensagem-erro i {
+    font-size: 20px;
+}
+
+.mensagem-erro strong {
+    display: block;
+    margin-bottom: 3px;
+}
+
+.validacao {
+    color: #dc3545;
+    margin-bottom: 15px;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    /* -------------------------
+       DASHBOARD
+    ------------------------- */
+
+    .dashboard {
+        flex-direction: column;
+    }
+
+    .main-content {
+        width: 100%;
+        padding: 15px;
+    }
+
+
+    /* -------------------------
+       CABEÇALHO
+    ------------------------- */
+
+    .dashboard-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dashboard-header h1 {
+        font-size: 25px;
+        margin-top: 0;
+    }
+
+    .dashboard-header p {
+        font-size: 14px;
+    }
+
+    .admin-label {
+        position: static;
+        margin-top: 10px;
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+
+
+    /* -------------------------
+       BOTÃO HAMBÚRGUER
+    ------------------------- */
+
+    .btn-menu-mobile {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        margin-bottom: 12px;
+        background-color: #0050A0;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 23px;
+        cursor: pointer;
+        position: relative;
+        z-index: 1000;
+    }
+
+
+    /* -------------------------
+       MENU LATERAL
+    ------------------------- */
+
+    .sidebar {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 200px;
+        height: 100vh;
+        min-height: 100vh;
+        z-index: 9999;
+        overflow-y: auto;
+        padding: 15px 10px;
+    }
+
+    .sidebar.menu-aberto {
+        display: block;
+    }
+
+    .sidebar-header {
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    .logo-faculdade {
+        width: 120px;
+        max-height: 50px;
+        object-fit: contain;
+        margin-bottom: 12px;
+    }
+
+    .sidebar-header h2 {
+        font-size: 14px;
+    }
+
+
+    /* -------------------------
+       ITENS DO MENU
+    ------------------------- */
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .menu-item {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 9px 10px;
+        font-size: 13px;
+    }
+
+    .menu-item i {
+        font-size: 16px;
+    }
+
+    .menu-bottom {
+        margin-top: 5px;
+    }
+
+
+    /* -------------------------
+       BOTÃO FECHAR
+    ------------------------- */
+
+    .btn-fechar-menu {
+        display: block;
+        margin-left: auto;
+        margin-bottom: 5px;
+        background: transparent;
+        border: none;
+        color: #0050A0;
+        font-size: 22px;
+        cursor: pointer;
+        padding: 3px 7px;
+    }
+
+
+    /* -------------------------
+       CARDS
+    ------------------------- */
+
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .card {
+        padding: 15px;
+    }
+
+    .card h3 {
+        font-size: 13px;
+    }
+
+    .card strong {
+        font-size: 24px;
+    }
+
+
+    /* -------------------------
+       GRÁFICOS
+    ------------------------- */
+
+    .charts {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .chart-box,
+    .activities {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+
+    /* -------------------------
+       USUÁRIOS
+    ------------------------- */
+
+    .usuarios-container {
+        padding: 20px 15px;
+    }
+
+    .usuarios-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .usuarios-header h1 {
+        font-size: 23px;
+    }
+
+    .usuarios-botoes {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .btn-voltar-dashboard,
+    .btn-cadastrar {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .tabela-wrapper {
+        overflow-x: auto;
+    }
+
+    .tabela-usuarios {
+        min-width: 800px;
+    }
+
+    .acoes {
+        flex-direction: column;
+    }
+
+    .btn-editar,
+    .btn-inativar {
+        text-align: center;
+    }
+
+    .modal-conteudo {
+        width: 90%;
+        padding: 20px;
+    }
+
+
+    /* -------------------------
+       CADASTRO
+    ------------------------- */
+
+    .cadastro-container {
+        padding: 20px 15px;
+    }
+
+    .cadastro-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .cadastro-header h1 {
+        font-size: 23px;
+    }
+
+    .btn-voltar {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .cadastro-card {
+        padding: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .campo-tipo {
+        grid-column: auto;
+    }
+
+    .form-acoes {
+        flex-direction: column-reverse;
+    }
+
+    .btn-cancelar,
+    .btn-salvar {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
 }
