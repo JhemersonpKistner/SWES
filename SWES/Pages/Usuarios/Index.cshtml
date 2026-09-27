@@ -104,6 +104,21 @@
                                             Inativar
 
                                         </button>
+                        
+                                    }
+                                    @if (!usuario.Ativo){
+                                     <button type="button"
+                                                class="btn-inativar"
+                                                onclick="abrirModalReativacao(
+                                                    @usuario.Id,
+                                                    '@usuario.Tipo',
+                                                    '@usuario.Nome'
+                                                )">
+
+                                            <i class="bi bi-person-x"></i>
+                                            Reativar
+
+                                        </button>
                                     }
 
                                 </div>
@@ -184,9 +199,76 @@
 
         </div>
 
+
+        <!-- MODAL DE REATIVAÇÃO -->
+
+        <div id="modalReativacao" class="modal-inativacao">
+
+            <div class="modal-conteudo">
+
+                <div class="modal-icone">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+
+                <h2>Reativar usuário</h2>
+
+                <p>
+                    Tem certeza que deseja reativar este usuário?
+                </p>
+
+                <div class="modal-dados">
+
+                    <p>
+                        <strong>Nome:</strong>
+                        <span id="nomeUsuarioReativacaoModal"></span>
+                    </p>
+
+                    <p>
+                        <strong>Perfil:</strong>
+                        <span id="tipoUsuarioReativacaoModal"></span>
+                    </p>
+
+                </div>
+
+                <form method="post" asp-page-handler="Ativar">
+
+                    <input type="hidden"
+                           id="idUsuarioReativacaoModal"
+                           name="id" />
+
+                    <input type="hidden"
+                           id="tipoUsuarioReativacaoModalInput"
+                           name="tipo" />
+
+                    <div class="modal-acoes">
+
+                        <button type="button"
+                                class="btn-cancelar"
+                                onclick="fecharModalReativacao()">
+
+                            Cancelar
+
+                        </button>
+
+                        <button type="submit"
+                                class="btn-confirmar">
+
+                            Reativar
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
     }
 
 </div>
+
 
 
 <script>
@@ -204,10 +286,28 @@
         document.getElementById("modalInativacao").style.display = "flex";
     }
 
+    function abrirModalReativacao(id, tipo, nome) {
+
+        document.getElementById("idUsuarioReativacaoModal").value = id;
+
+        document.getElementById("tipoUsuarioReativacaoModalInput").value = tipo;
+
+        document.getElementById("nomeUsuarioReativacaoModal").textContent = nome;
+
+        document.getElementById("tipoUsuarioReativacaoModal").textContent = tipo;
+
+        document.getElementById("modalReativacao").style.display = "flex";
+    }
+
 
     function fecharModalInativacao() {
 
         document.getElementById("modalInativacao").style.display = "none";
+
+    }
+    function fecharModalReativacao() {
+
+        document.getElementById("modalReativacao").style.display = "none";
 
     }
 

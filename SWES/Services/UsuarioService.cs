@@ -396,6 +396,57 @@ namespace SWES.Services
             return true;
         }
 
+        public async Task<bool> ReativarUsuario(int id, string tipo)
+        {
+            if (tipo == "Aluno")
+            {
+                var aluno = _context.Alunos
+                    .FirstOrDefault(a => a.Id == id);
+
+                if (aluno == null || aluno.Ativo)
+                    return false;
+
+                aluno.Ativar();
+            }
+            else if (tipo == "Professor")
+            {
+                var professor = _context.ProfessoresOrientadores
+                    .FirstOrDefault(p => p.Id == id);
+
+                if (professor == null || professor.Ativo)
+                    return false;
+
+                professor.Ativar();
+            }
+            else if (tipo == "Supervisor")
+            {
+                var supervisor = _context.SupervisoresEstagio
+                    .FirstOrDefault(s => s.Id == id);
+
+                if (supervisor == null || supervisor.Ativo)
+                    return false;
+
+                supervisor.Ativar();
+            }
+            else if (tipo == "Coordenador")
+            {
+                var coordenador = _context.Coordenadores
+                    .FirstOrDefault(c => c.Id == id);
+
+                if (coordenador == null || coordenador.Ativo)
+                    return false;
+
+                coordenador.Ativar();
+            }
+            else
+            {
+                return false;
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<IdentityResult> CadastrarUsuario(UsuarioCadastroViewModel model)
         {
             var identityUser = new IdentityUser

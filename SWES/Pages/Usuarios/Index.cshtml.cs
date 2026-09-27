@@ -22,13 +22,26 @@ namespace SWES.Pages.Usuarios
         }
 
         public async Task<IActionResult> OnPostInativarAsync(
-    int id,
-    string tipo)
+            int id,
+            string tipo)
         {
             var inativado = await _usuarioService
                 .InativarUsuario(id, tipo);
 
             if (!inativado)
+                return NotFound();
+
+            return RedirectToPage("/Usuarios/Index");
+        }
+
+        public async Task<IActionResult> OnPostAtivarAsync(
+            int id,
+            string tipo)
+        {
+            var ativado = await _usuarioService
+                .ReativarUsuario(id, tipo);
+
+            if (!ativado)
                 return NotFound();
 
             return RedirectToPage("/Usuarios/Index");
