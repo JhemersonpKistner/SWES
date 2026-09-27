@@ -5,6 +5,7 @@ namespace SWES.Models
 {
     public class SupervisorEstagio : Usuario
     {
+        public int CNPJ {get; private set; }
         public string Cargo { get; private set; }
         public string Empresa { get; private set; }
 
@@ -15,10 +16,13 @@ namespace SWES.Models
             string nome,
             string email,
             string telefone,
+            int cpf,
+            int cnpj,
             string cargo,
             string empresa)
-            : base(userId, nome, email, telefone)
+            : base(userId, nome, email, telefone, cpf)
         {
+            CNPJ = cnpj;
             Cargo = cargo;
             Empresa = empresa;
         }
