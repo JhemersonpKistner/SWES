@@ -14,8 +14,9 @@ namespace SWES.Models
             string nome,
             string email,
             string telefone,
+            int cpf,
             string setor)
-            : base(userId, nome, email, telefone)
+            : base(userId, nome, email, telefone, cpf)
         {
             Setor = setor;
         }

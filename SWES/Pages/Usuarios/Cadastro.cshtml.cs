@@ -91,7 +91,7 @@ namespace SWES.Pages.Usuarios
         {
             if (Usuario.Tipo == "Aluno")
             {
-                if (string.IsNullOrWhiteSpace(Usuario.Matricula))
+                if (Usuario.Matricula == null)
                     ModelState.AddModelError(
                         "Usuario.Matricula",
                         "A matrícula é obrigatória para alunos.");
@@ -118,7 +118,7 @@ namespace SWES.Pages.Usuarios
             }
             else if (Usuario.Tipo == "Professor")
             {
-                if (string.IsNullOrWhiteSpace(Usuario.Registro))
+                if (Usuario.Registro == null)
                     ModelState.AddModelError(
                         "Usuario.Registro",
                         "O registro é obrigatório para professores.");

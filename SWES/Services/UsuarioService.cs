@@ -27,7 +27,7 @@ namespace SWES.Services
                     Id = aluno.Id,
                     Nome = aluno.Nome,
                     Email = aluno.Email,
-                    Telefone = aluno.Telefone,
+                    Inscricao = aluno.Matricula,
                     Tipo = "Aluno",
                     Ativo = aluno.Ativo
                 });
@@ -41,7 +41,7 @@ namespace SWES.Services
                     Id = professor.Id,
                     Nome = professor.Nome,
                     Email = professor.Email,
-                    Telefone = professor.Telefone,
+                    Inscricao = professor.Registro,
                     Tipo = "Professor",
                     Ativo = professor.Ativo
                 });
@@ -55,7 +55,7 @@ namespace SWES.Services
                     Id = supervisor.Id,
                     Nome = supervisor.Nome,
                     Email = supervisor.Email,
-                    Telefone = supervisor.Telefone,
+                    Inscricao = 0,
                     Tipo = "Supervisor",
                     Ativo = supervisor.Ativo
                 });
@@ -69,7 +69,7 @@ namespace SWES.Services
                     Id = coordenador.Id,
                     Nome = coordenador.Nome,
                     Email = coordenador.Email,
-                    Telefone = coordenador.Telefone,
+                    Inscricao = 0,
                     Tipo = "Coordenador",
                     Ativo = coordenador.Ativo
                 });
@@ -95,7 +95,7 @@ namespace SWES.Services
                     Id = aluno.Id,
                     Nome = aluno.Nome,
                     Email = aluno.Email,
-                    Telefone = aluno.Telefone,
+                    Inscricao = aluno.Matricula,
                     Tipo = "Aluno",
                     Ativo = aluno.Ativo
                 };
@@ -116,7 +116,7 @@ namespace SWES.Services
                     Id = professor.Id,
                     Nome = professor.Nome,
                     Email = professor.Email,
-                    Telefone = professor.Telefone,
+                    Inscricao = professor.Registro,
                     Tipo = "Professor",
                     Ativo = professor.Ativo
                 };
@@ -137,7 +137,7 @@ namespace SWES.Services
                     Id = supervisor.Id,
                     Nome = supervisor.Nome,
                     Email = supervisor.Email,
-                    Telefone = supervisor.Telefone,
+                    Inscricao = 0,
                     Tipo = "Supervisor",
                     Ativo = supervisor.Ativo
                 };
@@ -158,7 +158,7 @@ namespace SWES.Services
                     Id = coordenador.Id,
                     Nome = coordenador.Nome,
                     Email = coordenador.Email,
-                    Telefone = coordenador.Telefone,
+                    Inscricao = 0,
                     Tipo = "Coordenador",
                     Ativo = coordenador.Ativo
                 };
@@ -280,7 +280,7 @@ namespace SWES.Services
                 if (model.DataNasc.HasValue)
                 {
                     aluno.AtualizarDadosAcademicos(
-                        model.Matricula,
+                        (int)model.Matricula,
                         model.Curso,
                         model.Turno,
                         model.Semestre,
@@ -300,7 +300,7 @@ namespace SWES.Services
                     model.Email,
                     model.Telefone);
 
-                professor.AtualizarRegistro(model.Registro);
+                professor.AtualizarRegistro((short)model.Registro);
             }
             else if (model.Tipo == "Supervisor")
             {
@@ -420,7 +420,8 @@ namespace SWES.Services
                     model.Nome,
                     model.Email,
                     model.Telefone,
-                    model.Matricula,
+                    model.CPF,
+                    (int)model.Matricula,
                     model.Curso,
                     model.Turno,
                     model.Semestre,
@@ -436,7 +437,10 @@ namespace SWES.Services
                     model.Nome,
                     model.Email,
                     model.Telefone,
-                    model.Registro
+                    model.CPF,
+                    model.Curso,
+                    (int)model.Registro
+                    
                 );
 
                 _context.ProfessoresOrientadores.Add(professor);
@@ -448,6 +452,8 @@ namespace SWES.Services
                     model.Nome,
                     model.Email,
                     model.Telefone,
+                    model.CPF,
+                    (int)model.CNPJ,
                     model.Cargo,
                     model.Empresa
                 );
@@ -461,6 +467,7 @@ namespace SWES.Services
                     model.Nome,
                     model.Email,
                     model.Telefone,
+                    model.CPF,
                     model.Setor
                 );
 

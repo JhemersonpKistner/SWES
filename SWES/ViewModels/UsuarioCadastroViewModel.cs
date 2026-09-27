@@ -9,20 +9,22 @@ namespace SWES.ViewModels
         public string? Senha { get; set; }
         public string Telefone { get; set; }
         public string Tipo { get; set; }
+        public int CPF { get; set; }
 
         
-        public string? Matricula { get; set; }
+        public int? Matricula { get; set; }
         public string? Curso { get; set; }
         public string? Turno { get; set; }
         public string? Semestre { get; set; }
         public DateTime? DataNasc { get; set; }
 
         
-        public string? Registro { get; set; }
+        public int? Registro { get; set; }        
 
         
         public string? Cargo { get; set; }
         public string? Empresa { get; set; }
+        public int? CNPJ {get; set;}
 
         
         public string? Setor { get; set; }

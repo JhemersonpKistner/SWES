@@ -4,7 +4,8 @@ namespace SWES.Models
 {
     public class ProfessorOrientador : Usuario
     {
-        public string Registro { get; private set; }
+        public string Curso {get; private set; }
+        public int Registro { get; private set; }
 
         private ProfessorOrientador() { }
 
@@ -13,10 +14,13 @@ namespace SWES.Models
             string nome,
             string email,
             string telefone,
-            string registro)
-            : base(userId, nome, email, telefone)
+            int cpf,
+            string curso,
+            int registro)
+            : base(userId, nome, email, telefone, cpf)
         {
             Registro = registro;
+            Curso = curso;
         }
 
         public void AcompanharEstagio(Estagio estagio)
@@ -39,7 +43,7 @@ namespace SWES.Models
             estagio.Avaliacoes.Add(avaliacao);
         }
 
-        public void AtualizarRegistro(string registro)
+        public void AtualizarRegistro(Int16 registro)
         {
             Registro = registro;
         }
