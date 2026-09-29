@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace SWES.ViewModels
 {
     public class UsuarioCadastroViewModel
@@ -9,9 +11,11 @@ namespace SWES.ViewModels
         public string? Senha { get; set; }
         public string Telefone { get; set; }
         public string Tipo { get; set; }
-        public int CPF { get; set; }
+        [Required(ErrorMessage = "Informe o CPF.")]
+        [RegularExpression(@"^\d{11}$", ErrorMessage = "O CPF deve conter exatamente 11 números.")]
+        public string CPF { get; set; }
 
-        
+
         public int? Matricula { get; set; }
         public string? Curso { get; set; }
         public string? Turno { get; set; }
@@ -24,9 +28,10 @@ namespace SWES.ViewModels
         
         public string? Cargo { get; set; }
         public string? Empresa { get; set; }
-        public int? CNPJ {get; set;}
+        [RegularExpression(@"^\d{14}$", ErrorMessage = "O CNPJ deve conter exatamente 14 números.")]
+        public string? CNPJ { get; set; }
 
-        
+
         public string? Setor { get; set; }
     }
 }

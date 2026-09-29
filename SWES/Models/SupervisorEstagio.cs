@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SWES.Models
 {
     public class SupervisorEstagio : Usuario
     {
-        public int CNPJ {get; private set; }
+        [MaxLength(14)]
+        public string CNPJ {get; private set; }
+        [MaxLength(60)]
         public string Cargo { get; private set; }
+        [MaxLength(150)]
         public string Empresa { get; private set; }
 
         private SupervisorEstagio() { }
@@ -16,8 +20,8 @@ namespace SWES.Models
             string nome,
             string email,
             string telefone,
-            int cpf,
-            int cnpj,
+            string cpf,
+            string cnpj,
             string cargo,
             string empresa)
             : base(userId, nome, email, telefone, cpf)

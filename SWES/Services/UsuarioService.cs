@@ -504,7 +504,7 @@ namespace SWES.Services
                     model.Email,
                     model.Telefone,
                     model.CPF,
-                    (int)model.CNPJ,
+                    (string)model.CNPJ,
                     model.Cargo,
                     model.Empresa
                 );
