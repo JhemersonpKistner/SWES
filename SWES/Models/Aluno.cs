@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace SWES.Models
@@ -7,8 +8,12 @@ namespace SWES.Models
     public class Aluno : Usuario
     {
         public int Matricula { get; private set; }
+        [MaxLength(100)]
+
         public string Curso { get; private set; }
+        [MaxLength(20)]
         public string Turno { get; private set; }
+        [MaxLength(20)]
         public string Semestre { get; private set; }
         public DateTime DataNasc { get; private set; }
 
@@ -21,7 +26,7 @@ namespace SWES.Models
             string nome,
             string email,
             string telefone,
-            int cpf,
+            string cpf,
             int matricula,
             string curso,
             string turno,

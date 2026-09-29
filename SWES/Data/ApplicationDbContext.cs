@@ -22,6 +22,7 @@ namespace SWES.Data
         public DbSet<SupervisorEstagio> SupervisoresEstagio { get; set; }
         public DbSet<Coordenador> Coordenadores { get; set; }
         public DbSet<Avaliacao> Avaliacoes { get; set; }
+        public DbSet<Curso> Cursos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

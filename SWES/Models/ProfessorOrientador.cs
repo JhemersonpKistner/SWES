@@ -1,11 +1,14 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace SWES.Models
 {
     public class ProfessorOrientador : Usuario
     {
+        [MaxLength(100)]
         public string Curso {get; private set; }
         public int Registro { get; private set; }
+        public ICollection<Curso> Cursos { get; private set; } = new List<Curso>();
 
         private ProfessorOrientador() { }
 
@@ -14,13 +17,26 @@ namespace SWES.Models
             string nome,
             string email,
             string telefone,
-            int cpf,
+            string cpf,
             string curso,
             int registro)
             : base(userId, nome, email, telefone, cpf)
         {
             Registro = registro;
             Curso = curso;
+        }
+
+        public void AdicionarCurso(Curso curso)
+        {
+            if (!Cursos.Contains(curso))
+            {
+                Cursos.Add(curso);
+            }
+        }
+
+        public void RemoverCurso(Curso curso)
+        {
+            Cursos.Remove(curso);
         }
 
         public void AcompanharEstagio(Estagio estagio)
