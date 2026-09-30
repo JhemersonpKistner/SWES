@@ -207,8 +207,11 @@
                             Matrícula
                         </label>
 
-                        <input asp-for="Usuario.Matricula" maxlength="10" inputmode="numeric"
-                               oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+                        <input asp-for="Usuario.Matricula"
+       class="form-control"
+       maxlength="10"
+       inputmode="numeric"
+       oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);" />
 
                         <span asp-validation-for="Usuario.Matricula" class="text-danger">
                         </span>
@@ -354,10 +357,12 @@
                             Data de nascimento
                         </label>
 
-                        <input asp-for="Usuario.DataNasc" type="date" min="1900-01-01"
-                               max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                     <input asp-for="Usuario.DataNasc"
+       type="date"
+       class="form-control"
+       id="Usuario_DataNasc" />
 
-                        <span asp-validation-for="Usuario.DataNasc" class="text-danger">
+<span id="mensagemDataNascimento" class="text-danger"></span>
                         </span>
 
                     </div>
@@ -755,5 +760,34 @@
                         cnpj.value.replace(/\D/g, "");
                 }
             });
-    </script>
+
+
+const dataNascimento = document.getElementById("Usuario_DataNasc");
+const mensagemData = document.getElementById("mensagemDataNascimento");
+
+if (dataNascimento) {
+    dataNascimento.addEventListener("input", function () {
+        const valor = this.value;
+
+        mensagemData.textContent = "";
+
+        if (!valor) {
+            return;
+        }
+
+        const data = new Date(valor + "T00:00:00");
+        const minimo = new Date("1900-01-01T00:00:00");
+        const hoje = new Date();
+
+        if (data < minimo) {
+            mensagemData.textContent =
+                "A data de nascimento deve ser a partir de 01/01/1900.";
+        } else if (data > hoje) {
+            mensagemData.textContent =
+                "A data de nascimento não pode ser futura.";
+        }
+    });
 }
+    </script>
+
+} 
