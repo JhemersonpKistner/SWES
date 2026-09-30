@@ -4,25 +4,25 @@
 <div class="usuarios-container">
 
     <div class="usuarios-header">
-    <div>
-        <h1>Gerenciamento de Usuários</h1>
-        <p class="usuarios-subtitulo">
-            Gerencie os usuários cadastrados no sistema
-        </p>
-    </div>
+        <div>
+            <h1>Gerenciamento de Usuários</h1>
+            <p class="usuarios-subtitulo">
+                Gerencie os usuários cadastrados no sistema
+            </p>
+        </div>
 
-    <div class="usuarios-botoes">
-        <a asp-page="/Index" class="btn-voltar-dashboard">
-            <i class="bi bi-arrow-left"></i>
-            Voltar
-        </a>
+        <div class="usuarios-botoes">
+            <a asp-page="/Index" class="btn-voltar-dashboard">
+                <i class="bi bi-arrow-left"></i>
+                Voltar
+            </a>
 
-        <a asp-page="/Usuarios/Cadastro" class="btn-cadastrar">
-            <i class="bi bi-person-plus"></i>
-            Cadastrar Usuário
-        </a>
+            <a asp-page="/Usuarios/Cadastro" class="btn-cadastrar">
+                <i class="bi bi-person-plus"></i>
+                Cadastrar Usuário
+            </a>
+        </div>
     </div>
-</div>
 
     @if (Model.Usuarios.Count == 0)
     {
@@ -39,10 +39,10 @@
 
                 <thead>
                     <tr>
+                        <th>Matrícula/Registro</th>
                         <th>Nome</th>
                         <th>E-mail</th>
                         <th>Perfil</th>
-                        <th>Telefone</th>
                         <th>Situação</th>
                         <th>Ações</th>
                     </tr>
@@ -54,13 +54,13 @@
                     {
                         <tr>
 
-                            <td>@usuario.Inscricao</td>
+                            <td>@(usuario.Inscricao == null ? "-" : usuario.Inscricao)</td>
 
                             <td>@usuario.Nome</td>
 
                             <td>@usuario.Email</td>
 
-                            <td>@usuario.Tipo</td>                            
+                            <td>@usuario.Tipo</td>
 
                             <td>
                                 @if (usuario.Ativo)
@@ -80,9 +80,7 @@
                             <td>
                                 <div class="acoes">
 
-                                    <a asp-page="/Usuarios/Cadastro"
-                                       asp-route-id="@usuario.Id"
-                                       asp-route-tipo="@usuario.Tipo"
+                                    <a asp-page="/Usuarios/Cadastro" asp-route-id="@usuario.Id" asp-route-tipo="@usuario.Tipo"
                                        class="btn-editar">
 
                                         <i class="bi bi-pencil"></i>
@@ -92,13 +90,11 @@
 
                                     @if (usuario.Ativo)
                                     {
-                                        <button type="button"
-                                                class="btn-inativar"
-                                                onclick="abrirModalInativacao(
-                                                    @usuario.Id,
-                                                    '@usuario.Tipo',
-                                                    '@usuario.Nome'
-                                                )">
+                                        <button type="button" class="btn-inativar" onclick="abrirModalInativacao(
+                                            @usuario.Id,
+                                            '@usuario.Tipo',
+                                            '@usuario.Nome'
+                                            )">
 
                                             <i class="bi bi-person-x"></i>
                                             Inativar
@@ -106,14 +102,13 @@
                                         </button>
                         
                                     }
-                                    @if (!usuario.Ativo){
-                                     <button type="button"
-                                                class="btn-inativar"
-                                                onclick="abrirModalReativacao(
-                                                    @usuario.Id,
-                                                    '@usuario.Tipo',
-                                                    '@usuario.Nome'
-                                                )">
+                                    @if (!usuario.Ativo)
+                                    {
+                                        <button type="button" class="btn-inativar" onclick="abrirModalReativacao(
+                                            @usuario.Id,
+                                            '@usuario.Tipo',
+                                            '@usuario.Nome'
+                                            )">
 
                                             <i class="bi bi-person-x"></i>
                                             Reativar
@@ -166,26 +161,19 @@
 
                 <form method="post" asp-page-handler="Inativar">
 
-                    <input type="hidden"
-                           id="idUsuarioModal"
-                           name="id" />
+                    <input type="hidden" id="idUsuarioModal" name="id" />
 
-                    <input type="hidden"
-                           id="tipoUsuarioModalInput"
-                           name="tipo" />
+                    <input type="hidden" id="tipoUsuarioModalInput" name="tipo" />
 
                     <div class="modal-acoes">
 
-                        <button type="button"
-                                class="btn-cancelar"
-                                onclick="fecharModalInativacao()">
+                        <button type="button" class="btn-cancelar" onclick="fecharModalInativacao()">
 
                             Cancelar
 
                         </button>
 
-                        <button type="submit"
-                                class="btn-confirmar">
+                        <button type="submit" class="btn-confirmar">
 
                             Inativar
 
@@ -232,26 +220,19 @@
 
                 <form method="post" asp-page-handler="Ativar">
 
-                    <input type="hidden"
-                           id="idUsuarioReativacaoModal"
-                           name="id" />
+                    <input type="hidden" id="idUsuarioReativacaoModal" name="id" />
 
-                    <input type="hidden"
-                           id="tipoUsuarioReativacaoModalInput"
-                           name="tipo" />
+                    <input type="hidden" id="tipoUsuarioReativacaoModalInput" name="tipo" />
 
                     <div class="modal-acoes">
 
-                        <button type="button"
-                                class="btn-cancelar"
-                                onclick="fecharModalReativacao()">
+                        <button type="button" class="btn-cancelar" onclick="fecharModalReativacao()">
 
                             Cancelar
 
                         </button>
 
-                        <button type="submit"
-                                class="btn-confirmar">
+                        <button type="submit" class="btn-confirmar">
 
                             Reativar
 

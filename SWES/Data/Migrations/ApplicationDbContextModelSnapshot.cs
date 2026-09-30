@@ -252,6 +252,7 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
+
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
@@ -375,8 +376,10 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
+
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
+
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -590,6 +593,7 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
+
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
@@ -638,6 +642,7 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("CNPJ")
                         .IsRequired()
+
                         .HasMaxLength(14)
                         .HasColumnType("nvarchar(14)");
 

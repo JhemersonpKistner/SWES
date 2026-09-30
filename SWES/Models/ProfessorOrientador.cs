@@ -10,6 +10,7 @@ namespace SWES.Models
         public int Registro { get; private set; }
         public ICollection<Curso> Cursos { get; private set; } = new List<Curso>();
 
+
         private ProfessorOrientador() { }
 
         public ProfessorOrientador(
@@ -59,7 +60,7 @@ namespace SWES.Models
             estagio.Avaliacoes.Add(avaliacao);
         }
 
-        public void AtualizarRegistro(Int16 registro)
+        public void AtualizarRegistro(int registro)
         {
             Registro = registro;
         }
