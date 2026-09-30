@@ -9,6 +9,7 @@ namespace SWES.Models
         [MaxLength(14)]
         public string CNPJ {get; private set; }
         [MaxLength(60)]
+
         public string Cargo { get; private set; }
         [MaxLength(150)]
         public string Empresa { get; private set; }
@@ -51,10 +52,11 @@ namespace SWES.Models
             // Gerar parecer do supervisor sobre o estágio
         }
 
-        public void AtualizarDadosProfissionais(string cargo, string empresa)
+        public void AtualizarDadosProfissionais(string cargo, string empresa, string cnpj)
         {
             Cargo = cargo;
             Empresa = empresa;
+            CNPJ = cnpj;
         }
     }
 }

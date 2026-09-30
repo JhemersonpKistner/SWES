@@ -55,7 +55,7 @@ namespace SWES.Services
                     Id = supervisor.Id,
                     Nome = supervisor.Nome,
                     Email = supervisor.Email,
-                    Inscricao = 0,
+                    Inscricao = null,
                     Tipo = "Supervisor",
                     Ativo = supervisor.Ativo
                 });
@@ -69,7 +69,7 @@ namespace SWES.Services
                     Id = coordenador.Id,
                     Nome = coordenador.Nome,
                     Email = coordenador.Email,
-                    Inscricao = 0,
+                    Inscricao = null,
                     Tipo = "Coordenador",
                     Ativo = coordenador.Ativo
                 });
@@ -137,7 +137,7 @@ namespace SWES.Services
                     Id = supervisor.Id,
                     Nome = supervisor.Nome,
                     Email = supervisor.Email,
-                    Inscricao = 0,
+                    Inscricao = null,
                     Tipo = "Supervisor",
                     Ativo = supervisor.Ativo
                 };
@@ -158,7 +158,7 @@ namespace SWES.Services
                     Id = coordenador.Id,
                     Nome = coordenador.Nome,
                     Email = coordenador.Email,
-                    Inscricao = 0,
+                    Inscricao = null,
                     Tipo = "Coordenador",
                     Ativo = coordenador.Ativo
                 };
@@ -185,6 +185,7 @@ namespace SWES.Services
                     Nome = aluno.Nome,
                     Email = aluno.Email,
                     Telefone = aluno.Telefone,
+                    CPF = aluno.CPF,
                     Tipo = "Aluno",
                     Matricula = aluno.Matricula,
                     Curso = aluno.Curso,
@@ -210,8 +211,13 @@ namespace SWES.Services
                     Nome = professor.Nome,
                     Email = professor.Email,
                     Telefone = professor.Telefone,
+                    CPF = professor.CPF,
                     Tipo = "Professor",
-                    Registro = professor.Registro
+                    Registro = professor.Registro,
+                    CursosProfessor = professor.Curso
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                        .Select(c => c.Trim())
+                        .ToList()
                 };
             }
 
@@ -231,9 +237,11 @@ namespace SWES.Services
                     Nome = supervisor.Nome,
                     Email = supervisor.Email,
                     Telefone = supervisor.Telefone,
+                    CPF = supervisor.CPF,
                     Tipo = "Supervisor",
                     Cargo = supervisor.Cargo,
-                    Empresa = supervisor.Empresa
+                    Empresa = supervisor.Empresa,
+                    CNPJ = supervisor.CNPJ
                 };
             }
 
@@ -253,6 +261,7 @@ namespace SWES.Services
                     Nome = coordenador.Nome,
                     Email = coordenador.Email,
                     Telefone = coordenador.Telefone,
+                    CPF = coordenador.CPF,
                     Tipo = "Coordenador",
                     Setor = coordenador.Setor
                 };
@@ -275,64 +284,65 @@ namespace SWES.Services
                 aluno.AtualizarDados(
                     model.Nome,
                     model.Email,
-                    model.Telefone);
+                    model.Telefone,
+                    model.CPF);
 
-                if (model.DataNasc.HasValue)
-                {
-                    aluno.AtualizarDadosAcademicos(
-                        (int)model.Matricula,
-                        model.Curso,
-                        model.Turno,
-                        model.Semestre,
-                        model.DataNasc.Value);
-                }
+
+                aluno.AtualizarDadosAcademicos(
+                    model.Matricula!,
+                    model.Curso!,
+                    model.Turno!,
+                    model.Semestre!,
+                    model.DataNasc!.Value);
+
             }
             else if (model.Tipo == "Professor")
             {
                 var professor = _context.ProfessoresOrientadores
                     .FirstOrDefault(p => p.Id == model.Id.Value);
 
-                if (professor == null)
-                    return false;
+                if (professor == null) return false;
 
                 professor.AtualizarDados(
                     model.Nome,
                     model.Email,
-                    model.Telefone);
+                    model.Telefone,
+                    model.CPF);
 
-                professor.AtualizarRegistro((short)model.Registro);
+                professor.AtualizarRegistro((int)model.Registro!);
             }
             else if (model.Tipo == "Supervisor")
             {
                 var supervisor = _context.SupervisoresEstagio
                     .FirstOrDefault(s => s.Id == model.Id.Value);
 
-                if (supervisor == null)
-                    return false;
+                if (supervisor == null) return false;
 
                 supervisor.AtualizarDados(
                     model.Nome,
                     model.Email,
-                    model.Telefone);
+                    model.Telefone,
+                    model.CPF);
 
                 supervisor.AtualizarDadosProfissionais(
-                    model.Cargo,
-                    model.Empresa);
+                    model.Cargo!,
+                    model.Empresa!,
+                    model.CNPJ!);
             }
             else if (model.Tipo == "Coordenador")
             {
                 var coordenador = _context.Coordenadores
                     .FirstOrDefault(c => c.Id == model.Id.Value);
 
-                if (coordenador == null)
-                    return false;
+                if (coordenador == null) return false;
 
                 coordenador.AtualizarDados(
                     model.Nome,
                     model.Email,
-                    model.Telefone);
+                    model.Telefone,
+                    model.CPF);
 
-                coordenador.AtualizarSetor(model.Setor);
+                coordenador.AtualizarSetor(model.Setor!);
             }
             else
             {
@@ -472,11 +482,11 @@ namespace SWES.Services
                     model.Email,
                     model.Telefone,
                     model.CPF,
-                    (int)model.Matricula,
-                    model.Curso,
-                    model.Turno,
-                    model.Semestre,
-                    model.DataNasc ?? DateTime.Now
+                    (int)model.Matricula!,
+                    model.Curso!,
+                    model.Turno!,
+                    model.Semestre!,
+                    model.DataNasc!.Value
                 );
 
                 _context.Alunos.Add(aluno);
@@ -489,9 +499,9 @@ namespace SWES.Services
                     model.Email,
                     model.Telefone,
                     model.CPF,
-                    model.Curso,
-                    (int)model.Registro
-                    
+                    string.Join(", ", model.CursosProfessor),
+                    (int)model.Registro!
+
                 );
 
                 _context.ProfessoresOrientadores.Add(professor);
@@ -507,6 +517,7 @@ namespace SWES.Services
                     (string)model.CNPJ,
                     model.Cargo,
                     model.Empresa
+
                 );
 
                 _context.SupervisoresEstagio.Add(supervisor);
@@ -519,10 +530,18 @@ namespace SWES.Services
                     model.Email,
                     model.Telefone,
                     model.CPF,
-                    model.Setor
+                    model.Setor!
                 );
 
                 _context.Coordenadores.Add(coordenador);
+            }
+            else
+            {
+                return IdentityResult.Failed(
+                    new IdentityError
+                    {
+                        Description = "Tipo de usuário inválido."
+                    });
             }
 
             await _context.SaveChangesAsync();

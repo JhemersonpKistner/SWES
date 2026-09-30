@@ -7,6 +7,7 @@ namespace SWES.Models
 {
     public class Aluno : Usuario
     {
+
         public int Matricula { get; private set; }
         [MaxLength(100)]
 

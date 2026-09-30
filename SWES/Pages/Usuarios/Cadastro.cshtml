@@ -4,9 +4,13 @@
 <div class="cadastro-container">
 
     <div class="cadastro-header">
+
         <div>
+
             <h1>
-                @(Model.Usuario.Id.HasValue ? "Editar Usuário" : "Cadastrar Usuário")
+                @(Model.Usuario.Id.HasValue
+                    ? "Editar Usuário"
+                    : "Cadastrar Usuário")
             </h1>
 
             <p>
@@ -14,194 +18,553 @@
                     ? "Atualize os dados do usuário"
                     : "Preencha os dados para cadastrar um novo usuário")
             </p>
+
         </div>
 
         <a asp-page="/Usuarios/Index" class="btn-voltar">
+
             <i class="bi bi-arrow-left"></i>
             Voltar
+
         </a>
+
     </div>
+
 
     <div class="cadastro-card">
 
         @if (!string.IsNullOrEmpty(Model.Erro))
         {
             <div class="mensagem-erro">
+
                 <i class="bi bi-exclamation-circle"></i>
+
                 <div>
-                    <strong>Erro ao cadastrar:</strong>
+                    <strong>Atenção:</strong>
                     <span>@Model.Erro</span>
                 </div>
+
             </div>
         }
 
-        <div asp-validation-summary="All" class="validacao"></div>
+        <div asp-validation-summary="All" class="validacao">
+        </div>
+
 
         <form method="post">
 
             <input type="hidden" asp-for="Usuario.Id" />
 
+
+            <!-- DADOS COMUNS -->
+
             <div class="form-grid">
 
                 <div class="campo">
-                    <label asp-for="Usuario.Nome">Nome</label>
-                    <input asp-for="Usuario.Nome" placeholder="Digite o nome completo" />
+
+                    <label asp-for="Usuario.Nome">
+                        Nome completo
+                    </label>
+
+                    <input asp-for="Usuario.Nome" maxlength="60" placeholder="Nome e sobrenome" />
+
+                    <span asp-validation-for="Usuario.Nome" class="text-danger">
+                    </span>
+
                 </div>
+
 
                 <div class="campo">
-                    <label asp-for="Usuario.Email">E-mail</label>
-                    <input asp-for="Usuario.Email"
-                           type="email"
-                           placeholder="Digite o e-mail" />
+
+                    <label asp-for="Usuario.Email">
+                        E-mail
+                    </label>
+
+                    <input asp-for="Usuario.Email" type="email" maxlength="100" placeholder="Digite o e-mail" />
+
+                    <span asp-validation-for="Usuario.Email" class="text-danger">
+                    </span>
+
                 </div>
+
+
+                @if (!Model.Usuario.Id.HasValue)
+                {
+                    <div class="campo">
+
+                        <label asp-for="Usuario.Senha">
+                            Senha
+                        </label>
+
+                        <input asp-for="Usuario.Senha" type="password" maxlength="100" placeholder="Digite a senha" />
+
+                        <span asp-validation-for="Usuario.Senha" class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.ConfirmacaoSenha">
+                            Confirmar senha
+                        </label>
+
+                        <input asp-for="Usuario.ConfirmacaoSenha" type="password" maxlength="100"
+                               placeholder="Digite a senha novamente" />
+
+                        <span asp-validation-for="Usuario.ConfirmacaoSenha" class="text-danger">
+                        </span>
+
+                    </div>
+                }
+
 
                 <div class="campo">
-                    <label asp-for="Usuario.Senha">Senha</label>
-                    <input asp-for="Usuario.Senha"
-                           type="password"
-                           placeholder="Digite a senha" />
+
+                    <label asp-for="Usuario.Telefone">
+                        Telefone
+                    </label>
+
+                    <input asp-for="Usuario.Telefone" id="telefone" maxlength="15" placeholder="(00) 00000-0000" />
+
+                    <span asp-validation-for="Usuario.Telefone" class="text-danger">
+                    </span>
+
                 </div>
+
 
                 <div class="campo">
-                    <label asp-for="Usuario.Telefone">Telefone</label>
-                    <input asp-for="Usuario.Telefone"
-                           placeholder="(00) 00000-0000" />
+
+                    <label asp-for="Usuario.CPF">
+                        CPF
+                    </label>
+
+                    <input asp-for="Usuario.CPF" id="cpf" maxlength="14" placeholder="000.000.000-00" />
+
+                    <span asp-validation-for="Usuario.CPF" class="text-danger">
+                    </span>
+
                 </div>
+
 
                 <div class="campo">
-                    <label asp-for="Usuario.CPF">CPF</label>
-                    <input asp-for="Usuario.CPF"
-                           placeholder="000.000.000-00" />
-                </div>
 
-                <div class="campo campo-tipo">
-                    <label asp-for="Usuario.Tipo">Tipo de usuário</label>
+                    <label asp-for="Usuario.Tipo">
+                        Tipo de usuário
+                    </label>
 
                     <select asp-for="Usuario.Tipo" id="tipoUsuario">
-                        <option value="">Selecione...</option>
-                        <option value="Aluno">Aluno</option>
-                        <option value="Professor">Professor</option>
-                        <option value="Supervisor">Supervisor</option>
-                        <option value="Coordenador">Coordenador</option>
+
+                        <option value="">
+                            Selecione...
+                        </option>
+
+                        <option value="Aluno">
+                            Aluno
+                        </option>
+
+                        <option value="Professor">
+                            Professor
+                        </option>
+
+                        <option value="Supervisor">
+                            Supervisor
+                        </option>
+
+                        <option value="Coordenador">
+                            Coordenador
+                        </option>
+
                     </select>
+
+                    <span asp-validation-for="Usuario.Tipo" class="text-danger">
+                    </span>
+
                 </div>
 
             </div>
 
-            <!-- DADOS DO ALUNO -->
-            <div id="camposAluno" class="campos-especificos" style="display: none;">
+
+            <!-- ALUNO -->
+
+            <div id="camposAluno" class="campos-especificos" style="display:none;">
 
                 <div class="titulo-secao">
+
                     <i class="bi bi-mortarboard"></i>
+
                     <h3>Dados do Aluno</h3>
+
                 </div>
+
 
                 <div class="form-grid">
 
                     <div class="campo">
-                        <label asp-for="Usuario.Matricula">Matrícula</label>
-                        <input asp-for="Usuario.Matricula" />
+
+                        <label asp-for="Usuario.Matricula">
+                            Matrícula
+                        </label>
+
+                        <input asp-for="Usuario.Matricula" maxlength="10" inputmode="numeric"
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+
+                        <span asp-validation-for="Usuario.Matricula" class="text-danger">
+                        </span>
+
                     </div>
 
-                    <div class="campo">
-                        <label asp-for="Usuario.Curso">Curso</label>
-                        <input asp-for="Usuario.Curso" />
-                    </div>
 
                     <div class="campo">
-                        <label asp-for="Usuario.Turno">Turno</label>
-                        <input asp-for="Usuario.Turno" />
+
+                        <label asp-for="Usuario.Curso">
+                            Curso
+                        </label>
+
+                        <select asp-for="Usuario.Curso">
+
+                            <option value="">
+                                Selecione...
+                            </option>
+
+                            <option value="Sistemas de Informação">
+                                Sistemas de Informação
+                            </option>
+
+                            <option value="Administração">
+                                Administração
+                            </option>
+
+                            <option value="Direito">
+                                Direito
+                            </option>
+
+                            <option value="Engenharia Civil">
+                                Engenharia Civil
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="Usuario.Curso" class="text-danger">
+                        </span>
+
                     </div>
 
-                    <div class="campo">
-                        <label asp-for="Usuario.Semestre">Semestre</label>
-                        <input asp-for="Usuario.Semestre" />
-                    </div>
 
                     <div class="campo">
-                        <label asp-for="Usuario.DataNasc">Data de nascimento</label>
-                        <input asp-for="Usuario.DataNasc" type="date" />
+
+                        <label asp-for="Usuario.Turno">
+                            Turno
+                        </label>
+
+                        <select asp-for="Usuario.Turno">
+
+                            <option value="">
+                                Selecione...
+                            </option>
+
+                            <option value="Matutino">
+                                Matutino
+                            </option>
+
+                            <option value="Vespertino">
+                                Vespertino
+                            </option>
+
+                            <option value="Noturno">
+                                Noturno
+                            </option>
+
+                            <option value="Integral">
+                                Integral
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="Usuario.Turno" class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.Semestre">
+                            Semestre
+                        </label>
+
+                        <select asp-for="Usuario.Semestre">
+
+                            <option value="">
+                                Selecione...
+                            </option>
+
+                            <option value="1º semestre">
+                                1º semestre
+                            </option>
+
+                            <option value="2º semestre">
+                                2º semestre
+                            </option>
+
+                            <option value="3º semestre">
+                                3º semestre
+                            </option>
+
+                            <option value="4º semestre">
+                                4º semestre
+                            </option>
+
+                            <option value="5º semestre">
+                                5º semestre
+                            </option>
+
+                            <option value="6º semestre">
+                                6º semestre
+                            </option>
+
+                            <option value="7º semestre">
+                                7º semestre
+                            </option>
+
+                            <option value="8º semestre">
+                                8º semestre
+                            </option>
+
+                            <option value="9º semestre">
+                                9º semestre
+                            </option>
+
+                            <option value="10º semestre">
+                                10º semestre
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="Usuario.Semestre" class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.DataNasc">
+                            Data de nascimento
+                        </label>
+
+                        <input asp-for="Usuario.DataNasc" type="date" min="1900-01-01"
+                               max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+
+                        <span asp-validation-for="Usuario.DataNasc" class="text-danger">
+                        </span>
+
                     </div>
 
                 </div>
+
             </div>
 
-            <!-- DADOS DO PROFESSOR -->
-            <div id="camposProfessor" class="campos-especificos" style="display: none;">
+
+            <!-- PROFESSOR -->
+
+            <div id="camposProfessor" class="campos-especificos" style="display:none;">
 
                 <div class="titulo-secao">
+
                     <i class="bi bi-person-badge"></i>
+
                     <h3>Dados do Professor</h3>
+
                 </div>
+
 
                 <div class="form-grid">
 
                     <div class="campo">
-                        <label asp-for="Usuario.Registro">Registro</label>
-                        <input asp-for="Usuario.Registro" />
-                    </div>
 
-                    <div class="campo">
-                        <label asp-for="Usuario.Curso">Registro</label>
-                        <input asp-for="Usuario.Curso" />
+                        <label asp-for="Usuario.Registro">
+                            Registro
+                        </label>
+
+                        <input asp-for="Usuario.Registro" maxlength="10" inputmode="numeric"
+                               oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+
+                        <span asp-validation-for="Usuario.Registro" class="text-danger">
+                        </span>
+
                     </div>
 
                 </div>
+
+
+                <div class="campo">
+
+                    <label>
+                        Cursos que leciona
+                    </label>
+
+                    <div>
+
+                        <label>
+                            <input type="checkbox" name="Usuario.CursosProfessor" value="Sistemas de Informação"
+                            @(Model.Usuario.CursosProfessor.Contains("Sistemas de Informação") ? "checked"
+       : "") />
+
+                            Sistemas de Informação
+                        </label>
+
+                        <br />
+
+                        <label>
+                            <input type="checkbox" name="Usuario.CursosProfessor" value="Administração"
+                            @(Model.Usuario.CursosProfessor.Contains("Administração") ? "checked"
+       : "") />
+
+                            Administração
+                        </label>
+
+                        <br />
+
+                        <label>
+                            <input type="checkbox" name="Usuario.CursosProfessor" value="Direito"
+                            @(Model.Usuario.CursosProfessor.Contains("Direito") ? "checked"
+       : "") />
+
+                            Direito
+                        </label>
+
+                        <br />
+
+                        <label>
+                            <input type="checkbox" name="Usuario.CursosProfessor" value="Engenharia Civil"
+                            @(Model.Usuario.CursosProfessor.Contains("Engenharia Civil") ? "checked"
+       : "") />
+
+                            Engenharia Civil
+                        </label>
+
+                    </div>
+
+                    <span asp-validation-for="Usuario.CursosProfessor" class="text-danger">
+                    </span>
+
+                </div>
+
             </div>
 
-            <!-- DADOS DO SUPERVISOR -->
-            <div id="camposSupervisor" class="campos-especificos" style="display: none;">
+
+            <!-- SUPERVISOR -->
+
+            <div id="camposSupervisor" class="campos-especificos" style="display:none;">
 
                 <div class="titulo-secao">
+
                     <i class="bi bi-briefcase"></i>
+
                     <h3>Dados do Supervisor</h3>
+
                 </div>
+
 
                 <div class="form-grid">
 
                     <div class="campo">
-                        <label asp-for="Usuario.Cargo">Cargo</label>
-                        <input asp-for="Usuario.Cargo" />
+
+                        <label asp-for="Usuario.Cargo">
+                            Cargo
+                        </label>
+
+                        <input asp-for="Usuario.Cargo" maxlength="60" />
+
+                        <span asp-validation-for="Usuario.Cargo" class="text-danger">
+                        </span>
+
                     </div>
 
+
                     <div class="campo">
-                        <label asp-for="Usuario.Empresa">Empresa</label>
-                        <input asp-for="Usuario.Empresa" />
+
+                        <label asp-for="Usuario.Empresa">
+                            Empresa
+                        </label>
+
+                        <input asp-for="Usuario.Empresa" maxlength="100" />
+
+                        <span asp-validation-for="Usuario.Empresa" class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.CNPJ">
+                            CNPJ
+                        </label>
+
+                        <input asp-for="Usuario.CNPJ" id="cnpj" maxlength="18" placeholder="00.000.000/0000-00" />
+
+                        <span asp-validation-for="Usuario.CNPJ" class="text-danger">
+                        </span>
+
                     </div>
 
                 </div>
+
             </div>
 
-            <!-- DADOS DO COORDENADOR -->
-            <div id="camposCoordenador" class="campos-especificos" style="display: none;">
+
+            <!-- COORDENADOR -->
+
+            <div id="camposCoordenador" class="campos-especificos" style="display:none;">
 
                 <div class="titulo-secao">
+
                     <i class="bi bi-person-gear"></i>
+
                     <h3>Dados do Coordenador</h3>
+
                 </div>
+
 
                 <div class="form-grid">
 
                     <div class="campo">
-                        <label asp-for="Usuario.Setor">Setor</label>
-                        <input asp-for="Usuario.Setor" />
+
+                        <label asp-for="Usuario.Setor">
+                            Setor
+                        </label>
+
+                        <input asp-for="Usuario.Setor" maxlength="100" />
+
+                        <span asp-validation-for="Usuario.Setor" class="text-danger">
+                        </span>
+
                     </div>
 
                 </div>
+
             </div>
+
 
             <div class="form-acoes">
 
                 <a asp-page="/Usuarios/Index" class="btn-cancelar">
+
                     Cancelar
+
                 </a>
 
                 <button type="submit" class="btn-salvar">
+
                     <i class="bi bi-check-lg"></i>
 
                     @(Model.Usuario.Id.HasValue
                         ? "Salvar Alterações"
                         : "Cadastrar")
+
                 </button>
 
             </div>
@@ -212,34 +575,185 @@
 
 </div>
 
-<script>
 
-    function atualizarCamposEspecificos() {
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 
-        const tipo = document.getElementById("tipoUsuario").value;
+    <script>
+        function atualizarCamposEspecificos() {
+            const tipo =
+                document.getElementById("tipoUsuario").value;
 
-        document.getElementById("camposAluno").style.display = "none";
-        document.getElementById("camposProfessor").style.display = "none";
-        document.getElementById("camposSupervisor").style.display = "none";
-        document.getElementById("camposCoordenador").style.display = "none";
+            document.getElementById("camposAluno")
+                .style.display = "none";
 
-        if (tipo === "Aluno") {
-            document.getElementById("camposAluno").style.display = "block";
+            document.getElementById("camposProfessor")
+                .style.display = "none";
+
+            document.getElementById("camposSupervisor")
+                .style.display = "none";
+
+            document.getElementById("camposCoordenador")
+                .style.display = "none";
+
+            if (tipo === "Aluno") {
+                document.getElementById("camposAluno")
+                    .style.display = "block";
+            }
+            else if (tipo === "Professor") {
+                document.getElementById("camposProfessor")
+                    .style.display = "block";
+            }
+            else if (tipo === "Supervisor") {
+                document.getElementById("camposSupervisor")
+                    .style.display = "block";
+            }
+            else if (tipo === "Coordenador") {
+                document.getElementById("camposCoordenador")
+                    .style.display = "block";
+            }
         }
-        else if (tipo === "Professor") {
-            document.getElementById("camposProfessor").style.display = "block";
-        }
-        else if (tipo === "Supervisor") {
-            document.getElementById("camposSupervisor").style.display = "block";
-        }
-        else if (tipo === "Coordenador") {
-            document.getElementById("camposCoordenador").style.display = "block";
-        }
-    }
 
-    document.getElementById("tipoUsuario")
-        .addEventListener("change", atualizarCamposEspecificos);
+        document.getElementById("tipoUsuario")
+            .addEventListener(
+                "change",
+                atualizarCamposEspecificos
+            );
 
-    atualizarCamposEspecificos();
+        atualizarCamposEspecificos();
 
-</script>
+        document
+            .getElementById("telefone")
+            .addEventListener("input", function () {
+
+                let valor =
+                    this.value.replace(/\D/g, "");
+
+                if (valor.length > 11)
+                    valor = valor.substring(0, 11);
+
+                if (valor.length <= 10) {
+
+                    valor = valor.replace(
+                        /^(\d{2})(\d)/,
+                        "($1) $2"
+                    );
+
+                    valor = valor.replace(
+                        /(\d{4})(\d)/,
+                        "$1-$2"
+                    );
+                }
+                else {
+
+                    valor = valor.replace(
+                        /^(\d{2})(\d)/,
+                        "($1) $2"
+                    );
+
+                    valor = valor.replace(
+                        /(\d{5})(\d)/,
+                        "$1-$2"
+                    );
+                }
+
+                this.value = valor;
+            });
+
+
+        document
+            .getElementById("cpf")
+            .addEventListener("input", function () {
+
+                let valor =
+                    this.value.replace(/\D/g, "");
+
+                if (valor.length > 11)
+                    valor = valor.substring(0, 11);
+
+                valor = valor.replace(
+                    /(\d{3})(\d)/,
+                    "$1.$2"
+                );
+
+                valor = valor.replace(
+                    /(\d{3})(\d)/,
+                    "$1.$2"
+                );
+
+                valor = valor.replace(
+                    /(\d{3})(\d)/,
+                    "$1-$2"
+                );
+
+                this.value = valor;
+            });
+
+
+        document
+            .getElementById("cnpj")
+            .addEventListener("input", function () {
+
+                let valor =
+                    this.value.replace(/\D/g, "");
+
+                if (valor.length > 14)
+                    valor = valor.substring(0, 14);
+
+                if (valor.length <= 14) {
+
+                    valor = valor.replace(
+                        /^(\d{2})(\d)/,
+                        "$1.$2"
+                    );
+
+                    valor = valor.replace(
+                        /^(\d{2})\.(\d{3})(\d)/,
+                        "$1.$2.$3"
+                    );
+
+                    valor = valor.replace(
+                        /^(\d{2})\.(\d{3})\.(\d{3})(\d)/,
+                        "$1.$2.$3/$4"
+                    );
+
+                    valor = valor.replace(
+                        /(\d{4})(\d)/,
+                        "$1-$2"
+                    );
+                }
+
+                this.value = valor;
+            });
+
+
+        document
+            .querySelector("form")
+            .addEventListener("submit", function () {
+
+                const telefone =
+                    document.getElementById("telefone");
+
+                const cpf =
+                    document.getElementById("cpf");
+
+                const cnpj =
+                    document.getElementById("cnpj");
+
+                if (telefone) {
+                    telefone.value =
+                        telefone.value.replace(/\D/g, "");
+                }
+
+                if (cpf) {
+                    cpf.value =
+                        cpf.value.replace(/\D/g, "");
+                }
+
+                if (cnpj) {
+                    cnpj.value =
+                        cnpj.value.replace(/\D/g, "");
+                }
+            });
+    </script>
+}
