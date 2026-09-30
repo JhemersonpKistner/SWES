@@ -11,6 +11,9 @@ namespace SWES.Pages.Usuarios
 
         public List<UsuarioViewModel> Usuarios { get; set; } = new();
 
+        [BindProperty(SupportsGet = true)]
+        public string? Pesquisa { get; set; }
+
         public IndexModel(UsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
@@ -19,6 +22,21 @@ namespace SWES.Pages.Usuarios
         public void OnGet()
         {
             Usuarios = _usuarioService.ListarUsuarios();
+
+            if (!string.IsNullOrWhiteSpace(Pesquisa))
+            {
+                Pesquisa = Pesquisa.Trim();
+
+                Usuarios = Usuarios
+                .Where(u =>
+                    u.Nome.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
+                    u.Email.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
+                    u.Tipo.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
+                    (u.Inscricao.HasValue && u.Inscricao.Value.ToString().Contains(Pesquisa)) ||
+                    (Pesquisa.Equals("ativo", StringComparison.OrdinalIgnoreCase) && u.Ativo) ||
+                    (Pesquisa.Equals("inativo", StringComparison.OrdinalIgnoreCase) && !u.Ativo))
+                .ToList();
+            }
         }
 
         public async Task<IActionResult> OnPostInativarAsync(
