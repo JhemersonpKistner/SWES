@@ -11,14 +11,63 @@ namespace SWES.Pages.Usuarios
 
         public List<UsuarioViewModel> Usuarios { get; set; } = new();
 
+        public int PaginaAtual { get; set; }
+
+        public int TotalPaginas { get; set; }
+
+        public int TamanhoPagina { get; set; } = 100;
+
+        [BindProperty(SupportsGet = true)]
+        public string? Pesquisa { get; set; }
+
         public IndexModel(UsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
         }
 
-        public void OnGet()
+        public void OnGet(int pagina = 1)
         {
             Usuarios = _usuarioService.ListarUsuarios();
+
+            if (!string.IsNullOrWhiteSpace(Pesquisa))
+            {
+                Pesquisa = Pesquisa.Trim();
+
+                Usuarios = Usuarios
+                    .Where(u =>
+                        u.Nome.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
+                        u.Email.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
+                        u.Tipo.Contains(Pesquisa,  StringComparison.OrdinalIgnoreCase) ||
+                        (u.Inscricao.HasValue && u.Inscricao.Value.ToString().Contains(Pesquisa)) ||
+                        (Pesquisa.Equals("ativo", StringComparison.OrdinalIgnoreCase) &&
+                         u.Ativo) ||
+                        (Pesquisa.Equals("inativo", StringComparison.OrdinalIgnoreCase) &&
+                         !u.Ativo))
+                    .ToList();
+            }
+
+            var totalUsuarios = Usuarios.Count;
+
+            TotalPaginas = (int)Math.Ceiling((double)totalUsuarios / TamanhoPagina);
+
+            if (TotalPaginas == 0)
+            {
+                PaginaAtual = 1;
+                return;
+            }
+
+            if (pagina < 1)
+                pagina = 1;
+
+            if (pagina > TotalPaginas)
+                pagina = TotalPaginas;
+
+            PaginaAtual = pagina;
+
+            Usuarios = Usuarios
+                .Skip((PaginaAtual - 1) * TamanhoPagina)
+                .Take(TamanhoPagina)
+                .ToList();
         }
 
         public async Task<IActionResult> OnPostInativarAsync(

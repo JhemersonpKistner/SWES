@@ -24,6 +24,26 @@
         </div>
     </div>
 
+    <form method="get" class="barra-pesquisa">
+        <div class="campo-pesquisa">
+            <i class="bi bi-search"></i>
+            <input type="text" name="Pesquisa" value="@Model.Pesquisa"
+                   placeholder="Pesquisar por nome, e-mail ou perfil..." />
+        </div>
+
+        <button type="submit" class="btn-pesquisar">
+            <i class="bi bi-search"></i>
+            Pesquisar
+        </button>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Pesquisa))
+        {
+            <a asp-page="/Usuarios/Index" class="btn-limpar">
+                Limpar
+            </a>
+        }
+    </form>
+
     @if (Model.Usuarios.Count == 0)
     {
         <div class="usuarios-vazio">
@@ -128,6 +148,48 @@
 
         </div>
 
+        <div class="informacao-paginacao">
+            @{
+                var inicio = ((Model.PaginaAtual - 1) * Model.TamanhoPagina) + 1;
+                var fim = Math.Min(
+                    Model.PaginaAtual * Model.TamanhoPagina,
+                    Model.Usuarios.Count + ((Model.PaginaAtual - 1) * Model.TamanhoPagina)
+                );
+            }
+
+            Exibindo @inicio–@fim usuários
+        </div>
+
+        @if (Model.TotalPaginas > 1)
+        {
+            <div class="paginacao">
+
+                @if (Model.PaginaAtual > 1)
+                {
+                    <a asp-page="/Usuarios/Index" asp-route-pagina="@(Model.PaginaAtual - 1)" asp-route-Pesquisa="@Model.Pesquisa"
+                       class="pagina-link">
+                        ← Anterior
+                    </a>
+                }
+
+                @for (int i = 1; i <= Model.TotalPaginas; i++)
+                {
+                    <a asp-page="/Usuarios/Index" asp-route-pagina="@i" asp-route-Pesquisa="@Model.Pesquisa"
+                       class="pagina-link @(i == Model.PaginaAtual ? "pagina-atual" : "")">
+                        @i
+                    </a>
+                }
+
+                @if (Model.PaginaAtual < Model.TotalPaginas)
+                {
+                    <a asp-page="/Usuarios/Index" asp-route-pagina="@(Model.PaginaAtual + 1)" asp-route-Pesquisa="@Model.Pesquisa"
+                       class="pagina-link">
+                        Próxima →
+                    </a>
+                }
+
+            </div>
+        }
 
         <!-- MODAL DE INATIVAÇÃO -->
 
