@@ -42,6 +42,15 @@
                 Limpar
             </a>
         }
+
+        <a asp-page="/Usuarios/Index"
+           asp-page-handler="ExportarExcel"
+           asp-route-Pesquisa="@Model.Pesquisa"
+           class="btn-pesquisar">
+            <i class="bi bi-file-earmark-excel"></i>
+            Exportar Excel
+        </a>
+
     </form>
 
     @if (Model.Usuarios.Count == 0)

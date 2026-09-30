@@ -8,6 +8,7 @@ namespace SWES.Pages.Usuarios
     public class IndexModel : PageModel
     {
         private readonly UsuarioService _usuarioService;
+        private readonly ExportacaoService _exportacaoService;
 
         public List<UsuarioViewModel> Usuarios { get; set; } = new();
 
@@ -20,9 +21,10 @@ namespace SWES.Pages.Usuarios
         [BindProperty(SupportsGet = true)]
         public string? Pesquisa { get; set; }
 
-        public IndexModel(UsuarioService usuarioService)
+        public IndexModel(UsuarioService usuarioService, ExportacaoService exportacaoService)
         {
             _usuarioService = usuarioService;
+            _exportacaoService = exportacaoService;
         }
 
         public void OnGet(int pagina = 1)
@@ -68,6 +70,37 @@ namespace SWES.Pages.Usuarios
                 .Skip((PaginaAtual - 1) * TamanhoPagina)
                 .Take(TamanhoPagina)
                 .ToList();
+        }
+
+        public IActionResult OnGetExportarExcel()
+        {
+            var usuarios = _usuarioService.ListarUsuarios();
+
+            if (!string.IsNullOrWhiteSpace(Pesquisa))
+            {
+                Pesquisa = Pesquisa.Trim();
+
+                usuarios = usuarios
+                    .Where(u =>
+                        u.Nome.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
+                        u.Email.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
+                        u.Tipo.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
+                        (u.Inscricao.HasValue && u.Inscricao.Value.ToString().Contains(Pesquisa)) ||
+                        (Pesquisa.Equals("ativo", StringComparison.OrdinalIgnoreCase) &&
+                         u.Ativo) ||
+                        (Pesquisa.Equals("inativo", StringComparison.OrdinalIgnoreCase) &&
+                         !u.Ativo))
+                    .ToList();
+            }
+
+            var arquivo = _exportacaoService.ExportarUsuariosParaExcel(usuarios);
+
+            var nomeArquivo = $"usuarios_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+
+            return File(
+                arquivo,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                nomeArquivo);
         }
 
         public async Task<IActionResult> OnPostInativarAsync(

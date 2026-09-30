@@ -21,6 +21,7 @@ namespace SWES
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddRazorPages();
             builder.Services.AddScoped<UsuarioService>();
+            builder.Services.AddScoped<ExportacaoService>();
 
             var app = builder.Build();
 
