@@ -1,4 +1,24 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+// Comportamento global do menu lateral.
+function abrirMenu() {
+    const sidebar = document.getElementById("menuLateral");
+    const overlay = document.getElementById("sidebarOverlay");
 
-// Write your JavaScript code.
+    if (!sidebar) return;
+
+    sidebar.classList.add("menu-aberto");
+    overlay?.classList.add("menu-overlay-aberto");
+    document.body.classList.add("menu-mobile-aberto");
+}
+
+function fecharMenu() {
+    const sidebar = document.getElementById("menuLateral");
+    const overlay = document.getElementById("sidebarOverlay");
+
+    sidebar?.classList.remove("menu-aberto");
+    overlay?.classList.remove("menu-overlay-aberto");
+    document.body.classList.remove("menu-mobile-aberto");
+}
+
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") fecharMenu();
+});

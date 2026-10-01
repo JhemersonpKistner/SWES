@@ -9,6 +9,7 @@ namespace SWES.Pages.Usuarios
     {
         private readonly UsuarioService _usuarioService;
         private readonly ExportacaoService _exportacaoService;
+        private readonly IWebHostEnvironment _environment;
 
         public List<UsuarioViewModel> Usuarios { get; set; } = new();
 
@@ -18,13 +19,19 @@ namespace SWES.Pages.Usuarios
 
         public int TamanhoPagina { get; set; } = 100;
 
+        public bool EmDesenvolvimento => _environment.IsDevelopment();
+
         [BindProperty(SupportsGet = true)]
         public string? Pesquisa { get; set; }
 
-        public IndexModel(UsuarioService usuarioService, ExportacaoService exportacaoService)
+        public IndexModel(
+            UsuarioService usuarioService,
+            ExportacaoService exportacaoService,
+            IWebHostEnvironment environment)
         {
             _usuarioService = usuarioService;
             _exportacaoService = exportacaoService;
+            _environment = environment;
         }
 
         public void OnGet(int pagina = 1)
@@ -47,6 +54,12 @@ namespace SWES.Pages.Usuarios
                          !u.Ativo))
                     .ToList();
             }
+
+            Usuarios = Usuarios
+                .OrderBy(u => u.Nome)
+                .ThenBy(u => u.Tipo)
+                .ThenBy(u => u.Id)
+                .ToList();
 
             var totalUsuarios = Usuarios.Count;
 

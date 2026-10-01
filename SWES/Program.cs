@@ -22,6 +22,7 @@ namespace SWES
             builder.Services.AddRazorPages();
             builder.Services.AddScoped<UsuarioService>();
             builder.Services.AddScoped<ExportacaoService>();
+            builder.Services.AddScoped<DadosTesteService>();
 
             var app = builder.Build();
 

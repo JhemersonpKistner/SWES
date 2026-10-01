@@ -21,6 +21,14 @@
                 <i class="bi bi-person-plus"></i>
                 Cadastrar Usuário
             </a>
+
+            @if (Model.EmDesenvolvimento)
+            {
+                <a asp-page="/Desenvolvimento/DadosTeste" class="btn-dados-teste">
+                    <i class="bi bi-database-add"></i>
+                    Dados de teste
+                </a>
+            }
         </div>
     </div>
 
@@ -133,13 +141,13 @@
                                     }
                                     @if (!usuario.Ativo)
                                     {
-                                        <button type="button" class="btn-inativar" onclick="abrirModalReativacao(
+                                        <button type="button" class="btn-reativar" onclick="abrirModalReativacao(
                                             @usuario.Id,
                                             '@usuario.Tipo',
                                             '@usuario.Nome'
                                             )">
 
-                                            <i class="bi bi-person-x"></i>
+                                            <i class="bi bi-person-check"></i>
                                             Reativar
 
                                         </button>
@@ -157,7 +165,7 @@
 
         </div>
 
-        <div class="informacao-paginacao">
+        <div class="informacao-paginacao" aria-live="polite">
             @{
                 var inicio = ((Model.PaginaAtual - 1) * Model.TamanhoPagina) + 1;
                 var fim = Math.Min(
@@ -166,7 +174,7 @@
                 );
             }
 
-            Exibindo @inicio–@fim usuários
+            Exibindo @inicio–@fim de @((Model.TotalPaginas == 0 ? 0 : (Model.TotalPaginas - 1) * Model.TamanhoPagina + Model.Usuarios.Count)) usuários
         </div>
 
         @if (Model.TotalPaginas > 1)

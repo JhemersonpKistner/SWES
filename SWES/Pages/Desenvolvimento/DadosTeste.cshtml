@@ -1,0 +1,78 @@
+@page
+@model SWES.Pages.Desenvolvimento.DadosTesteModel
+@{
+    ViewData["Title"] = "Dados de teste";
+}
+
+<div class="usuarios-container">
+    <div class="usuarios-header">
+        <div>
+            <h1>Dados fictícios para teste</h1>
+            <p class="usuarios-subtitulo">
+                Gere usuários automaticamente para testar paginação, pesquisa, filtros e responsividade.
+            </p>
+        </div>
+
+        <div class="usuarios-botoes">
+            <a asp-page="/Usuarios/Index" class="btn-voltar-dashboard">
+                <i class="bi bi-arrow-left"></i>
+                Voltar para usuários
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Mensagem))
+    {
+        <div class="mensagem-sucesso-dados-teste">
+            <i class="bi bi-check-circle"></i>
+            @Model.Mensagem
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Erro))
+    {
+        <div class="mensagem-erro-dados-teste">
+            <i class="bi bi-exclamation-circle"></i>
+            @Model.Erro
+        </div>
+    }
+
+    <div class="cadastro-card dados-teste-card">
+        <div class="dados-teste-resumo">
+            <div>
+                <span class="dados-teste-label">Registros fictícios existentes</span>
+                <strong>@Model.QuantidadeAtual</strong>
+            </div>
+            <div>
+                <span class="dados-teste-label">Paginação configurada</span>
+                <strong>100 por página</strong>
+            </div>
+        </div>
+
+        <form method="post" class="form-grid dados-teste-form">
+            <div class="campo">
+                <label asp-for="Quantidade">Quantidade total desejada</label>
+                <input asp-for="Quantidade" type="number" min="1" max="5000" />
+                <span asp-validation-for="Quantidade" class="text-danger"></span>
+                <small>
+                    Ex.: informe 250 para deixar o banco com 250 usuários fictícios.
+                    Se já existirem 250, nenhum duplicado será criado.
+                </small>
+            </div>
+
+            <div class="campo dados-teste-info">
+                <strong>Senha dos usuários</strong>
+                <span>Teste@12345</span>
+                <small>Todos os e-mails usam o domínio @@swes.local.</small>
+            </div>
+
+            <div class="form-acoes dados-teste-acoes">
+                <a asp-page="/Usuarios/Index" class="btn-cancelar">Cancelar</a>
+                <button type="submit" class="btn-salvar">
+                    <i class="bi bi-database-add"></i>
+                    Gerar dados fictícios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

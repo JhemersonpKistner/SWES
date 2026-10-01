@@ -38,6 +38,7 @@ namespace SWES.ViewModels
         
 
         [RegularExpression(@"^\d{1,10}$", ErrorMessage = "A matrícula deve conter somente números e ter no máximo 10 dígitos.")]
+        [Range(1, int.MaxValue, ErrorMessage = "A matrícula deve estar entre 1 e 2.147.483.647.")]
         public int? Matricula { get; set; }
 
         [StringLength(100, ErrorMessage = "O curso deve possuir no máximo 100 caracteres.")]

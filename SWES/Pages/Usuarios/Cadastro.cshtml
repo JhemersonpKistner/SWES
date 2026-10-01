@@ -1,5 +1,8 @@
 @page
 @model SWES.Pages.Usuarios.CadastroModel
+@{
+    var dataMaxima = DateTime.Today.ToString("yyyy-MM-dd");
+}
 
 <div class="cadastro-container">
 
@@ -47,7 +50,7 @@
             </div>
         }
 
-        <div asp-validation-summary="All" class="validacao">
+        <div asp-validation-summary="ModelOnly" class="validacao">
         </div>
 
 
@@ -96,7 +99,7 @@
                             Senha
                         </label>
 
-                        <input asp-for="Usuario.Senha" type="password" maxlength="100" placeholder="Digite a senha" />
+                        <input type="password" id="Usuario_Senha" name="Usuario.Senha" value="@Model.Usuario.Senha" maxlength="100" autocomplete="new-password" placeholder="Digite a senha" />
 
                         <span asp-validation-for="Usuario.Senha" class="text-danger">
                         </span>
@@ -110,7 +113,7 @@
                             Confirmar senha
                         </label>
 
-                        <input asp-for="Usuario.ConfirmacaoSenha" type="password" maxlength="100"
+                        <input type="password" id="Usuario_ConfirmacaoSenha" name="Usuario.ConfirmacaoSenha" value="@Model.Usuario.ConfirmacaoSenha" maxlength="100" autocomplete="new-password"
                                placeholder="Digite a senha novamente" />
 
                         <span asp-validation-for="Usuario.ConfirmacaoSenha" class="text-danger">
@@ -360,10 +363,13 @@
                      <input asp-for="Usuario.DataNasc"
        type="date"
        class="form-control"
-       id="Usuario_DataNasc" />
+       id="Usuario_DataNasc"
+       min="1900-01-01"
+       max="@dataMaxima"
+       inputmode="numeric" />
 
+<span asp-validation-for="Usuario.DataNasc" class="text-danger"></span>
 <span id="mensagemDataNascimento" class="text-danger"></span>
-                        </span>
 
                     </div>
 
@@ -586,208 +592,105 @@
 
     <script>
         function atualizarCamposEspecificos() {
-            const tipo =
-                document.getElementById("tipoUsuario").value;
+            const tipo = document.getElementById("tipoUsuario").value;
 
-            document.getElementById("camposAluno")
-                .style.display = "none";
-
-            document.getElementById("camposProfessor")
-                .style.display = "none";
-
-            document.getElementById("camposSupervisor")
-                .style.display = "none";
-
-            document.getElementById("camposCoordenador")
-                .style.display = "none";
-
-            if (tipo === "Aluno") {
-                document.getElementById("camposAluno")
-                    .style.display = "block";
-            }
-            else if (tipo === "Professor") {
-                document.getElementById("camposProfessor")
-                    .style.display = "block";
-            }
-            else if (tipo === "Supervisor") {
-                document.getElementById("camposSupervisor")
-                    .style.display = "block";
-            }
-            else if (tipo === "Coordenador") {
-                document.getElementById("camposCoordenador")
-                    .style.display = "block";
-            }
+            document.getElementById("camposAluno").style.display = tipo === "Aluno" ? "block" : "none";
+            document.getElementById("camposProfessor").style.display = tipo === "Professor" ? "block" : "none";
+            document.getElementById("camposSupervisor").style.display = tipo === "Supervisor" ? "block" : "none";
+            document.getElementById("camposCoordenador").style.display = tipo === "Coordenador" ? "block" : "none";
         }
 
-        document.getElementById("tipoUsuario")
-            .addEventListener(
-                "change",
-                atualizarCamposEspecificos
-            );
+        function formatarTelefone(valor) {
+            let numeros = (valor || "").replace(/\D/g, "").slice(0, 11);
+            if (numeros.length <= 10) {
+                numeros = numeros.replace(/^(\d{2})(\d)/, "($1) $2");
+                numeros = numeros.replace(/(\d{4})(\d)/, "$1-$2");
+            } else {
+                numeros = numeros.replace(/^(\d{2})(\d)/, "($1) $2");
+                numeros = numeros.replace(/(\d{5})(\d)/, "$1-$2");
+            }
+            return numeros;
+        }
 
+        function formatarCpf(valor) {
+            let numeros = (valor || "").replace(/\D/g, "").slice(0, 11);
+            numeros = numeros.replace(/(\d{3})(\d)/, "$1.$2");
+            numeros = numeros.replace(/(\d{3})(\d)/, "$1.$2");
+            numeros = numeros.replace(/(\d{3})(\d)/, "$1-$2");
+            return numeros;
+        }
+
+        function formatarCnpj(valor) {
+            let numeros = (valor || "").replace(/\D/g, "").slice(0, 14);
+            numeros = numeros.replace(/^(\d{2})(\d)/, "$1.$2");
+            numeros = numeros.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
+            numeros = numeros.replace(/^(\d{2})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3/$4");
+            numeros = numeros.replace(/(\d{4})(\d)/, "$1-$2");
+            return numeros;
+        }
+
+        const tipoUsuario = document.getElementById("tipoUsuario");
+        tipoUsuario.addEventListener("change", atualizarCamposEspecificos);
         atualizarCamposEspecificos();
 
-        document
-            .getElementById("telefone")
-            .addEventListener("input", function () {
+        const telefone = document.getElementById("telefone");
+        const cpf = document.getElementById("cpf");
+        const cnpj = document.getElementById("cnpj");
 
-                let valor =
-                    this.value.replace(/\D/g, "");
-
-                if (valor.length > 11)
-                    valor = valor.substring(0, 11);
-
-                if (valor.length <= 10) {
-
-                    valor = valor.replace(
-                        /^(\d{2})(\d)/,
-                        "($1) $2"
-                    );
-
-                    valor = valor.replace(
-                        /(\d{4})(\d)/,
-                        "$1-$2"
-                    );
-                }
-                else {
-
-                    valor = valor.replace(
-                        /^(\d{2})(\d)/,
-                        "($1) $2"
-                    );
-
-                    valor = valor.replace(
-                        /(\d{5})(\d)/,
-                        "$1-$2"
-                    );
-                }
-
-                this.value = valor;
-            });
-
-
-        document
-            .getElementById("cpf")
-            .addEventListener("input", function () {
-
-                let valor =
-                    this.value.replace(/\D/g, "");
-
-                if (valor.length > 11)
-                    valor = valor.substring(0, 11);
-
-                valor = valor.replace(
-                    /(\d{3})(\d)/,
-                    "$1.$2"
-                );
-
-                valor = valor.replace(
-                    /(\d{3})(\d)/,
-                    "$1.$2"
-                );
-
-                valor = valor.replace(
-                    /(\d{3})(\d)/,
-                    "$1-$2"
-                );
-
-                this.value = valor;
-            });
-
-
-        document
-            .getElementById("cnpj")
-            .addEventListener("input", function () {
-
-                let valor =
-                    this.value.replace(/\D/g, "");
-
-                if (valor.length > 14)
-                    valor = valor.substring(0, 14);
-
-                if (valor.length <= 14) {
-
-                    valor = valor.replace(
-                        /^(\d{2})(\d)/,
-                        "$1.$2"
-                    );
-
-                    valor = valor.replace(
-                        /^(\d{2})\.(\d{3})(\d)/,
-                        "$1.$2.$3"
-                    );
-
-                    valor = valor.replace(
-                        /^(\d{2})\.(\d{3})\.(\d{3})(\d)/,
-                        "$1.$2.$3/$4"
-                    );
-
-                    valor = valor.replace(
-                        /(\d{4})(\d)/,
-                        "$1-$2"
-                    );
-                }
-
-                this.value = valor;
-            });
-
-
-        document
-            .querySelector("form")
-            .addEventListener("submit", function () {
-
-                const telefone =
-                    document.getElementById("telefone");
-
-                const cpf =
-                    document.getElementById("cpf");
-
-                const cnpj =
-                    document.getElementById("cnpj");
-
-                if (telefone) {
-                    telefone.value =
-                        telefone.value.replace(/\D/g, "");
-                }
-
-                if (cpf) {
-                    cpf.value =
-                        cpf.value.replace(/\D/g, "");
-                }
-
-                if (cnpj) {
-                    cnpj.value =
-                        cnpj.value.replace(/\D/g, "");
-                }
-            });
-
-
-const dataNascimento = document.getElementById("Usuario_DataNasc");
-const mensagemData = document.getElementById("mensagemDataNascimento");
-
-if (dataNascimento) {
-    dataNascimento.addEventListener("input", function () {
-        const valor = this.value;
-
-        mensagemData.textContent = "";
-
-        if (!valor) {
-            return;
+        if (telefone) {
+            telefone.value = formatarTelefone(telefone.value);
+            telefone.addEventListener("input", () => telefone.value = formatarTelefone(telefone.value));
         }
 
-        const data = new Date(valor + "T00:00:00");
-        const minimo = new Date("1900-01-01T00:00:00");
-        const hoje = new Date();
-
-        if (data < minimo) {
-            mensagemData.textContent =
-                "A data de nascimento deve ser a partir de 01/01/1900.";
-        } else if (data > hoje) {
-            mensagemData.textContent =
-                "A data de nascimento não pode ser futura.";
+        if (cpf) {
+            cpf.value = formatarCpf(cpf.value);
+            cpf.addEventListener("input", () => cpf.value = formatarCpf(cpf.value));
         }
-    });
-}
+
+        if (cnpj) {
+            cnpj.value = formatarCnpj(cnpj.value);
+            cnpj.addEventListener("input", () => cnpj.value = formatarCnpj(cnpj.value));
+        }
+
+        const dataNascimento = document.getElementById("Usuario_DataNasc");
+        const mensagemData = document.getElementById("mensagemDataNascimento");
+
+        function validarDataNascimentoNoCliente() {
+            if (!dataNascimento) return;
+
+            const valor = dataNascimento.value;
+            if (!valor) {
+                if (mensagemData) mensagemData.textContent = "";
+                return;
+            }
+
+            // O input date permite anos ISO com mais de quatro dígitos em alguns navegadores.
+            // Se isso acontecer, restringimos o ano para quatro dígitos antes do envio.
+            const partes = valor.split("-");
+            if (partes[0] && partes[0].length > 4) {
+                dataNascimento.value = `${partes[0].slice(0, 4)}-${partes[1] || "01"}-${partes[2] || "01"}`;
+            }
+
+            const data = new Date(dataNascimento.value + "T00:00:00");
+            const minimo = new Date("1900-01-01T00:00:00");
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+
+            if (data < minimo) {
+                mensagemData.textContent = "A data de nascimento deve ser a partir de 01/01/1900.";
+            } else if (data > hoje) {
+                mensagemData.textContent = "A data de nascimento não pode ser futura.";
+            } else {
+                mensagemData.textContent = "";
+            }
+        }
+
+        if (dataNascimento) {
+            dataNascimento.addEventListener("input", validarDataNascimentoNoCliente);
+            dataNascimento.addEventListener("change", validarDataNascimentoNoCliente);
+            dataNascimento.addEventListener("blur", validarDataNascimentoNoCliente);
+            validarDataNascimentoNoCliente();
+        }
     </script>
 
 } 

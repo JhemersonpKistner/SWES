@@ -41,69 +41,77 @@ body {
 
 
 /* =========================================================
-   DASHBOARD
+   LAYOUT GLOBAL / MENU
 ========================================================= */
 
-.dashboard {
+.app-shell {
     display: flex;
     min-height: 100vh;
+    width: 100%;
 }
 
-
-/* =========================================================
-   MENU LATERAL
-========================================================= */
-
 .sidebar {
-    width: 220px;
+    width: 240px;
+    min-width: 240px;
     min-height: 100vh;
     background-color: #dcecf7;
-    padding: 25px 15px;
+    padding: 22px 14px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    z-index: 1000;
 }
 
 .sidebar-header {
     text-align: center;
-    margin-bottom: 35px;
+    margin-bottom: 28px;
 }
 
 .sidebar-header h2 {
-    font-size: 18px;
+    font-size: 17px;
     color: #1f3b4d;
     margin: 0;
 }
 
 .logo-faculdade {
     width: 150px;
+    max-width: 100%;
     height: auto;
     display: block;
-    margin: 0 auto 20px;
+    margin: 0 auto 18px;
 }
 
 .menu {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 5px;
 }
 
 .menu-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 12px 15px;
+    padding: 11px 13px;
     text-decoration: none;
     color: #334e5c;
     border-radius: 8px;
-    font-size: 15px;
+    font-size: 14px;
+    transition: background-color .15s ease, color .15s ease;
 }
 
-.menu-item:hover {
+.menu-item:hover,
+.menu-item-ativo {
     background-color: #c5ddea;
+    color: #0050A0;
 }
 
 .menu-item span {
     width: 20px;
     text-align: center;
+    flex: 0 0 20px;
 }
 
 .menu-item i {
@@ -114,14 +122,35 @@ body {
     margin-top: auto;
 }
 
+.sidebar-overlay {
+    display: none;
+}
+
+.app-content {
+    flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.btn-menu-mobile,
+.btn-fechar-menu {
+    display: none;
+}
 
 /* =========================================================
    CONTEÚDO PRINCIPAL
 ========================================================= */
 
-.main-content {
-    flex: 1;
+.dashboard-page {
+    width: 100%;
+    min-width: 0;
     padding: 35px 40px;
+    box-sizing: border-box;
+}
+
+.main-content {
+    width: 100%;
+    min-width: 0;
     box-sizing: border-box;
 }
 
@@ -158,25 +187,6 @@ body {
     font-size: 14px;
     font-weight: bold;
 }
-
-
-/* =========================================================
-   BOTÃO HAMBÚRGUER
-========================================================= */
-
-.btn-menu-mobile {
-    display: none;
-}
-
-
-/* =========================================================
-   BOTÃO FECHAR MENU
-========================================================= */
-
-.btn-fechar-menu {
-    display: none;
-}
-
 
 /* =========================================================
    CARDS
@@ -224,6 +234,7 @@ body {
 
 .chart-box,
 .activities {
+    min-width: 0;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
@@ -240,8 +251,15 @@ body {
 
 .chart-container {
     position: relative;
-    height: 220px;
     width: 100%;
+    height: clamp(210px, 28vw, 300px);
+    min-width: 0;
+}
+
+.chart-container canvas {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100%;
 }
 
 .activity {
@@ -366,6 +384,254 @@ body {
 
 
 /* =========================================================
+   PESQUISA
+========================================================= */
+
+.barra-pesquisa {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+    padding: 14px;
+    background: #ffffff;
+    border: 1px solid #e2e8ee;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.campo-pesquisa {
+    position: relative;
+    flex: 1 1 320px;
+    min-width: 220px;
+}
+
+.campo-pesquisa i {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7b8b96;
+    pointer-events: none;
+}
+
+.campo-pesquisa input {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px 0 39px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.campo-pesquisa input:focus {
+    border-color: #009BE3;
+    box-shadow: 0 0 0 3px rgba(0, 155, 227, 0.12);
+}
+
+.btn-pesquisar,
+.btn-limpar {
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 15px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.btn-pesquisar {
+    background: #0050A0;
+    color: #fff;
+}
+
+.btn-pesquisar:hover {
+    background: #003f80;
+    color: #fff;
+}
+
+.btn-limpar {
+    background: #f1f4f6;
+    color: #52636d;
+    border-color: #d7dfe5;
+}
+
+.btn-limpar:hover {
+    background: #e6ebef;
+    color: #334e5c;
+}
+
+
+.btn-dados-teste {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: #6f42c1;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.btn-dados-teste:hover {
+    background: #5a32a3;
+    color: #fff;
+}
+
+.mensagem-sucesso-dados-teste,
+.mensagem-erro-dados-teste {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding: 13px 16px;
+    border-radius: 9px;
+    font-weight: 600;
+}
+
+.mensagem-sucesso-dados-teste {
+    background: #e7f7ed;
+    color: #146c43;
+    border: 1px solid #b7e4c7;
+}
+
+.mensagem-erro-dados-teste {
+    background: #fdecec;
+    color: #b02a37;
+    border: 1px solid #f1b0b7;
+}
+
+.dados-teste-card {
+    max-width: 900px;
+}
+
+.dados-teste-resumo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.dados-teste-resumo > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 18px;
+    border: 1px solid #e0e6eb;
+    border-radius: 10px;
+    background: #f8fafc;
+}
+
+.dados-teste-label {
+    color: #6c757d;
+    font-size: 13px;
+}
+
+.dados-teste-resumo strong {
+    color: #0050A0;
+    font-size: 24px;
+}
+
+.dados-teste-form {
+    align-items: end;
+}
+
+.dados-teste-form small {
+    display: block;
+    margin-top: 7px;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.dados-teste-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-height: 88px;
+    padding: 13px 15px;
+    border: 1px solid #e0e6eb;
+    border-radius: 8px;
+    background: #f8fafc;
+    box-sizing: border-box;
+}
+
+.dados-teste-info > span {
+    font-weight: 700;
+}
+
+.dados-teste-acoes {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* =========================================================
+   PAGINAÇÃO
+========================================================= */
+
+.informacao-paginacao {
+    margin: 12px 2px 8px;
+    color: #6c757d;
+    font-size: 13px;
+}
+
+.paginacao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.pagina-link {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 11px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    border: 1px solid #d6dee5;
+    border-radius: 8px;
+    background: #fff;
+    color: #0050A0;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: .15s ease;
+}
+
+.pagina-link:hover {
+    background: #e9f2f9;
+    border-color: #a9c9df;
+}
+
+.pagina-atual {
+    background: #0050A0;
+    color: #fff;
+    border-color: #0050A0;
+}
+
+.pagina-atual:hover {
+    background: #0050A0;
+    color: #fff;
+}
+
+/* =========================================================
    STATUS
 ========================================================= */
 
@@ -397,7 +663,8 @@ body {
 }
 
 .btn-editar,
-.btn-inativar {
+.btn-inativar,
+.btn-reativar {
     border: none;
     border-radius: 6px;
     padding: 7px 11px;
@@ -423,6 +690,16 @@ body {
 
 .btn-inativar:hover {
     background-color: #bb2d3b;
+}
+
+.btn-reativar {
+    background-color: #f59f00;
+    color: #fff;
+}
+
+.btn-reativar:hover {
+    background-color: #d98c00;
+    color: #fff;
 }
 
 
@@ -712,35 +989,123 @@ body {
    RESPONSIVIDADE
 ========================================================= */
 
+@media (max-width: 992px) {
+    .sidebar {
+        width: 220px;
+        min-width: 220px;
+    }
+
+    .dashboard-page {
+        padding: 28px 24px;
+    }
+
+    .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .charts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 @media (max-width: 768px) {
-
-    /* -------------------------
-       DASHBOARD
-    ------------------------- */
-
-    .dashboard {
-        flex-direction: column;
+    body {
+        overflow-x: hidden;
     }
 
-    .main-content {
+    .app-shell {
+        display: block;
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        display: flex;
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: min(82vw, 280px);
+        min-width: 0;
+        height: 100vh;
+        min-height: 100vh;
+        padding: 15px 10px;
+        transform: translateX(-105%);
+        transition: transform .2s ease;
+        overflow-y: auto;
+        box-shadow: 8px 0 25px rgba(0, 0, 0, .12);
+        z-index: 1100;
+    }
+
+    .sidebar.menu-aberto {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, .35);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity .2s ease, visibility .2s ease;
+        z-index: 1050;
+    }
+
+    .sidebar-overlay.menu-overlay-aberto {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .btn-menu-mobile {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: sticky;
+        top: 12px;
+        margin: 12px 15px 0;
+        width: 42px;
+        height: 42px;
+        background: #0050A0;
+        color: #fff;
+        border: 0;
+        border-radius: 8px;
+        font-size: 23px;
+        cursor: pointer;
+        z-index: 100;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, .12);
+    }
+
+    .btn-fechar-menu {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        align-self: flex-end;
+        width: 36px;
+        height: 36px;
+        margin-bottom: 5px;
+        background: transparent;
+        border: none;
+        color: #0050A0;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .app-content {
         width: 100%;
-        padding: 15px;
+        min-height: 100vh;
     }
 
-
-    /* -------------------------
-       CABEÇALHO
-    ------------------------- */
+    .dashboard-page {
+        padding: 20px 15px 30px;
+    }
 
     .dashboard-header {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        margin-bottom: 22px;
     }
 
     .dashboard-header h1 {
         font-size: 25px;
-        margin-top: 0;
     }
 
     .dashboard-header p {
@@ -754,135 +1119,15 @@ body {
         padding: 6px 12px;
     }
 
-
-    /* -------------------------
-       BOTÃO HAMBÚRGUER
-    ------------------------- */
-
-    .btn-menu-mobile {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        width: 42px;
-        height: 42px;
-        margin-bottom: 12px;
-        background-color: #0050A0;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 23px;
-        cursor: pointer;
-        position: relative;
-        z-index: 1000;
-    }
-
-
-    /* -------------------------
-       MENU LATERAL
-    ------------------------- */
-
-    .sidebar {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 200px;
-        height: 100vh;
-        min-height: 100vh;
-        z-index: 9999;
-        overflow-y: auto;
-        padding: 15px 10px;
-    }
-
-    .sidebar.menu-aberto {
-        display: block;
-    }
-
-    .sidebar-header {
-        padding: 10px;
-        margin-bottom: 20px;
-    }
-
-    .logo-faculdade {
-        width: 120px;
-        max-height: 50px;
-        object-fit: contain;
-        margin-bottom: 12px;
-    }
-
-    .sidebar-header h2 {
-        font-size: 14px;
-    }
-
-
-    /* -------------------------
-       ITENS DO MENU
-    ------------------------- */
-
-    .menu {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .menu-item {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 9px 10px;
-        font-size: 13px;
-    }
-
-    .menu-item i {
-        font-size: 16px;
-    }
-
-    .menu-bottom {
-        margin-top: 5px;
-    }
-
-
-    /* -------------------------
-       BOTÃO FECHAR
-    ------------------------- */
-
-    .btn-fechar-menu {
-        display: block;
-        margin-left: auto;
-        margin-bottom: 5px;
-        background: transparent;
-        border: none;
-        color: #0050A0;
-        font-size: 22px;
-        cursor: pointer;
-        padding: 3px 7px;
-    }
-
-
-    /* -------------------------
-       CARDS
-    ------------------------- */
-
     .cards {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
     }
 
     .card {
         padding: 15px;
+        min-width: 0;
     }
-
-    .card h3 {
-        font-size: 13px;
-    }
-
-    .card strong {
-        font-size: 24px;
-    }
-
-
-    /* -------------------------
-       GRÁFICOS
-    ------------------------- */
 
     .charts {
         grid-template-columns: 1fr;
@@ -893,24 +1138,27 @@ body {
     .activities {
         width: 100%;
         box-sizing: border-box;
+        overflow: hidden;
     }
 
-
-    /* -------------------------
-       USUÁRIOS
-    ------------------------- */
-
-    .usuarios-container {
-        padding: 20px 15px;
+    .chart-container {
+        height: 240px;
     }
 
-    .usuarios-header {
+    .usuarios-container,
+    .cadastro-container {
+        padding: 20px 15px 30px;
+    }
+
+    .usuarios-header,
+    .cadastro-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
     }
 
-    .usuarios-header h1 {
+    .usuarios-header h1,
+    .cadastro-header h1 {
         font-size: 23px;
     }
 
@@ -918,14 +1166,29 @@ body {
         width: 100%;
         flex-direction: column;
         align-items: stretch;
-        gap: 10px;
     }
 
     .btn-voltar-dashboard,
-    .btn-cadastrar {
+    .btn-cadastrar,
+    .btn-dados-teste,
+    .btn-voltar {
         width: 100%;
         justify-content: center;
         box-sizing: border-box;
+    }
+
+    .barra-pesquisa {
+        align-items: stretch;
+    }
+
+    .campo-pesquisa {
+        flex-basis: 100%;
+        min-width: 0;
+    }
+
+    .btn-pesquisar,
+    .btn-limpar {
+        flex: 1 1 auto;
     }
 
     .tabela-wrapper {
@@ -941,38 +1204,16 @@ body {
     }
 
     .btn-editar,
-    .btn-inativar {
+    .btn-inativar,
+    .btn-reativar {
         text-align: center;
     }
 
     .modal-conteudo {
         width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
         padding: 20px;
-    }
-
-
-    /* -------------------------
-       CADASTRO
-    ------------------------- */
-
-    .cadastro-container {
-        padding: 20px 15px;
-    }
-
-    .cadastro-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .cadastro-header h1 {
-        font-size: 23px;
-    }
-
-    .btn-voltar {
-        width: 100%;
-        justify-content: center;
-        box-sizing: border-box;
     }
 
     .cadastro-card {
@@ -982,6 +1223,10 @@ body {
     .form-grid {
         grid-template-columns: 1fr;
         gap: 15px;
+    }
+
+    .dados-teste-resumo {
+        grid-template-columns: 1fr;
     }
 
     .campo-tipo {
@@ -997,5 +1242,25 @@ body {
         width: 100%;
         text-align: center;
         box-sizing: border-box;
+    }
+
+    .paginacao {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 420px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .barra-pesquisa .btn-pesquisar,
+    .barra-pesquisa .btn-limpar {
+        width: 100%;
+        flex-basis: 100%;
+    }
+
+    .chart-container {
+        height: 220px;
     }
 }

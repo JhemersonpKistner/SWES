@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+@{
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+}
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
@@ -13,8 +16,74 @@
 </head>
 
 <body>
+    <div class="app-shell">
+        <aside class="sidebar" id="menuLateral">
+            <button type="button" class="btn-fechar-menu" onclick="fecharMenu()" aria-label="Fechar menu">
+                <i class="bi bi-x-lg"></i>
+            </button>
 
-    @RenderBody()
+            <div class="sidebar-header">
+                <img src="~/images/logo.unidesc.webp" alt="Logo da UNIDESC" class="logo-faculdade" />
+                <h2>SISTEMA DE ESTÁGIOS</h2>
+            </div>
+
+            <nav class="menu" aria-label="Menu principal">
+                <a href="/" class="menu-item @(currentPage == "/Index" ? "menu-item-ativo" : "")">
+                    <span><i class="bi bi-speedometer2"></i></span>
+                    Dashboard
+                </a>
+                <a href="/Usuarios/Index" class="menu-item @(currentPage?.StartsWith("/Usuarios") == true ? "menu-item-ativo" : "")">
+                    <span><i class="bi bi-people"></i></span>
+                    Usuários
+                </a>
+                <a href="#" class="menu-item">
+                    <span><i class="bi bi-mortarboard"></i></span>
+                    Alunos
+                </a>
+                <a href="#" class="menu-item">
+                    <span><i class="bi bi-person-workspace"></i></span>
+                    Professores
+                </a>
+                <a href="#" class="menu-item">
+                    <span><i class="bi bi-building"></i></span>
+                    Concedentes
+                </a>
+                <a href="#" class="menu-item">
+                    <span><i class="bi bi-bank"></i></span>
+                    Instituições
+                </a>
+                <a href="#" class="menu-item">
+                    <span><i class="bi bi-file-earmark-text"></i></span>
+                    Documentos
+                </a>
+                <a href="#" class="menu-item">
+                    <span><i class="bi bi-briefcase"></i></span>
+                    Estágios
+                </a>
+                <a href="#" class="menu-item">
+                    <span><i class="bi bi-star"></i></span>
+                    Avaliações
+                </a>
+            </nav>
+
+            <div class="menu-bottom">
+                <a href="#" class="menu-item">
+                    <span><i class="bi bi-gear"></i></span>
+                    Configuração
+                </a>
+            </div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="fecharMenu()"></div>
+
+        <main class="app-content">
+            <button type="button" class="btn-menu-mobile" onclick="abrirMenu()" aria-label="Abrir menu">
+                <i class="bi bi-list"></i>
+            </button>
+
+            @RenderBody()
+        </main>
+    </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

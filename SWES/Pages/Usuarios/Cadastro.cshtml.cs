@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SWES.Services;
 using SWES.ViewModels;
@@ -37,14 +38,9 @@ namespace SWES.Pages.Usuarios
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // Remove as máscaras antes das validações do backend
-            Usuario.Telefone = ApenasNumeros(Usuario.Telefone);
-            Usuario.CPF = ApenasNumeros(Usuario.CPF);
-
-            if (!string.IsNullOrWhiteSpace(Usuario.CNPJ))
-            {
-                Usuario.CNPJ = ApenasNumeros(Usuario.CNPJ);
-            }
+            // A validação acontece com os valores mascarados. Isso evita que a tela
+            // perca as máscaras quando o servidor precisar devolver o formulário.
+            CorrigirErroDeConversaoDaMatricula();
 
             // Validação do nome
             ValidarNome();
@@ -73,14 +69,21 @@ namespace SWES.Pages.Usuarios
             }
 
             // Data de nascimento
+            CorrigirErroDeConversaoDataNascimento();
             ValidarDataNascimento();
 
             // Se houver algum erro, permanece na página
             if (!ModelState.IsValid)
             {
                 Erro = "Verifique os campos destacados.";
+                RestaurarValoresMascaradosNoModelState();
                 return Page();
             }
+
+            // Remove as máscaras somente depois que todas as validações foram concluídas.
+            Usuario.Telefone = ApenasNumeros(Usuario.Telefone);
+            Usuario.CPF = ApenasNumeros(Usuario.CPF);
+            Usuario.CNPJ = ApenasNumeros(Usuario.CNPJ);
 
             // EDIÇÃO
             if (Usuario.Id.HasValue)
@@ -90,6 +93,7 @@ namespace SWES.Pages.Usuarios
                 if (!atualizado)
                 {
                     Erro = "Não foi possível atualizar o usuário.";
+                    RestaurarValoresMascaradosNoModelState();
                     return Page();
                 }
 
@@ -105,10 +109,95 @@ namespace SWES.Pages.Usuarios
                     " ",
                     resultado.Errors.Select(TraduzirErroIdentity));
 
+                RestaurarValoresMascaradosNoModelState();
                 return Page();
             }
 
             return RedirectToPage("/Usuarios/Index");
+        }
+
+        private void CorrigirErroDeConversaoDaMatricula()
+        {
+            const string chave = "Usuario.Matricula";
+
+            if (!ModelState.TryGetValue(chave, out var entrada))
+                return;
+
+            var valor = entrada.AttemptedValue;
+            if (string.IsNullOrWhiteSpace(valor))
+                return;
+
+            if (valor.All(char.IsDigit) && valor.Length <= 10 &&
+                !int.TryParse(valor, out _))
+            {
+                ModelState.Remove(chave);
+                ModelState.AddModelError(
+                    chave,
+                    "A matrícula deve estar entre 1 e 2.147.483.647.");
+            }
+        }
+
+        private void CorrigirErroDeConversaoDataNascimento()
+        {
+            const string chave = "Usuario.DataNasc";
+
+            if (!ModelState.TryGetValue(chave, out var entrada))
+                return;
+
+            var valor = entrada.AttemptedValue;
+            if (string.IsNullOrWhiteSpace(valor))
+                return;
+
+            var partes = valor.Split('-');
+            if (partes.Length >= 1 && partes[0].All(char.IsDigit) && partes[0].Length > 4)
+            {
+                ModelState.Remove(chave);
+                ModelState.AddModelError(
+                    chave,
+                    "O ano da data de nascimento deve possuir no máximo 4 dígitos.");
+            }
+        }
+
+        private void RestaurarValoresMascaradosNoModelState()
+        {
+            DefinirValorNoModelState("Usuario.Telefone", FormatarTelefone(Usuario.Telefone));
+            DefinirValorNoModelState("Usuario.CPF", FormatarCpf(Usuario.CPF));
+            DefinirValorNoModelState("Usuario.CNPJ", FormatarCnpj(Usuario.CNPJ));
+        }
+
+        private void DefinirValorNoModelState(string chave, string? valor)
+        {
+            if (ModelState.ContainsKey(chave))
+                ModelState.SetModelValue(chave, new ValueProviderResult(valor ?? string.Empty));
+        }
+
+        private string FormatarTelefone(string? valor)
+        {
+            var numeros = ApenasNumeros(valor);
+
+            if (numeros.Length <= 2) return numeros.Length == 0 ? string.Empty : $"({numeros}";
+            if (numeros.Length <= 6) return $"({numeros[..2]}) {numeros[2..]}";
+            if (numeros.Length <= 10) return $"({numeros[..2]}) {numeros[2..6]}-{numeros[6..]}";
+            return $"({numeros[..2]}) {numeros[2..7]}-{numeros[7..]}";
+        }
+
+        private string FormatarCpf(string? valor)
+        {
+            var numeros = ApenasNumeros(valor);
+            if (numeros.Length <= 3) return numeros;
+            if (numeros.Length <= 6) return $"{numeros[..3]}.{numeros[3..]}";
+            if (numeros.Length <= 9) return $"{numeros[..3]}.{numeros[3..6]}.{numeros[6..]}";
+            return $"{numeros[..3]}.{numeros[3..6]}.{numeros[6..9]}-{numeros[9..]}";
+        }
+
+        private string FormatarCnpj(string? valor)
+        {
+            var numeros = ApenasNumeros(valor);
+            if (numeros.Length <= 2) return numeros;
+            if (numeros.Length <= 5) return $"{numeros[..2]}.{numeros[2..]}";
+            if (numeros.Length <= 8) return $"{numeros[..2]}.{numeros[2..5]}.{numeros[5..]}";
+            if (numeros.Length <= 12) return $"{numeros[..2]}.{numeros[2..5]}.{numeros[5..8]}/{numeros[8..]}";
+            return $"{numeros[..2]}.{numeros[2..5]}.{numeros[5..8]}/{numeros[8..12]}-{numeros[12..]}";
         }
 
         // ============================================================
@@ -180,7 +269,8 @@ namespace SWES.Pages.Usuarios
         {
             if (Usuario.Tipo == "Aluno")
             {
-                if (Usuario.Matricula == null)
+                if (Usuario.Matricula == null &&
+                    !(ModelState["Usuario.Matricula"]?.Errors.Any() ?? false))
                 {
                     ModelState.AddModelError(
                         "Usuario.Matricula",
@@ -208,7 +298,8 @@ namespace SWES.Pages.Usuarios
                         "O semestre é obrigatório.");
                 }
 
-                if (!Usuario.DataNasc.HasValue)
+                if (!Usuario.DataNasc.HasValue &&
+                    !(ModelState["Usuario.DataNasc"]?.Errors.Any() ?? false))
                 {
                     ModelState.AddModelError(
                         "Usuario.DataNasc",
@@ -278,11 +369,11 @@ namespace SWES.Pages.Usuarios
             var data = Usuario.DataNasc.Value;
             var hoje = DateTime.Today;
 
-            if (data.Year < 1900)
+            if (data.Year < 1900 || data.Year > 9999)
             {
                 ModelState.AddModelError(
                     "Usuario.DataNasc",
-                    "A data de nascimento não pode ser anterior ao ano 1900.");
+                    "Informe uma data de nascimento com ano de 4 dígitos, entre 1900 e 9999.");
             }
 
             if (data.Date > hoje)
