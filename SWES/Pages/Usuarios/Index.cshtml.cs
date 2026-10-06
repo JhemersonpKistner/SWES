@@ -24,6 +24,12 @@ namespace SWES.Pages.Usuarios
         [BindProperty(SupportsGet = true)]
         public string? Pesquisa { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string? Situacao { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? Perfil { get; set; }
+
         public IndexModel(
             UsuarioService usuarioService,
             ExportacaoService exportacaoService,
@@ -46,12 +52,40 @@ namespace SWES.Pages.Usuarios
                     .Where(u =>
                         u.Nome.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
                         u.Email.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
-                        u.Tipo.Contains(Pesquisa,  StringComparison.OrdinalIgnoreCase) ||
+                        u.Tipo.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
                         (u.Inscricao.HasValue && u.Inscricao.Value.ToString().Contains(Pesquisa)) ||
                         (Pesquisa.Equals("ativo", StringComparison.OrdinalIgnoreCase) &&
                          u.Ativo) ||
                         (Pesquisa.Equals("inativo", StringComparison.OrdinalIgnoreCase) &&
                          !u.Ativo))
+                    .ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(Situacao) &&
+    Situacao != "Todos")
+            {
+                if (Situacao == "Ativo")
+                {
+                    Usuarios = Usuarios
+                        .Where(u => u.Ativo)
+                        .ToList();
+                }
+                else if (Situacao == "Inativo")
+                {
+                    Usuarios = Usuarios
+                        .Where(u => !u.Ativo)
+                        .ToList();
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(Perfil) &&
+                Perfil != "Todos")
+            {
+                Usuarios = Usuarios
+                    .Where(u =>
+                        u.Tipo.Equals(
+                            Perfil,
+                            StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
@@ -103,6 +137,34 @@ namespace SWES.Pages.Usuarios
                          u.Ativo) ||
                         (Pesquisa.Equals("inativo", StringComparison.OrdinalIgnoreCase) &&
                          !u.Ativo))
+                    .ToList();
+            }
+
+            if (!string.IsNullOrWhiteSpace(Situacao) &&
+    Situacao != "Todos")
+            {
+                if (Situacao == "Ativo")
+                {
+                    usuarios = usuarios
+                        .Where(u => u.Ativo)
+                        .ToList();
+                }
+                else if (Situacao == "Inativo")
+                {
+                    usuarios = usuarios
+                        .Where(u => !u.Ativo)
+                        .ToList();
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(Perfil) &&
+                Perfil != "Todos")
+            {
+                usuarios = usuarios
+                    .Where(u =>
+                        u.Tipo.Equals(
+                            Perfil,
+                            StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
 
