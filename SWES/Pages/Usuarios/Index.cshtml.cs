@@ -120,64 +120,36 @@ namespace SWES.Pages.Usuarios
         }
 
         public IActionResult OnGetExportarExcel()
-        {
-            var usuarios = _usuarioService.ListarUsuarios();
+{
+    var usuarios = _usuarioService.ListarUsuarios();
 
-            if (!string.IsNullOrWhiteSpace(Pesquisa))
-            {
-                Pesquisa = Pesquisa.Trim();
+    if (!string.IsNullOrWhiteSpace(Pesquisa))
+    {
+        Pesquisa = Pesquisa.Trim();
 
-                usuarios = usuarios
-                    .Where(u =>
-                        u.Nome.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
-                        u.Email.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
-                        u.Tipo.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
-                        (u.Inscricao.HasValue && u.Inscricao.Value.ToString().Contains(Pesquisa)) ||
-                        (Pesquisa.Equals("ativo", StringComparison.OrdinalIgnoreCase) &&
-                         u.Ativo) ||
-                        (Pesquisa.Equals("inativo", StringComparison.OrdinalIgnoreCase) &&
-                         !u.Ativo))
-                    .ToList();
-            }
+        usuarios = usuarios
+            .Where(u =>
+                u.Nome.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
+                u.Email.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
+                u.Tipo.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
+                (u.Inscricao.HasValue &&
+                 u.Inscricao.Value.ToString().Contains(Pesquisa)) ||
+                (Pesquisa.Equals("ativo", StringComparison.OrdinalIgnoreCase) &&
+                 u.Ativo) ||
+                (Pesquisa.Equals("inativo", StringComparison.OrdinalIgnoreCase) &&
+                 !u.Ativo))
+            .ToList();
+    }
 
-            if (!string.IsNullOrWhiteSpace(Situacao) &&
-    Situacao != "Todos")
-            {
-                if (Situacao == "Ativo")
-                {
-                    usuarios = usuarios
-                        .Where(u => u.Ativo)
-                        .ToList();
-                }
-                else if (Situacao == "Inativo")
-                {
-                    usuarios = usuarios
-                        .Where(u => !u.Ativo)
-                        .ToList();
-                }
-            }
+    var arquivo = _exportacaoService.ExportarUsuariosParaExcel(usuarios);
 
-            if (!string.IsNullOrWhiteSpace(Perfil) &&
-                Perfil != "Todos")
-            {
-                usuarios = usuarios
-                    .Where(u =>
-                        u.Tipo.Equals(
-                            Perfil,
-                            StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-            }
+    var nomeArquivo = $"usuarios_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
 
-            var arquivo = _exportacaoService.ExportarUsuariosParaExcel(usuarios);
-
-            var nomeArquivo = $"usuarios_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
-
-            return File(
-                arquivo,
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                nomeArquivo);
-        }
-
+    return File(
+        arquivo,
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        nomeArquivo);
+}
         public async Task<IActionResult> OnPostInativarAsync(
             int id,
             string tipo)
