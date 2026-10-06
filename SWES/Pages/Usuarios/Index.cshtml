@@ -39,6 +39,56 @@
                    placeholder="Pesquisar por nome, e-mail ou perfil..." />
         </div>
 
+        <div class="filtros-gerenciamento">
+
+            <div class="campo-filtro">
+                <label for="Situacao">Situação</label>
+
+                <select id="Situacao" name="Situacao">
+                    <option value="Todos"
+                            selected="@(Model.Situacao == "Todos" || string.IsNullOrEmpty(Model.Situacao) ? "selected" : null)">
+                        Todos
+                    </option>
+
+                    <option value="Ativo" selected="@(Model.Situacao == "Ativo" ? "selected" : null)">
+                        Ativo
+                    </option>
+
+                    <option value="Inativo" selected="@(Model.Situacao == "Inativo" ? "selected" : null)">
+                        Inativo
+                    </option>
+                </select>
+            </div>
+
+            <div class="campo-filtro">
+                <label for="Perfil">Perfil</label>
+
+                <select id="Perfil" name="Perfil">
+                    <option value="Todos"
+                            selected="@(Model.Perfil == "Todos" || string.IsNullOrEmpty(Model.Perfil) ? "selected" : null)">
+                        Todos
+                    </option>
+
+                    <option value="Aluno" selected="@(Model.Perfil == "Aluno" ? "selected" : null)">
+                        Aluno
+                    </option>
+
+                    <option value="Professor" selected="@(Model.Perfil == "Professor" ? "selected" : null)">
+                        Professor
+                    </option>
+
+                    <option value="Supervisor" selected="@(Model.Perfil == "Supervisor" ? "selected" : null)">
+                        Supervisor
+                    </option>
+
+                    <option value="Coordenador" selected="@(Model.Perfil == "Coordenador" ? "selected" : null)">
+                        Coordenador
+                    </option>
+                </select>
+            </div>
+
+        </div>
+
         <button type="submit" class="btn-pesquisar">
             <i class="bi bi-search"></i>
             Pesquisar
@@ -51,9 +101,7 @@
             </a>
         }
 
-        <a asp-page="/Usuarios/Index"
-           asp-page-handler="ExportarExcel"
-           asp-route-Pesquisa="@Model.Pesquisa"
+        <a asp-page="/Usuarios/Index" asp-page-handler="ExportarExcel" asp-route-Pesquisa="@Model.Pesquisa" 
            class="btn-pesquisar">
             <i class="bi bi-file-earmark-excel"></i>
             Exportar Excel
@@ -174,7 +222,8 @@
                 );
             }
 
-            Exibindo @inicio–@fim de @((Model.TotalPaginas == 0 ? 0 : (Model.TotalPaginas - 1) * Model.TamanhoPagina + Model.Usuarios.Count)) usuários
+            Exibindo @inicio–@fim de @((Model.TotalPaginas == 0 ? 0 : (Model.TotalPaginas - 1) * Model.TamanhoPagina +
+                    Model.Usuarios.Count)) usuários
         </div>
 
         @if (Model.TotalPaginas > 1)
@@ -183,7 +232,7 @@
 
                 @if (Model.PaginaAtual > 1)
                 {
-                    <a asp-page="/Usuarios/Index" asp-route-pagina="@(Model.PaginaAtual - 1)" asp-route-Pesquisa="@Model.Pesquisa"
+                    <a asp-page="/Usuarios/Index" asp-route-pagina="@(Model.PaginaAtual - 1)" asp-route-Pesquisa="@Model.Pesquisa" asp-route-Situacao="@Model.Situacao" asp-route-Perfil="@Model.Perfil"
                        class="pagina-link">
                         ← Anterior
                     </a>
@@ -191,7 +240,7 @@
 
                 @for (int i = 1; i <= Model.TotalPaginas; i++)
                 {
-                    <a asp-page="/Usuarios/Index" asp-route-pagina="@i" asp-route-Pesquisa="@Model.Pesquisa"
+                    <a asp-page="/Usuarios/Index" asp-route-pagina="@i" asp-route-Pesquisa="@Model.Pesquisa" asp-route-Situacao="@Model.Situacao" asp-route-Perfil="@Model.Perfil"
                        class="pagina-link @(i == Model.PaginaAtual ? "pagina-atual" : "")">
                         @i
                     </a>
@@ -199,7 +248,7 @@
 
                 @if (Model.PaginaAtual < Model.TotalPaginas)
                 {
-                    <a asp-page="/Usuarios/Index" asp-route-pagina="@(Model.PaginaAtual + 1)" asp-route-Pesquisa="@Model.Pesquisa"
+                    <a asp-page="/Usuarios/Index" asp-route-pagina="@(Model.PaginaAtual + 1)" asp-route-Pesquisa="@Model.Pesquisa" asp-route-Situacao="@Model.Situacao" asp-route-Perfil="@Model.Perfil"
                        class="pagina-link">
                         Próxima →
                     </a>
