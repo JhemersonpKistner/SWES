@@ -549,6 +549,117 @@ namespace SWES.Services
             return resultado;
         }
 
+        public List<UsuarioExportacaoViewModel> ListarUsuariosParaExportacao()
+        {
+            var usuarios = new List<UsuarioExportacaoViewModel>();
+
+            var alunos = _context.Alunos.ToList();
+
+            foreach (var aluno in alunos)
+            {
+                usuarios.Add(new UsuarioExportacaoViewModel
+                {
+                    Id = aluno.Id,
+                    Nome = aluno.Nome,
+                    Email = aluno.Email,
+                    Telefone = aluno.Telefone,
+                    CPF = aluno.CPF,
+                    Tipo = "Aluno",
+                    Situacao = aluno.Ativo ? "Ativo" : "Inativo",
+                    Matricula = aluno.Matricula.ToString(),
+                    Curso = aluno.Curso,
+                    Turno = aluno.Turno,
+                    Semestre = aluno.Semestre,
+                    DataNasc = aluno.DataNasc.ToString("dd/MM/yyyy"),
+                    Registro = "-",
+                    Cargo = "-",
+                    Empresa = "-",
+                    CNPJ = "-",
+                    Setor = "-"
+                });
+            }
+
+            var professores = _context.ProfessoresOrientadores.ToList();
+
+            foreach (var professor in professores)
+            {
+                usuarios.Add(new UsuarioExportacaoViewModel
+                {
+                    Id = professor.Id,
+                    Nome = professor.Nome,
+                    Email = professor.Email,
+                    Telefone = professor.Telefone,
+                    CPF = professor.CPF,
+                    Tipo = "Professor",
+                    Situacao = professor.Ativo ? "Ativo" : "Inativo",
+                    Matricula = "-",
+                    Curso = professor.Curso,
+                    Turno = "-",
+                    Semestre = "-",
+                    DataNasc = "-",
+                    Registro = professor.Registro.ToString(),
+                    Cargo = "-",
+                    Empresa = "-",
+                    CNPJ = "-",
+                    Setor = "-"
+                });
+            }
+
+            var supervisores = _context.SupervisoresEstagio.ToList();
+
+            foreach (var supervisor in supervisores)
+            {
+                usuarios.Add(new UsuarioExportacaoViewModel
+                {
+                    Id = supervisor.Id,
+                    Nome = supervisor.Nome,
+                    Email = supervisor.Email,
+                    Telefone = supervisor.Telefone,
+                    CPF = supervisor.CPF,
+                    Tipo = "Supervisor",
+                    Situacao = supervisor.Ativo ? "Ativo" : "Inativo",
+                    Matricula = "-",
+                    Curso = "-",
+                    Turno = "-",
+                    Semestre = "-",
+                    DataNasc = "-",
+                    Registro = "-",
+                    Cargo = supervisor.Cargo,
+                    Empresa = supervisor.Empresa,
+                    CNPJ = supervisor.CNPJ,
+                    Setor = "-"
+                });
+            }
+
+            var coordenadores = _context.Coordenadores.ToList();
+
+            foreach (var coordenador in coordenadores)
+            {
+                usuarios.Add(new UsuarioExportacaoViewModel
+                {
+                    Id = coordenador.Id,
+                    Nome = coordenador.Nome,
+                    Email = coordenador.Email,
+                    Telefone = coordenador.Telefone,
+                    CPF = coordenador.CPF,
+                    Tipo = "Coordenador",
+                    Situacao = coordenador.Ativo ? "Ativo" : "Inativo",
+                    Matricula = "-",
+                    Curso = "-",
+                    Turno = "-",
+                    Semestre = "-",
+                    DataNasc = "-",
+                    Registro = "-",
+                    Cargo = "-",
+                    Empresa = "-",
+                    CNPJ = "-",
+                    Setor = coordenador.Setor
+                });
+            }
+
+            return usuarios;
+        }
+
     }
 
 }

@@ -132,16 +132,17 @@ namespace SWES.Pages.Usuarios
                         u.Nome.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
                         u.Email.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
                         u.Tipo.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
-                        (u.Inscricao.HasValue && u.Inscricao.Value.ToString().Contains(Pesquisa)) ||
+                        (u.Inscricao.HasValue &&
+                        u.Inscricao.Value.ToString().Contains(Pesquisa)) ||
                         (Pesquisa.Equals("ativo", StringComparison.OrdinalIgnoreCase) &&
-                         u.Ativo) ||
+                        u.Ativo) ||
                         (Pesquisa.Equals("inativo", StringComparison.OrdinalIgnoreCase) &&
-                         !u.Ativo))
+                        !u.Ativo))
                     .ToList();
             }
 
             if (!string.IsNullOrWhiteSpace(Situacao) &&
-    Situacao != "Todos")
+                Situacao != "Todos")
             {
                 if (Situacao == "Ativo")
                 {
@@ -168,9 +169,22 @@ namespace SWES.Pages.Usuarios
                     .ToList();
             }
 
-            var arquivo = _exportacaoService.ExportarUsuariosParaExcel(usuarios);
+            var usuariosParaExportacao =
+                _usuarioService.ListarUsuariosParaExportacao();
 
-            var nomeArquivo = $"usuarios_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+            var idsFiltrados = usuarios
+                .Select(u => new { u.Id, u.Tipo })
+                .ToHashSet();
+
+            usuariosParaExportacao = usuariosParaExportacao
+                .Where(u => idsFiltrados.Contains(new { u.Id, u.Tipo }))
+                .ToList();
+
+            var arquivo = _exportacaoService
+                .ExportarUsuariosParaExcel(usuariosParaExportacao);
+
+            var nomeArquivo =
+                $"usuarios_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
 
             return File(
                 arquivo,
