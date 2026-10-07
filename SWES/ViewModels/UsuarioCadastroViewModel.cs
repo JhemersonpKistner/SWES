@@ -19,7 +19,7 @@ namespace SWES.ViewModels
         [StringLength(100, ErrorMessage = "A senha deve possuir no máximo 100 caracteres.")]
         public string? Senha { get; set; }
 
-        [Required(ErrorMessage = "A confirmação de senha é obrigatória.")]
+        
         [Compare(nameof(Senha), ErrorMessage = "As senhas não coincidem.")]
         public string? ConfirmacaoSenha { get; set; }
 

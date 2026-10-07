@@ -38,16 +38,21 @@ namespace SWES.Pages.Usuarios
 
         public async Task<IActionResult> OnPostAsync()
         {
+
+Console.WriteLine($"ID RECEBIDO: {Usuario.Id}");
+Console.WriteLine($"TIPO RECEBIDO: {Usuario.Tipo}");            
             // A validação acontece com os valores mascarados. Isso evita que a tela
             // perca as máscaras quando o servidor precisar devolver o formulário.
             CorrigirErroDeConversaoDaMatricula();
 
             // Validação do nome
             ValidarNome();
-
+Console.WriteLine($"ID: {Usuario.Id}");
+Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
             // Cadastro de novo usuário
             if (!Usuario.Id.HasValue)
             {
+                Console.WriteLine("ENTROU NO BLOCO DE CADASTRO");
                 // Senha
                 if (string.IsNullOrWhiteSpace(Usuario.Senha))
                 {
@@ -206,6 +211,13 @@ namespace SWES.Pages.Usuarios
 
         private void ValidarNome()
         {
+            foreach (var erro in ModelState)
+{
+    foreach (var mensagem in erro.Value.Errors)
+    {
+        Console.WriteLine($"ERRO FINAL: {erro.Key} - {mensagem.ErrorMessage}");
+    }
+}
             if (string.IsNullOrWhiteSpace(Usuario.Nome))
             {
                 ModelState.AddModelError(

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SWES.Models
@@ -6,10 +7,11 @@ namespace SWES.Models
     public class ProfessorOrientador : Usuario
     {
         [MaxLength(100)]
-        public string Curso {get; private set; }
-        public int Registro { get; private set; }
-        public ICollection<Curso> Cursos { get; private set; } = new List<Curso>();
+        public string Curso { get; private set; }
 
+        public int Registro { get; private set; }
+
+        public ICollection<Curso> Cursos { get; private set; } = new List<Curso>();
 
         private ProfessorOrientador() { }
 
@@ -63,6 +65,11 @@ namespace SWES.Models
         public void AtualizarRegistro(int registro)
         {
             Registro = registro;
+        }
+
+        public void AtualizarCurso(string curso)
+        {
+            Curso = curso;
         }
     }
 }

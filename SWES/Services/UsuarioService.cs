@@ -17,66 +17,99 @@ namespace SWES.Services
         }
 
         public List<UsuarioViewModel> ListarUsuarios()
+{
+    var usuarios = new List<UsuarioViewModel>();
+
+    var alunos = _context.Alunos.ToList();
+
+    foreach (var aluno in alunos)
+    {
+        usuarios.Add(new UsuarioViewModel
         {
-            var usuarios = new List<UsuarioViewModel>();
-            var alunos = _context.Alunos.ToList();
-            foreach (var aluno in alunos)
-            {
-                usuarios.Add(new UsuarioViewModel
-                {
-                    Id = aluno.Id,
-                    Nome = aluno.Nome,
-                    Email = aluno.Email,
-                    Inscricao = aluno.Matricula,
-                    Tipo = "Aluno",
-                    Ativo = aluno.Ativo
-                });
-            }
+            Id = aluno.Id,
+            Nome = aluno.Nome,
+            Email = aluno.Email,
+            Telefone = aluno.Telefone,
+            CPF = aluno.CPF,
+            Inscricao = aluno.Matricula,
+            Tipo = "Aluno",
+            Ativo = aluno.Ativo,
 
-            var professores = _context.ProfessoresOrientadores.ToList();
-            foreach (var professor in professores)
-            {
-                usuarios.Add(new UsuarioViewModel
-                {
-                    Id = professor.Id,
-                    Nome = professor.Nome,
-                    Email = professor.Email,
-                    Inscricao = professor.Registro,
-                    Tipo = "Professor",
-                    Ativo = professor.Ativo
-                });
-            }
+            Matricula = aluno.Matricula,
+            Curso = aluno.Curso,
+            Turno = aluno.Turno,
+            Semestre = aluno.Semestre,
+            DataNasc = aluno.DataNasc
+        });
+    }
 
-            var supervisores = _context.SupervisoresEstagio.ToList();
-            foreach (var supervisor in supervisores)
-            {
-                usuarios.Add(new UsuarioViewModel
-                {
-                    Id = supervisor.Id,
-                    Nome = supervisor.Nome,
-                    Email = supervisor.Email,
-                    Inscricao = null,
-                    Tipo = "Supervisor",
-                    Ativo = supervisor.Ativo
-                });
-            }
+    var professores = _context.ProfessoresOrientadores.ToList();
 
-            var coordenadores = _context.Coordenadores.ToList();
-            foreach (var coordenador in coordenadores)
-            {
-                usuarios.Add(new UsuarioViewModel
-                {
-                    Id = coordenador.Id,
-                    Nome = coordenador.Nome,
-                    Email = coordenador.Email,
-                    Inscricao = null,
-                    Tipo = "Coordenador",
-                    Ativo = coordenador.Ativo
-                });
-            }
+    foreach (var professor in professores)
+    {
+        usuarios.Add(new UsuarioViewModel
+        {
+            Id = professor.Id,
+            Nome = professor.Nome,
+            Email = professor.Email,
+            Telefone = professor.Telefone,
+            CPF = professor.CPF,
+            Inscricao = professor.Registro,
+            Tipo = "Professor",
+            Ativo = professor.Ativo,
 
-            return usuarios;
-        }
+            Registro = professor.Registro,
+            CursosProfessor = string.IsNullOrWhiteSpace(professor.Curso)
+                ? new List<string>()
+                : professor.Curso.Split(',')
+                    .Select(c => c.Trim())
+                    .Where(c => !string.IsNullOrWhiteSpace(c))
+                    .ToList()
+        });
+    }
+
+    var supervisores = _context.SupervisoresEstagio.ToList();
+
+    foreach (var supervisor in supervisores)
+    {
+        usuarios.Add(new UsuarioViewModel
+        {
+            Id = supervisor.Id,
+            Nome = supervisor.Nome,
+            Email = supervisor.Email,
+            Telefone = supervisor.Telefone,
+            CPF = supervisor.CPF,
+            Inscricao = null,
+            Tipo = "Supervisor",
+            Ativo = supervisor.Ativo,
+
+            Cargo = supervisor.Cargo,
+            Empresa = supervisor.Empresa,
+            CNPJ = supervisor.CNPJ
+        });
+    }
+
+    var coordenadores = _context.Coordenadores.ToList();
+
+    foreach (var coordenador in coordenadores)
+    {
+        usuarios.Add(new UsuarioViewModel
+        {
+            Id = coordenador.Id,
+            Nome = coordenador.Nome,
+            Email = coordenador.Email,
+            Telefone = coordenador.Telefone,
+            CPF = coordenador.CPF,
+            Inscricao = null,
+            Tipo = "Coordenador",
+            Ativo = coordenador.Ativo,
+
+            Setor = coordenador.Setor
+        });
+    }
+
+    return usuarios;
+}
 
         public UsuarioViewModel? ObterUsuario(int id, string tipo)
         {
@@ -296,21 +329,25 @@ namespace SWES.Services
                     model.DataNasc!.Value);
 
             }
-            else if (model.Tipo == "Professor")
-            {
-                var professor = _context.ProfessoresOrientadores
-                    .FirstOrDefault(p => p.Id == model.Id.Value);
+   else if (model.Tipo == "Professor")
+{
+    var professor = _context.ProfessoresOrientadores
+        .FirstOrDefault(p => p.Id == model.Id.Value);
 
-                if (professor == null) return false;
+    if (professor == null) return false;
 
-                professor.AtualizarDados(
-                    model.Nome,
-                    model.Email,
-                    model.Telefone,
-                    model.CPF);
+    professor.AtualizarDados(
+        model.Nome,
+        model.Email,
+        model.Telefone,
+        model.CPF);
 
-                professor.AtualizarRegistro((int)model.Registro!);
-            }
+    professor.AtualizarRegistro((int)model.Registro!);
+
+    professor.AtualizarCurso(string.Join(", ", model.CursosProfessor));
+}
+        
+
             else if (model.Tipo == "Supervisor")
             {
                 var supervisor = _context.SupervisoresEstagio
