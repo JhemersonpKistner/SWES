@@ -1,6 +1,7 @@
 @page
 @model SWES.Pages.Usuarios.IndexModel
 
+
 <div class="usuarios-container">
 
     <div class="usuarios-header">
@@ -41,50 +42,52 @@
 
         <div class="filtros-gerenciamento">
 
-            <div class="campo-filtro">
-                <label for="Situacao">Situação</label>
-
-                <select id="Situacao" name="Situacao">
-                    <option value="Todos"
-                            selected="@(Model.Situacao == "Todos" || string.IsNullOrEmpty(Model.Situacao) ? "selected" : null)">
-                        Todos
-                    </option>
-
-                    <option value="Ativo" selected="@(Model.Situacao == "Ativo" ? "selected" : null)">
-                        Ativo
-                    </option>
-
-                    <option value="Inativo" selected="@(Model.Situacao == "Inativo" ? "selected" : null)">
-                        Inativo
-                    </option>
-                </select>
+            <div class="campo-filtro-select">
+                <label for="Situacao">
+                    <i class="bi bi-toggle-on"></i>
+                    Situação
+                </label>
+                <div class="select-filtro-wrapper">
+                    <select id="Situacao" name="Situacao" class="select-filtro">
+                        <option value="Todos" selected="@(Model.Situacao == "Todos" || string.IsNullOrEmpty(Model.Situacao) ? "selected" : null)">
+                            Todos
+                        </option>
+                        <option value="Ativo" selected="@(Model.Situacao == "Ativo" ? "selected" : null)">
+                            Ativo
+                        </option>
+                        <option value="Inativo" selected="@(Model.Situacao == "Inativo" ? "selected" : null)">
+                            Inativo
+                        </option>
+                    </select>
+                    <i class="bi bi-chevron-down select-filtro-seta"></i>
+                </div>
             </div>
 
-            <div class="campo-filtro">
-                <label for="Perfil">Perfil</label>
-
-                <select id="Perfil" name="Perfil">
-                    <option value="Todos"
-                            selected="@(Model.Perfil == "Todos" || string.IsNullOrEmpty(Model.Perfil) ? "selected" : null)">
-                        Todos
-                    </option>
-
-                    <option value="Aluno" selected="@(Model.Perfil == "Aluno" ? "selected" : null)">
-                        Aluno
-                    </option>
-
-                    <option value="Professor" selected="@(Model.Perfil == "Professor" ? "selected" : null)">
-                        Professor
-                    </option>
-
-                    <option value="Supervisor" selected="@(Model.Perfil == "Supervisor" ? "selected" : null)">
-                        Supervisor
-                    </option>
-
-                    <option value="Coordenador" selected="@(Model.Perfil == "Coordenador" ? "selected" : null)">
-                        Coordenador
-                    </option>
-                </select>
+            <div class="campo-filtro-select">
+                <label for="Perfil">
+                    <i class="bi bi-person-badge"></i>
+                    Perfil
+                </label>
+                <div class="select-filtro-wrapper">
+                    <select id="Perfil" name="Perfil" class="select-filtro">
+                        <option value="Todos" selected="@(Model.Perfil == "Todos" || string.IsNullOrEmpty(Model.Perfil) ? "selected" : null)">
+                            Todos
+                        </option>
+                        <option value="Aluno" selected="@(Model.Perfil == "Aluno" ? "selected" : null)">
+                            Aluno
+                        </option>
+                        <option value="Professor" selected="@(Model.Perfil == "Professor" ? "selected" : null)">
+                            Professor
+                        </option>
+                        <option value="Supervisor" selected="@(Model.Perfil == "Supervisor" ? "selected" : null)">
+                            Supervisor
+                        </option>
+                        <option value="Coordenador" selected="@(Model.Perfil == "Coordenador" ? "selected" : null)">
+                            Coordenador
+                        </option>
+                    </select>
+                    <i class="bi bi-chevron-down select-filtro-seta"></i>
+                </div>
             </div>
 
         </div>
@@ -101,7 +104,11 @@
             </a>
         }
 
-        <a asp-page="/Usuarios/Index" asp-page-handler="ExportarExcel" asp-route-Pesquisa="@Model.Pesquisa" 
+        <a asp-page="/Usuarios/Index" asp-page-handler="ExportarExcel"
+           asp-route-Pesquisa="@Model.Pesquisa"
+           asp-route-Situacao="@Model.Situacao"
+           asp-route-Perfil="@Model.Perfil"
+           asp-route-pagina="@Model.PaginaAtual"
            class="btn-pesquisar">
             <i class="bi bi-file-earmark-excel"></i>
             Exportar Excel

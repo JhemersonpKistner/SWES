@@ -579,6 +579,110 @@ body {
 }
 
 /* =========================================================
+   FILTROS DE SITUAÇÃO E PERFIL
+========================================================= */
+
+.filtros-gerenciamento {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    flex-wrap: wrap;
+    flex: 0 1 auto;
+}
+
+.campo-filtro-select {
+    min-width: 190px;
+}
+
+.campo-filtro-select label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0 0 7px;
+    color: #344054;
+    font-size: .82rem;
+    font-weight: 700;
+    letter-spacing: .01em;
+}
+
+.campo-filtro-select label i {
+    font-size: .9rem;
+    color: #0050A0;
+}
+
+.select-filtro-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.select-filtro {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 40px 0 14px;
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    background: #fff;
+    color: #1d2939;
+    font-size: 14px;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+    box-sizing: border-box;
+}
+
+.select-filtro:hover {
+    border-color: #98a2b3;
+    background-color: #fcfcfd;
+}
+
+.select-filtro:focus {
+    border-color: #009BE3;
+    box-shadow: 0 0 0 3px rgba(0, 155, 227, 0.12);
+}
+
+.select-filtro-seta {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    color: #667085;
+    pointer-events: none;
+    font-size: .78rem;
+}
+
+@media (max-width: 900px) {
+    .filtros-gerenciamento {
+        flex: 1 1 100%;
+        width: 100%;
+    }
+
+    .campo-filtro-select {
+        flex: 1 1 190px;
+    }
+}
+
+@media (max-width: 768px) {
+    .filtros-gerenciamento {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .campo-filtro-select {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .select-filtro {
+        min-height: 46px;
+    }
+}
+
+
+/* =========================================================
    PAGINAÇÃO
 ========================================================= */
 

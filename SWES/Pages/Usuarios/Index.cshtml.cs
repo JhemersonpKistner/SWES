@@ -42,27 +42,54 @@ namespace SWES.Pages.Usuarios
 
         public void OnGet(int pagina = 1)
         {
+            // Define "Ativo" como filtro padrão ao abrir a página.
+            // Se o usuário já tiver escolhido outro filtro, ele será mantido.
+            if (string.IsNullOrWhiteSpace(Situacao))
+            {
+                Situacao = "Ativo";
+            }
+
             Usuarios = _usuarioService.ListarUsuarios();
 
+            // Filtro de pesquisa
             if (!string.IsNullOrWhiteSpace(Pesquisa))
             {
                 Pesquisa = Pesquisa.Trim();
 
                 Usuarios = Usuarios
                     .Where(u =>
-                        u.Nome.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
-                        u.Email.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
-                        u.Tipo.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
-                        (u.Inscricao.HasValue && u.Inscricao.Value.ToString().Contains(Pesquisa)) ||
-                        (Pesquisa.Equals("ativo", StringComparison.OrdinalIgnoreCase) &&
+                        u.Nome.Contains(
+                            Pesquisa,
+                            StringComparison.OrdinalIgnoreCase) ||
+
+                        u.Email.Contains(
+                            Pesquisa,
+                            StringComparison.OrdinalIgnoreCase) ||
+
+                        u.Tipo.Contains(
+                            Pesquisa,
+                            StringComparison.OrdinalIgnoreCase) ||
+
+                        (u.Inscricao.HasValue &&
+                         u.Inscricao.Value
+                             .ToString()
+                             .Contains(Pesquisa)) ||
+
+                        (Pesquisa.Equals(
+                            "ativo",
+                            StringComparison.OrdinalIgnoreCase) &&
                          u.Ativo) ||
-                        (Pesquisa.Equals("inativo", StringComparison.OrdinalIgnoreCase) &&
+
+                        (Pesquisa.Equals(
+                            "inativo",
+                            StringComparison.OrdinalIgnoreCase) &&
                          !u.Ativo))
                     .ToList();
             }
 
+            // Filtro de situação
             if (!string.IsNullOrWhiteSpace(Situacao) &&
-    Situacao != "Todos")
+                Situacao != "Todos")
             {
                 if (Situacao == "Ativo")
                 {
@@ -78,6 +105,7 @@ namespace SWES.Pages.Usuarios
                 }
             }
 
+            // Filtro de perfil
             if (!string.IsNullOrWhiteSpace(Perfil) &&
                 Perfil != "Todos")
             {
@@ -89,67 +117,155 @@ namespace SWES.Pages.Usuarios
                     .ToList();
             }
 
+            // Ordenação
             Usuarios = Usuarios
                 .OrderBy(u => u.Nome)
                 .ThenBy(u => u.Tipo)
                 .ThenBy(u => u.Id)
                 .ToList();
 
+            // Calcula o total de páginas
             var totalUsuarios = Usuarios.Count;
 
-            TotalPaginas = (int)Math.Ceiling((double)totalUsuarios / TamanhoPagina);
+            TotalPaginas = (int)Math.Ceiling(
+                (double)totalUsuarios / TamanhoPagina);
 
+            // Caso não existam usuários
             if (TotalPaginas == 0)
             {
                 PaginaAtual = 1;
                 return;
             }
 
+            // Garante que a página seja válida
             if (pagina < 1)
+            {
                 pagina = 1;
+            }
 
             if (pagina > TotalPaginas)
+            {
                 pagina = TotalPaginas;
+            }
 
             PaginaAtual = pagina;
 
+            // Paginação
             Usuarios = Usuarios
                 .Skip((PaginaAtual - 1) * TamanhoPagina)
                 .Take(TamanhoPagina)
                 .ToList();
         }
 
-        public IActionResult OnGetExportarExcel()
-{
-    var usuarios = _usuarioService.ListarUsuarios();
+        public IActionResult OnGetExportarExcel(int pagina = 1)
+        {
+            // Define "Ativo" como filtro padrão para a exportação
+            // caso nenhuma situação tenha sido informada.
+            if (string.IsNullOrWhiteSpace(Situacao))
+            {
+                Situacao = "Ativo";
+            }
 
-    if (!string.IsNullOrWhiteSpace(Pesquisa))
-    {
-        Pesquisa = Pesquisa.Trim();
+            var usuarios = _usuarioService.ListarUsuarios();
 
-        usuarios = usuarios
-            .Where(u =>
-                u.Nome.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
-                u.Email.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
-                u.Tipo.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase) ||
-                (u.Inscricao.HasValue &&
-                 u.Inscricao.Value.ToString().Contains(Pesquisa)) ||
-                (Pesquisa.Equals("ativo", StringComparison.OrdinalIgnoreCase) &&
-                 u.Ativo) ||
-                (Pesquisa.Equals("inativo", StringComparison.OrdinalIgnoreCase) &&
-                 !u.Ativo))
-            .ToList();
-    }
+            // Filtro de pesquisa
+            if (!string.IsNullOrWhiteSpace(Pesquisa))
+            {
+                Pesquisa = Pesquisa.Trim();
 
-    var arquivo = _exportacaoService.ExportarUsuariosParaExcel(usuarios);
+                usuarios = usuarios
+                    .Where(u =>
+                        u.Nome.Contains(
+                            Pesquisa,
+                            StringComparison.OrdinalIgnoreCase) ||
 
-    var nomeArquivo = $"usuarios_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                        u.Email.Contains(
+                            Pesquisa,
+                            StringComparison.OrdinalIgnoreCase) ||
 
-    return File(
-        arquivo,
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        nomeArquivo);
-}
+                        u.Tipo.Contains(
+                            Pesquisa,
+                            StringComparison.OrdinalIgnoreCase) ||
+
+                        (u.Inscricao.HasValue &&
+                         u.Inscricao.Value
+                             .ToString()
+                             .Contains(Pesquisa)) ||
+
+                        (Pesquisa.Equals(
+                            "ativo",
+                            StringComparison.OrdinalIgnoreCase) &&
+                         u.Ativo) ||
+
+                        (Pesquisa.Equals(
+                            "inativo",
+                            StringComparison.OrdinalIgnoreCase) &&
+                         !u.Ativo))
+                    .ToList();
+            }
+
+            // Filtro de situação
+            if (!string.IsNullOrWhiteSpace(Situacao) &&
+                Situacao != "Todos")
+            {
+                if (Situacao == "Ativo")
+                {
+                    usuarios = usuarios
+                        .Where(u => u.Ativo)
+                        .ToList();
+                }
+                else if (Situacao == "Inativo")
+                {
+                    usuarios = usuarios
+                        .Where(u => !u.Ativo)
+                        .ToList();
+                }
+            }
+
+            // Filtro de perfil
+            if (!string.IsNullOrWhiteSpace(Perfil) &&
+                Perfil != "Todos")
+            {
+                usuarios = usuarios
+                    .Where(u =>
+                        u.Tipo.Equals(
+                            Perfil,
+                            StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            // Mesma ordenação utilizada na tela
+            usuarios = usuarios
+                .OrderBy(u => u.Nome)
+                .ThenBy(u => u.Tipo)
+                .ThenBy(u => u.Id)
+                .ToList();
+
+            // Garante que a página seja válida
+            if (pagina < 1)
+            {
+                pagina = 1;
+            }
+
+            // Exporta somente os registros visíveis na página atual.
+            usuarios = usuarios
+                .Skip((pagina - 1) * TamanhoPagina)
+                .Take(TamanhoPagina)
+                .ToList();
+
+            // Gera o arquivo Excel
+            var arquivo = _exportacaoService
+                .ExportarUsuariosParaExcel(usuarios);
+
+            var nomeArquivo =
+                $"usuarios_pagina_{pagina}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+
+            return File(
+                arquivo,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                nomeArquivo);
+        }
+
         public async Task<IActionResult> OnPostInativarAsync(
             int id,
             string tipo)
@@ -158,7 +274,9 @@ namespace SWES.Pages.Usuarios
                 .InativarUsuario(id, tipo);
 
             if (!inativado)
+            {
                 return NotFound();
+            }
 
             return RedirectToPage("/Usuarios/Index");
         }
@@ -171,10 +289,11 @@ namespace SWES.Pages.Usuarios
                 .ReativarUsuario(id, tipo);
 
             if (!ativado)
+            {
                 return NotFound();
+            }
 
             return RedirectToPage("/Usuarios/Index");
         }
-
     }
 }
