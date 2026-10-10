@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SWES.Models;
 
@@ -37,6 +38,31 @@ namespace SWES.Data
                 .WithMany()
                 .HasForeignKey(a => a.ProfessorOrientadorId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Aluno>()
+                .HasOne<IdentityUser>()
+                .WithMany()
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ProfessorOrientador>()
+                .HasOne<IdentityUser>()
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<SupervisorEstagio>()
+                .HasOne<IdentityUser>()
+                .WithMany()
+                .HasForeignKey(s => s.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Coordenador>()
+                .HasOne<IdentityUser>()
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }
