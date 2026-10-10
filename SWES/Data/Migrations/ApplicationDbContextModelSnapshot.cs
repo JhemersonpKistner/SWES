@@ -252,7 +252,6 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
-
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
@@ -294,9 +293,11 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Alunos");
                 });
@@ -376,10 +377,8 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
-
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
-
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -402,9 +401,11 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Coordenadores");
                 });
@@ -593,7 +594,6 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("CPF")
                         .IsRequired()
-
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
 
@@ -622,9 +622,11 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("ProfessoresOrientadores");
                 });
@@ -642,7 +644,6 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("CNPJ")
                         .IsRequired()
-
                         .HasMaxLength(14)
                         .HasColumnType("nvarchar(14)");
 
@@ -678,9 +679,11 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("SupervisoresEstagio");
                 });
@@ -784,6 +787,15 @@ namespace SWES.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SWES.Models.Aluno", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SWES.Models.Atividade", b =>
                 {
                     b.HasOne("SWES.Models.Estagio", "Estagio")
@@ -812,6 +824,15 @@ namespace SWES.Data.Migrations
                     b.Navigation("Estagio");
 
                     b.Navigation("ProfessorOrientador");
+                });
+
+            modelBuilder.Entity("SWES.Models.Coordenador", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SWES.Models.Documento", b =>
@@ -883,6 +904,24 @@ namespace SWES.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("SWES.Models.ProfessorOrientador", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("SWES.Models.SupervisorEstagio", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SWES.Models.Aluno", b =>
