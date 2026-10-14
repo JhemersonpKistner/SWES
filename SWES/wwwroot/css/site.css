@@ -947,7 +947,7 @@ body {
 }
 
 .cadastro-card {
-    background-color: white;
+    background-color: #e2e2e2;
     padding: 30px;
     border-radius: 12px;
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
@@ -964,11 +964,13 @@ body {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+    background-color: #e2e2e2;
 }
 
 .campo {
     display: flex;
     flex-direction: column;
+    background-color: #e2e2e2;
 }
 
 .campo label {
