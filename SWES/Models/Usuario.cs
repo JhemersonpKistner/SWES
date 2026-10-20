@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SWES.Models
 {
-    public class Usuario
+    public class Usuario: Base
     {
         public int Id { get; private set; }
         public string UserId { get; private set; }

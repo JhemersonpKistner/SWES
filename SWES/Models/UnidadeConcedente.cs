@@ -4,6 +4,7 @@ namespace SWES.Models
 {
     public class UnidadeConcedente
     {
+        public bool InstituicaoEnsino { get;  set; } = false;
         public int Id { get; private set; }
         public string RazaoSocial { get; private set; }
         public string Cnpj { get; private set; }
