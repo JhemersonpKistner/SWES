@@ -21,5 +21,24 @@ namespace SWES.Models
             Nome = nome;
             Cnpj = cnpj;
         }
+
+        public void AtualizarDados(string nome, string cnpj)
+        {
+            Nome = nome;
+            Cnpj = cnpj;
+            Alteracao = DateTime.UtcNow;
+        }
+
+        public void Inativar()
+        {
+            Ativo = false;
+            Alteracao = DateTime.UtcNow;
+        }
+
+        public void Ativar()
+        {
+            Ativo = true;
+            Alteracao = DateTime.UtcNow;
+        }
     }
 }
