@@ -4,7 +4,7 @@ namespace SWES.Models
 {
     public class Usuario: Base
     {
-        public int Id { get; private set; }
+        
         public string UserId { get; private set; }
         [MaxLength(60)]
         public string Nome { get; private set; }
@@ -12,7 +12,6 @@ namespace SWES.Models
         public string Email { get; private set; }
         [MaxLength(12)]
         public string Telefone { get; private set; }
-        public bool Ativo { get; private set; }
 
         [MaxLength(11)]
         public String CPF {get; private set; }
@@ -36,16 +35,19 @@ namespace SWES.Models
             Email = email;
             Telefone = telefone;
             CPF = cpf;
+            Alteracao = DateTime.UtcNow;
         }
 
         public void Inativar()
         {
             Ativo = false;
+            Alteracao = DateTime.UtcNow;
         }
 
         public void Ativar()
         {
             Ativo = true;
+            Alteracao = DateTime.UtcNow;
         }
 
     }

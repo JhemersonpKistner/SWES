@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System.Buffers.Text;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SWES.Models
 {
-    public class InstituicaoEnsino
+    public class InstituicaoEnsino : Base
     {
-        public int Id { get; private set; }
-        public string Nome { get; private set; }
-        public string Cnpj { get; private set; }
+        [MaxLength(150)]
+        public string Nome { get; private set; } = string.Empty;
+
+        [MaxLength(14)]
+        public string Cnpj { get; private set; } = string.Empty;
 
         public ICollection<Estagio> Estagios { get; private set; } = new List<Estagio>();
 

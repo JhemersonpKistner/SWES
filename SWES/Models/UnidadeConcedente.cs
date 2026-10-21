@@ -1,16 +1,26 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace SWES.Models
 {
-    public class UnidadeConcedente
+    public class UnidadeConcedente : Base
     {
         public bool InstituicaoEnsino { get;  set; } = false;
-        public int Id { get; private set; }
-        public string RazaoSocial { get; private set; }
-        public string Cnpj { get; private set; }
-        public string Endereco { get; private set; }
-        public string Telefone { get; private set; }
-        public string Email { get; private set; }
+
+        [MaxLength(150)]
+        public string RazaoSocial { get; private set; } = string.Empty;
+
+        [MaxLength(14)]
+        public string Cnpj { get; private set; } = string.Empty;
+
+        [MaxLength(200)]
+        public string Endereco { get; private set; } = string.Empty;
+
+        [MaxLength(12)]
+        public string Telefone { get; private set; } = string.Empty;
+
+        [MaxLength(150)]
+        public string Email { get; private set; } = string.Empty;
 
         public ICollection<Estagio> Estagios { get; private set; } = new List<Estagio>();
 
