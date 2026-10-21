@@ -2491,3 +2491,21 @@ body {
         flex-wrap: wrap;
     }
 }
+
+/* =========================================================
+   UNIDADES CONCEDENTES - AJUSTES COMPLEMENTARES
+   Reutiliza os componentes visuais das Instituições de Ensino.
+========================================================= */
+
+.concedente-email {
+    overflow-wrap: anywhere;
+    min-width: 180px;
+}
+
+/* Evita que os formulários das unidades concedentes fiquem
+   comprimidos em telas menores. */
+@media (max-width: 900px) {
+    .instituicoes-tabela {
+        min-width: 900px;
+    }
+}

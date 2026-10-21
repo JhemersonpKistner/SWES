@@ -1,141 +1,214 @@
-
 @page
-
 @model SWES.Pages.UnidadesConcedentes.IndexModel
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="instituicoes-page">
+
+    <div class="instituicoes-header">
         <div>
+            <span class="instituicoes-eyebrow">
+                <i class="bi bi-building-check"></i>
+                GESTÃO DE ESTÁGIOS
+            </span>
             <h1>Unidades Concedentes</h1>
-            <p class="text-muted">
-                Gerencie as empresas e unidades concedentes cadastradas.
-            </p>
+            <p>Gerencie as empresas e unidades que oferecem oportunidades de estágio.</p>
         </div>
 
         <a asp-page="/UnidadesConcedentes/Cadastro"
-           class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i>
-            Novo concedente
+           class="instituicoes-btn instituicoes-btn-primary">
+            <i class="bi bi-plus-lg"></i>
+            Cadastrar concedente
         </a>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-body">
-            <form method="get">
-                <div class="row g-2">
-                    <div class="col-md-10">
-                        <input asp-for="Pesquisa"
-                               class="form-control"
-                               placeholder="Pesquisar por razão social ou CNPJ..." />
-                    </div>
+    <div class="instituicoes-resumo">
+        <div class="instituicoes-resumo-card">
+            <div class="instituicoes-resumo-icone azul">
+                <i class="bi bi-buildings"></i>
+            </div>
+            <div>
+                <span>Registros encontrados</span>
+                <strong>@Model.UnidadesConcedentes.Count</strong>
+            </div>
+        </div>
 
-                    <div class="col-md-2 d-grid">
-                        <button type="submit" class="btn btn-outline-primary">
-                            <i class="bi bi-search"></i>
-                            Pesquisar
-                        </button>
-                    </div>
-                </div>
-            </form>
+        <div class="instituicoes-resumo-card">
+            <div class="instituicoes-resumo-icone verde">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <div>
+                <span>Concedentes ativos</span>
+                <strong>@Model.UnidadesConcedentes.Count(u => u.Ativo)</strong>
+            </div>
+        </div>
+
+        <div class="instituicoes-resumo-card">
+            <div class="instituicoes-resumo-icone cinza">
+                <i class="bi bi-pause-circle"></i>
+            </div>
+            <div>
+                <span>Concedentes inativos</span>
+                <strong>@Model.UnidadesConcedentes.Count(u => !u.Ativo)</strong>
+            </div>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
+    <section class="instituicoes-card">
+        <div class="instituicoes-card-header">
+            <div>
+                <h2>Concedentes cadastrados</h2>
+                <p>Consulte os dados e gerencie a situação dos registros.</p>
+            </div>
+
+            <span class="instituicoes-contador">
+                @Model.UnidadesConcedentes.Count registro(s)
+            </span>
+        </div>
+
+        <form method="get" class="instituicoes-filtros">
+            <div class="instituicoes-pesquisa">
+                <label for="Pesquisa">Pesquisar concedente</label>
+                <div class="instituicoes-input-wrapper campo-pesquisa">
+                    <i class="bi bi-search"></i>
+                    <input type="text"
+                           id="Pesquisa"
+                           name="Pesquisa"
+                           value="@Model.Pesquisa"
+                           placeholder="Digite a razão social ou o CNPJ..." />
+                </div>
+            </div>
+
+            <button type="submit" class="instituicoes-btn instituicoes-btn-primary">
+                <i class="bi bi-search"></i>
+                Pesquisar
+            </button>
+
+            <a asp-page="/UnidadesConcedentes/Index"
+               class="instituicoes-btn instituicoes-btn-secondary">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                Limpar
+            </a>
+        </form>
+
+        @if (Model.UnidadesConcedentes.Count == 0)
+        {
+            <div class="instituicoes-vazio">
+                <div class="instituicoes-vazio-icone">
+                    <i class="bi bi-building-check"></i>
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Pesquisa))
+                {
+                    <h3>Nenhum resultado encontrado</h3>
+                    <p>Não encontramos concedentes correspondentes à pesquisa. Tente outra razão social ou CNPJ.</p>
+                    <a asp-page="/UnidadesConcedentes/Index"
+                       class="instituicoes-btn instituicoes-btn-secondary">
+                        Limpar pesquisa
+                    </a>
+                }
+                else
+                {
+                    <h3>Nenhum concedente cadastrado</h3>
+                    <p>Cadastre a primeira unidade concedente para começar.</p>
+                    <a asp-page="/UnidadesConcedentes/Cadastro"
+                       class="instituicoes-btn instituicoes-btn-primary">
+                        <i class="bi bi-plus-lg"></i>
+                        Cadastrar concedente
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="instituicoes-tabela-wrapper">
+                <table class="instituicoes-tabela">
                     <thead>
                         <tr>
-                            <th>Razão social</th>
+                            <th>Unidade concedente</th>
                             <th>CNPJ</th>
                             <th>Telefone</th>
                             <th>E-mail</th>
-                            <th>Status</th>
-                            <th class="text-center">Ações</th>
+                            <th>Situação</th>
+                            <th class="instituicoes-coluna-acoes">Ações</th>
                         </tr>
                     </thead>
-
                     <tbody>
-                        @if (Model.UnidadesConcedentes.Count == 0)
+                        @foreach (var unidade in Model.UnidadesConcedentes)
                         {
                             <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    Nenhum concedente encontrado.
+                                <td>
+                                    <div class="instituicoes-identificacao">
+                                        <div class="instituicoes-avatar">
+                                            <i class="bi bi-building"></i>
+                                        </div>
+                                        <div class="instituicoes-nome">
+                                            <strong>@unidade.RazaoSocial</strong>
+                                            <span>Unidade concedente</span>
+                                        </div>
+                                    </div>
                                 </td>
-                            </tr>
-                        }
-                        else
-                        {
-                            @foreach (var unidade in Model.UnidadesConcedentes)
-                            {
-                                <tr>
-                                    <td>@unidade.RazaoSocial</td>
-                                    <td>@unidade.Cnpj</td>
-                                    <td>@unidade.Telefone</td>
-                                    <td>@unidade.Email</td>
+                                <td><span class="instituicoes-cnpj">@unidade.Cnpj</span></td>
+                                <td>@unidade.Telefone</td>
+                                <td class="concedente-email">@unidade.Email</td>
+                                <td>
+                                    @if (unidade.Ativo)
+                                    {
+                                        <span class="instituicoes-status ativa"><span></span> Ativo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="instituicoes-status inativa"><span></span> Inativo</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="instituicoes-acoes">
+                                        <a asp-page="/UnidadesConcedentes/Cadastro"
+                                           asp-route-id="@unidade.Id"
+                                           class="instituicoes-acao editar"
+                                           title="Editar concedente"
+                                           aria-label="Editar @unidade.RazaoSocial">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
 
-                                    <td>
                                         @if (unidade.Ativo)
                                         {
-                                            <span class="badge bg-success">
-                                                Ativo
-                                            </span>
+                                            <form method="post"
+                                                  asp-page-handler="Inativar"
+                                                  asp-route-id="@unidade.Id"
+                                                  onsubmit="return confirm('Deseja realmente inativar este concedente?');">
+                                                <button type="submit"
+                                                        class="instituicoes-acao inativar"
+                                                        title="Inativar concedente"
+                                                        aria-label="Inativar @unidade.RazaoSocial">
+                                                    <i class="bi bi-pause-circle"></i>
+                                                </button>
+                                            </form>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-secondary">
-                                                Inativo
-                                            </span>
+                                            <form method="post"
+                                                  asp-page-handler="Ativar"
+                                                  asp-route-id="@unidade.Id"
+                                                  onsubmit="return confirm('Deseja realmente ativar este concedente?');">
+                                                <button type="submit"
+                                                        class="instituicoes-acao reativar"
+                                                        title="Ativar concedente"
+                                                        aria-label="Ativar @unidade.RazaoSocial">
+                                                    <i class="bi bi-arrow-clockwise"></i>
+                                                </button>
+                                            </form>
                                         }
-                                    </td>
-
-                                    <td class="text-center">
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <a asp-page="/UnidadesConcedentes/Cadastro"
-                                               asp-route-id="@unidade.Id"
-                                               class="btn btn-sm btn-outline-primary"
-                                               title="Editar">
-                                                <i class="bi bi-pencil"></i>
-                                                Editar
-                                            </a>
-
-                                            @if (unidade.Ativo)
-                                            {
-                                                <form method="post"
-                                                      asp-page-handler="Inativar"
-                                                      asp-route-id="@unidade.Id"
-                                                      onsubmit="return confirm('Deseja realmente inativar este concedente?');">
-                                                    <button type="submit"
-                                                            class="btn btn-sm btn-outline-danger">
-                                                        Inativar
-                                                    </button>
-                                                </form>
-                                            }
-                                            else
-                                            {
-                                                <form method="post"
-                                                      asp-page-handler="Ativar"
-                                                      asp-route-id="@unidade.Id"
-                                                      onsubmit="return confirm('Deseja realmente ativar este concedente?');">
-                                                    <button type="submit"
-                                                            class="btn btn-sm btn-outline-success">
-                                                        Ativar
-                                                    </button>
-                                                </form>
-                                            }
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
+                                    </div>
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
             </div>
+        }
+    </section>
 
-            <p class="text-muted mb-0">
-                Total de registros encontrados:
-                <strong>@Model.UnidadesConcedentes.Count</strong>
-            </p>
-        </div>
-    </div>
+    <p class="instituicoes-rodape">
+        <i class="bi bi-info-circle"></i>
+        Concedentes inativos permanecem registrados e podem ser reativados.
+    </p>
 </div>
