@@ -26,13 +26,48 @@ namespace SWES.Models
 
         private UnidadeConcedente() { } // construtor exigido pelo Entity Framework Core
 
-        public UnidadeConcedente(string razaoSocial, string cnpj, string endereco, string telefone, string email)
+        
+        public UnidadeConcedente(
+            string razaoSocial,
+            string cnpj,
+            string endereco,
+            string telefone,
+            string email)
         {
             RazaoSocial = razaoSocial;
             Cnpj = cnpj;
             Endereco = endereco;
             Telefone = telefone;
             Email = email;
+            Ativo = true;
         }
+
+        public void AtualizarDados(
+            string razaoSocial,
+            string cnpj,
+            string endereco,
+            string telefone,
+            string email)
+        {
+            RazaoSocial = razaoSocial;
+            Cnpj = cnpj;
+            Endereco = endereco;
+            Telefone = telefone;
+            Email = email;
+            Alteracao = DateTime.UtcNow;
+        }
+         
+        public void Inativar()
+        {
+            Ativo = false;
+            Alteracao = DateTime.UtcNow;
+        }
+
+        public void Ativar()
+        {
+            Ativo = true;
+            Alteracao = DateTime.UtcNow;
+        }
+
     }
 }

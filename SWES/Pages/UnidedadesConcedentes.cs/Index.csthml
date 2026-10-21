@@ -1,0 +1,140 @@
+
+@page
+@model SWES.Pages.UnidadesConcedentes.IndexModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>Unidades Concedentes</h1>
+            <p class="text-muted">
+                Gerencie as empresas e unidades concedentes cadastradas.
+            </p>
+        </div>
+
+        <a asp-page="/UnidadesConcedentes/Cadastro"
+           class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i>
+            Novo concedente
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get">
+                <div class="row g-2">
+                    <div class="col-md-10">
+                        <input asp-for="Pesquisa"
+                               class="form-control"
+                               placeholder="Pesquisar por razão social ou CNPJ..." />
+                    </div>
+
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-outline-primary">
+                            <i class="bi bi-search"></i>
+                            Pesquisar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Razão social</th>
+                            <th>CNPJ</th>
+                            <th>Telefone</th>
+                            <th>E-mail</th>
+                            <th>Status</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (Model.UnidadesConcedentes.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    Nenhum concedente encontrado.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var unidade in Model.UnidadesConcedentes)
+                            {
+                                <tr>
+                                    <td>@unidade.RazaoSocial</td>
+                                    <td>@unidade.Cnpj</td>
+                                    <td>@unidade.Telefone</td>
+                                    <td>@unidade.Email</td>
+
+                                    <td>
+                                        @if (unidade.Ativo)
+                                        {
+                                            <span class="badge bg-success">
+                                                Ativo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">
+                                                Inativo
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <a asp-page="/UnidadesConcedentes/Cadastro"
+                                               asp-route-id="@unidade.Id"
+                                               class="btn btn-sm btn-outline-primary"
+                                               title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                                Editar
+                                            </a>
+
+                                            @if (unidade.Ativo)
+                                            {
+                                                <form method="post"
+                                                      asp-page-handler="Inativar"
+                                                      asp-route-id="@unidade.Id"
+                                                      onsubmit="return confirm('Deseja realmente inativar este concedente?');">
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-danger">
+                                                        Inativar
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form method="post"
+                                                      asp-page-handler="Ativar"
+                                                      asp-route-id="@unidade.Id"
+                                                      onsubmit="return confirm('Deseja realmente ativar este concedente?');">
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-success">
+                                                        Ativar
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="text-muted mb-0">
+                Total de registros encontrados:
+                <strong>@Model.UnidadesConcedentes.Count</strong>
+            </p>
+        </div>
+    </div>
+</div>
