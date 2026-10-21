@@ -1,0 +1,78 @@
+
+@page
+@model SWES.Pages.UnidadesConcedentes.CadastroModel
+
+<div class="container mt-4">
+    <h1>
+        @(Model.UnidadeConcedente.Id.HasValue
+            ? "Editar concedente"
+            : "Cadastrar concedente")
+    </h1>
+
+    <p>Preencha os dados da unidade concedente.</p>
+
+    <form method="post" asp-page-handler="Salvar">
+        <input type="hidden"
+               asp-for="UnidadeConcedente.Id" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <div class="mb-3">
+            <label asp-for="UnidadeConcedente.RazaoSocial"
+                   class="form-label">Razão social</label>
+            <input asp-for="UnidadeConcedente.RazaoSocial"
+                   class="form-control" />
+            <span asp-validation-for="UnidadeConcedente.RazaoSocial"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="UnidadeConcedente.Cnpj"
+                   class="form-label">CNPJ</label>
+            <input asp-for="UnidadeConcedente.Cnpj"
+                   class="form-control"
+                   placeholder="00.000.000/0000-00" />
+            <span asp-validation-for="UnidadeConcedente.Cnpj"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="UnidadeConcedente.Endereco"
+                   class="form-label">Endereço</label>
+            <input asp-for="UnidadeConcedente.Endereco"
+                   class="form-control" />
+            <span asp-validation-for="UnidadeConcedente.Endereco"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="UnidadeConcedente.Telefone"
+                   class="form-label">Telefone</label>
+            <input asp-for="UnidadeConcedente.Telefone"
+                   class="form-control"
+                   placeholder="(00) 00000-0000" />
+            <span asp-validation-for="UnidadeConcedente.Telefone"
+                  class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="UnidadeConcedente.Email"
+                   class="form-label">E-mail</label>
+            <input asp-for="UnidadeConcedente.Email"
+                   class="form-control"
+                   type="email" />
+            <span asp-validation-for="UnidadeConcedente.Email"
+                  class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Salvar
+        </button>
+
+        <a asp-page="/UnidadesConcedentes/Index"
+           class="btn btn-secondary">
+            Cancelar
+        </a>
+    </form>
+</div>
