@@ -14,22 +14,22 @@ namespace SWES.Models
         public string Situacao { get; private set; }
         public string Observacao { get; private set; }
 
-        public int AlunoId { get; private set; }
+        public Guid AlunoId { get; private set; }
         public Aluno Aluno { get; private set; }
 
-        public int ProfessorOrientadorId { get; private set; }
+        public Guid ProfessorOrientadorId { get; private set; }
         public ProfessorOrientador ProfessorOrientador { get; private set; }
 
-        public int SupervisorEstagioId { get; private set; }
+        public Guid SupervisorEstagioId { get; private set; }
         public SupervisorEstagio SupervisorEstagio { get; private set; }
 
-        public int? CoordenadorId { get; private set; }
+        public Guid? CoordenadorId { get; private set; }
         public Coordenador Coordenador { get; private set; }
 
-        public int UnidadeConcedenteId { get; private set; }
+        public Guid UnidadeConcedenteId { get; private set; }
         public UnidadeConcedente UnidadeConcedente { get; private set; }
 
-        public int InstituicaoEnsinoId { get; private set; }
+        public Guid InstituicaoEnsinoId { get; private set; }
         public InstituicaoEnsino InstituicaoEnsino { get; private set; }
 
         public ICollection<Documento> Documentos { get; private set; } = new List<Documento>();
@@ -39,8 +39,8 @@ namespace SWES.Models
         private Estagio() { }
 
         public Estagio(string tipo, DateTime dataInicio, DateTime dataFim, string horario,
-            int alunoId, int professorOrientadorId, int supervisorEstagioId,
-            int unidadeConcedenteId, int instituicaoEnsinoId)
+        Guid alunoId, Guid professorOrientadorId, Guid supervisorEstagioId,
+        Guid unidadeConcedenteId, Guid instituicaoEnsinoId)
         {
             Tipo = tipo;
             DataInicio = dataInicio;

@@ -4,7 +4,7 @@ namespace SWES.ViewModels
 {
     public class UsuarioCadastroViewModel
     {
-        public int? Id { get; set; }
+        public Guid? Id { get; set; }
 
         [Required(ErrorMessage = "O nome é obrigatório.")]
         [StringLength(60, MinimumLength = 5, ErrorMessage = "O nome deve possuir entre 5 e 60 caracteres.")]

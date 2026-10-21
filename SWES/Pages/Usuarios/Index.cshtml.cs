@@ -267,7 +267,7 @@ namespace SWES.Pages.Usuarios
         }
 
         public async Task<IActionResult> OnPostInativarAsync(
-            int id,
+            Guid id,
             string tipo)
         {
             var inativado = await _usuarioService
@@ -282,7 +282,7 @@ namespace SWES.Pages.Usuarios
         }
 
         public async Task<IActionResult> OnPostAtivarAsync(
-            int id,
+            Guid id,
             string tipo)
         {
             var ativado = await _usuarioService

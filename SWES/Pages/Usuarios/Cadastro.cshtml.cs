@@ -21,7 +21,7 @@ namespace SWES.Pages.Usuarios
             _usuarioService = usuarioService;
         }
 
-        public IActionResult OnGet(int? id, string? tipo)
+        public IActionResult OnGet(Guid? id, string? tipo)
         {
             if (id.HasValue && !string.IsNullOrEmpty(tipo))
             {

@@ -46,7 +46,7 @@ namespace SWES.Services
 
             foreach (var usuario in usuarios)
             {
-                planilha.Cell(linha, 1).Value = usuario.Id;
+                planilha.Cell(linha, 1).Value = usuario.Id.ToString();
                 planilha.Cell(linha, 2).Value = usuario.Nome;
                 planilha.Cell(linha, 3).Value = usuario.Email;
                 planilha.Cell(linha, 4).Value = usuario.Telefone;

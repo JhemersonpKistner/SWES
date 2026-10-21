@@ -12,12 +12,12 @@ namespace SWES.Models
         public int EstagioId { get; private set; }
         public Estagio Estagio { get; private set; }
 
-        public int ProfessorOrientadorId { get; private set; }
+        public Guid ProfessorOrientadorId { get; private set; }
         public ProfessorOrientador ProfessorOrientador { get; private set; }
 
         private Avaliacao() { }
 
-        public Avaliacao(int estagioId, int professorOrientadorId, decimal nota, string observacao)
+        public Avaliacao(int estagioId, Guid professorOrientadorId, decimal nota, string observacao)
         {
             EstagioId = estagioId;
             ProfessorOrientadorId = professorOrientadorId;

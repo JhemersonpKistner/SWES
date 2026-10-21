@@ -27,8 +27,8 @@ namespace SWES.Data.Migrations
                     b.Property<int>("CursosId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProfessoresId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ProfessoresId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("CursosId", "ProfessoresId");
 
@@ -241,11 +241,12 @@ namespace SWES.Data.Migrations
 
             modelBuilder.Entity("SWES.Models.Aluno", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime?>("Alteracao")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
@@ -254,6 +255,9 @@ namespace SWES.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
+
+                    b.Property<DateTime>("Cadastro")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Curso")
                         .IsRequired()
@@ -352,8 +356,8 @@ namespace SWES.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProfessorOrientadorId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ProfessorOrientadorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -366,11 +370,12 @@ namespace SWES.Data.Migrations
 
             modelBuilder.Entity("SWES.Models.Coordenador", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime?>("Alteracao")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
@@ -379,6 +384,9 @@ namespace SWES.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
+
+                    b.Property<DateTime>("Cadastro")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -474,11 +482,11 @@ namespace SWES.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AlunoId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("AlunoId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("CoordenadorId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CoordenadorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DataFim")
                         .HasColumnType("datetime2");
@@ -490,29 +498,29 @@ namespace SWES.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("InstituicaoEnsinoId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("InstituicaoEnsinoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Observacao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProfessorOrientadorId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("ProfessorOrientadorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Situacao")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SupervisorEstagioId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("SupervisorEstagioId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UnidadeConcedenteId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UnidadeConcedenteId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -533,19 +541,28 @@ namespace SWES.Data.Migrations
 
             modelBuilder.Entity("SWES.Models.InstituicaoEnsino", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime?>("Alteracao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("Cadastro")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Cnpj")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(14)
+                        .HasColumnType("nvarchar(14)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
@@ -583,11 +600,12 @@ namespace SWES.Data.Migrations
 
             modelBuilder.Entity("SWES.Models.ProfessorOrientador", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime?>("Alteracao")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
@@ -596,6 +614,9 @@ namespace SWES.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
+
+                    b.Property<DateTime>("Cadastro")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Curso")
                         .IsRequired()
@@ -633,11 +654,12 @@ namespace SWES.Data.Migrations
 
             modelBuilder.Entity("SWES.Models.SupervisorEstagio", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime?>("Alteracao")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
@@ -651,6 +673,9 @@ namespace SWES.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
+
+                    b.Property<DateTime>("Cadastro")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Cargo")
                         .IsRequired()
@@ -690,31 +715,46 @@ namespace SWES.Data.Migrations
 
             modelBuilder.Entity("SWES.Models.UnidadeConcedente", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime?>("Alteracao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("Cadastro")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Cnpj")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(14)
+                        .HasColumnType("nvarchar(14)");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Endereco")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<bool>("InstituicaoEnsino")
+                        .HasColumnType("bit");
 
                     b.Property<string>("RazaoSocial")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Telefone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.HasKey("Id");
 

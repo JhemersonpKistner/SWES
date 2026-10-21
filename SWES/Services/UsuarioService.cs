@@ -111,7 +111,7 @@ namespace SWES.Services
     return usuarios;
 }
 
-        public UsuarioViewModel? ObterUsuario(int id, string tipo)
+        public UsuarioViewModel? ObterUsuario(Guid id, string tipo)
         {
             if (tipo == "Aluno")
             {
@@ -200,7 +200,7 @@ namespace SWES.Services
             return null;
         }
 
-        public UsuarioCadastroViewModel? ObterUsuarioParaEdicao(int id, string tipo)
+        public UsuarioCadastroViewModel? ObterUsuarioParaEdicao(Guid id, string tipo)
         {
             if (tipo == "Aluno")
             {
@@ -391,7 +391,7 @@ namespace SWES.Services
             return true;
         }
 
-        public async Task<bool> InativarUsuario(int id, string tipo)
+        public async Task<bool> InativarUsuario(Guid id, string tipo)
         {
             if (tipo == "Aluno")
             {
@@ -443,7 +443,7 @@ namespace SWES.Services
             return true;
         }
 
-        public async Task<bool> ReativarUsuario(int id, string tipo)
+        public async Task<bool> ReativarUsuario(Guid id, string tipo)
         {
             if (tipo == "Aluno")
             {
