@@ -1,121 +1,242 @@
+
 @page
 @model SWES.Pages.InstituicoesEnsino.IndexModel
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<div class="instituicoes-page">
+
+    <div class="instituicoes-header">
         <div>
+            <span class="instituicoes-eyebrow">
+                <i class="bi bi-building"></i>
+                GESTÃO ACADÊMICA
+            </span>
             <h1>Instituições de Ensino</h1>
-            <p>Gerencie as instituições cadastradas no sistema.</p>
+            <p>Gerencie as instituições vinculadas ao sistema de estágios.</p>
         </div>
 
         <a asp-page="/InstituicoesEnsino/Cadastro"
-           class="btn btn-primary">
+           class="instituicoes-btn instituicoes-btn-primary">
+            <i class="bi bi-plus-lg"></i>
             Cadastrar instituição
         </a>
     </div>
 
-    <form method="get" class="mb-3">
-        <div class="input-group">
-            <input type="text"
-                   name="Pesquisa"
-                   value="@Model.Pesquisa"
-                   class="form-control"
-                   placeholder="Pesquisar por nome ou CNPJ..." />
+    <div class="instituicoes-resumo">
+        <div class="instituicoes-resumo-card">
+            <div class="instituicoes-resumo-icone azul">
+                <i class="bi bi-buildings"></i>
+            </div>
+            <div>
+                <span>Total de instituições</span>
+                <strong>@Model.Instituicoes.Count</strong>
+            </div>
+        </div>
 
-            <button type="submit" class="btn btn-outline-primary">
+        <div class="instituicoes-resumo-card">
+            <div class="instituicoes-resumo-icone verde">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <div>
+                <span>Instituições ativas</span>
+                <strong>@Model.Instituicoes.Count(i => i.Ativo)</strong>
+            </div>
+        </div>
+
+        <div class="instituicoes-resumo-card">
+            <div class="instituicoes-resumo-icone cinza">
+                <i class="bi bi-pause-circle"></i>
+            </div>
+            <div>
+                <span>Instituições inativas</span>
+                <strong>@Model.Instituicoes.Count(i => !i.Ativo)</strong>
+            </div>
+        </div>
+    </div>
+
+    <section class="instituicoes-card">
+        <div class="instituicoes-card-header">
+            <div>
+                <h2>Instituições cadastradas</h2>
+                <p>Consulte e gerencie os registros existentes.</p>
+            </div>
+
+            <span class="instituicoes-contador">
+                @Model.Instituicoes.Count registro(s)
+            </span>
+        </div>
+
+        <form method="get" class="instituicoes-filtros">
+            <div class="instituicoes-pesquisa">
+                <label for="Pesquisa">Pesquisar instituição</label>
+
+                <div class="instituicoes-input-wrapper campo-pesquisa">
+                    <i class="bi bi-search"></i>
+                    <input type="text"
+                           id="Pesquisa"
+                           name="Pesquisa"
+                           value="@Model.Pesquisa"
+                           placeholder="Digite o nome ou CNPJ..." />
+                </div>
+            </div>
+
+            <button type="submit"
+                    class="instituicoes-btn instituicoes-btn-primary">
+                <i class="bi bi-search"></i>
                 Pesquisar
             </button>
 
             <a asp-page="/InstituicoesEnsino/Index"
-               class="btn btn-outline-secondary">
+               class="instituicoes-btn instituicoes-btn-secondary">
+                <i class="bi bi-arrow-counterclockwise"></i>
                 Limpar
             </a>
-        </div>
-    </form>
+        </form>
 
-    @if (Model.Instituicoes.Count == 0)
-    {
-        <div class="alert alert-info">
-            Nenhuma instituição de ensino encontrada.
-        </div>
-    }
-    else
-    {
-        <div class="table-responsive">
-            <table class="table table-striped table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>CNPJ</th>
-                        <th>Cadastro</th>
-                        <th>Situação</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
+        @if (Model.Instituicoes.Count == 0)
+        {
+            <div class="instituicoes-vazio">
+                <div class="instituicoes-vazio-icone">
+                    <i class="bi bi-building"></i>
+                </div>
 
-                <tbody>
-                    @foreach (var instituicao in Model.Instituicoes)
-                    {
+                @if (!string.IsNullOrWhiteSpace(Model.Pesquisa))
+                {
+                    <h3>Nenhum resultado encontrado</h3>
+                    <p>
+                        Não encontramos instituições correspondentes à sua pesquisa.
+                        Tente outro nome ou CNPJ.
+                    </p>
+
+                    <a asp-page="/InstituicoesEnsino/Index"
+                       class="instituicoes-btn instituicoes-btn-secondary">
+                        Limpar pesquisa
+                    </a>
+                }
+                else
+                {
+                    <h3>Nenhuma instituição cadastrada</h3>
+                    <p>Cadastre a primeira instituição de ensino para começar.</p>
+
+                    <a asp-page="/InstituicoesEnsino/Cadastro"
+                       class="instituicoes-btn instituicoes-btn-primary">
+                        <i class="bi bi-plus-lg"></i>
+                        Cadastrar instituição
+                    </a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="instituicoes-tabela-wrapper">
+                <table class="instituicoes-tabela">
+                    <thead>
                         <tr>
-                            <td>@instituicao.Nome</td>
-                            <td>@instituicao.Cnpj</td>
-                            <td>
-                                @instituicao.Cadastro.ToString("dd/MM/yyyy")
-                            </td>
-                            <td>
-                                @if (instituicao.Ativo)
-                                {
-                                    <span class="badge bg-success">Ativa</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">Inativa</span>
-                                }
-                            </td>
-                            <td>
-                                <div class="d-flex gap-2">
-                                    <a asp-page="/InstituicoesEnsino/Cadastro"
-                                       asp-route-id="@instituicao.Id"
-                                       class="btn btn-sm btn-outline-primary">
-                                        Editar
-                                    </a>
+                            <th>Instituição</th>
+                            <th>CNPJ</th>
+                            <th>Data de cadastro</th>
+                            <th>Situação</th>
+                            <th class="instituicoes-coluna-acoes">Ações</th>
+                        </tr>
+                    </thead>
 
+                    <tbody>
+                        @foreach (var instituicao in Model.Instituicoes)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="instituicoes-identificacao">
+                                        <div class="instituicoes-avatar">
+                                            <i class="bi bi-building"></i>
+                                        </div>
+
+                                        <div class="instituicoes-nome">
+                                            <strong>@instituicao.Nome</strong>
+                                            <span>Instituição de Ensino</span>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="instituicoes-cnpj">
+                                        @instituicao.Cnpj
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @instituicao.Cadastro.ToString("dd/MM/yyyy")
+                                </td>
+
+                                <td>
                                     @if (instituicao.Ativo)
                                     {
-                                        <form method="post"
-                                              asp-page-handler="Inativar"
-                                              onsubmit="return confirm('Deseja inativar esta instituição?');">
-                                            <input type="hidden"
-                                                   name="id"
-                                                   value="@instituicao.Id" />
-
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-outline-danger">
-                                                Inativar
-                                            </button>
-                                        </form>
+                                        <span class="instituicoes-status ativa">
+                                            <span></span> Ativa
+                                        </span>
                                     }
                                     else
                                     {
-                                        <form method="post"
-                                              asp-page-handler="Ativar"
-                                              onsubmit="return confirm('Deseja reativar esta instituição?');">
-                                            <input type="hidden"
-                                                   name="id"
-                                                   value="@instituicao.Id" />
-
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-outline-success">
-                                                Reativar
-                                            </button>
-                                        </form>
+                                        <span class="instituicoes-status inativa">
+                                            <span></span> Inativa
+                                        </span>
                                     }
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
+                                </td>
+
+                                <td>
+                                    <div class="instituicoes-acoes">
+                                        <a asp-page="/InstituicoesEnsino/Cadastro"
+                                           asp-route-id="@instituicao.Id"
+                                           class="instituicoes-acao editar"
+                                           title="Editar instituição"
+                                           aria-label="Editar @instituicao.Nome">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        @if (instituicao.Ativo)
+                                        {
+                                            <form method="post"
+                                                  asp-page-handler="Inativar"
+                                                  onsubmit="return confirm('Deseja realmente inativar esta instituição?');">
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="@instituicao.Id" />
+
+                                                <button type="submit"
+                                                        class="instituicoes-acao inativar"
+                                                        title="Inativar instituição"
+                                                        aria-label="Inativar @instituicao.Nome">
+                                                    <i class="bi bi-pause-circle"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form method="post"
+                                                  asp-page-handler="Ativar"
+                                                  onsubmit="return confirm('Deseja realmente reativar esta instituição?');">
+                                                <input type="hidden"
+                                                       name="id"
+                                                       value="@instituicao.Id" />
+
+                                                <button type="submit"
+                                                        class="instituicoes-acao reativar"
+                                                        title="Reativar instituição"
+                                                        aria-label="Reativar @instituicao.Nome">
+                                                    <i class="bi bi-arrow-clockwise"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+    <p class="instituicoes-rodape">
+        <i class="bi bi-info-circle"></i>
+        Instituições inativas permanecem registradas e podem ser reativadas.
+    </p>
 </div>

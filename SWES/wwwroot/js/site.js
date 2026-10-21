@@ -22,3 +22,16 @@ function fecharMenu() {
 document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") fecharMenu();
 });
+
+function alternarSubmenu(id, botao) {
+    const submenu = document.getElementById(id);
+
+    if (!submenu || !botao) {
+        return;
+    }
+
+    const estaAberto = botao.getAttribute("aria-expanded") === "true";
+
+    botao.setAttribute("aria-expanded", String(!estaAberto));
+    submenu.classList.toggle("submenu-aberto", !estaAberto);
+}

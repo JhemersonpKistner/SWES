@@ -3,6 +3,7 @@
 }
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,11 +33,13 @@
                     <span><i class="bi bi-speedometer2"></i></span>
                     Dashboard
                 </a>
-                <a href="/Usuarios/Index" class="menu-item @(currentPage?.StartsWith("/Usuarios") == true ? "menu-item-ativo" : "")">
+                <a href="/Usuarios/Index"
+                   class="menu-item @(currentPage?.StartsWith("/Usuarios") == true ? "menu-item-ativo" : "")">
                     <span><i class="bi bi-people"></i></span>
                     Usuários
                 </a>
-                <a href="#" class="menu-item">
+                <a href="#" 
+                    class="menu-item">
                     <span><i class="bi bi-mortarboard"></i></span>
                     Alunos
                 </a>
@@ -48,7 +51,7 @@
                     <span><i class="bi bi-building"></i></span>
                     Concedentes
                 </a>
-                <a href="#" class="menu-item">
+                <a href="/InstituicoesEnsino/Index" class="menu-item @(currentPage?.StartsWith("/InstituicoesEnsino") == true ? "menu-item-ativo" : "")">
                     <span><i class="bi bi-bank"></i></span>
                     Instituições
                 </a>
@@ -66,12 +69,29 @@
                 </a>
             </nav>
 
+            
             <div class="menu-bottom">
-                <a href="#" class="menu-item">
+                <button type="button"
+                        class="menu-item menu-toggle @(currentPage?.StartsWith("/Configuracoes") == true || currentPage?.StartsWith("/Cursos") == true ? "menu-item-ativo" : "")"
+                        id="btnConfiguracoes"
+                        aria-expanded="@(currentPage?.StartsWith("/Configuracoes") == true || currentPage?.StartsWith("/Cursos") == true ? "true" : "false")"
+                        aria-controls="submenuConfiguracoes" onclick="alternarSubmenu('submenuConfiguracoes', this)">
                     <span><i class="bi bi-gear"></i></span>
-                    Configuração
-                </a>
+                    <span class="menu-item-texto">Configurações</span>
+                    <i class="bi bi-chevron-down submenu-seta"></i>
+                </button>
+
+                <div class="submenu @(currentPage?.StartsWith("/Configuracoes") == true || currentPage?.StartsWith("/Cursos") == true ? "submenu-aberto" : "")"
+                     id="submenuConfiguracoes">
+
+                    <a href="/Cursos/Index"
+                       class="submenu-item @(currentPage?.StartsWith("/Cursos") == true ? "submenu-item-ativo" : "")">
+                        <i class="bi bi-mortarboard"></i>
+                        Cursos
+                    </a>
+                </div>
             </div>
+
         </aside>
 
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="fecharMenu()"></div>
@@ -93,4 +113,5 @@
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>
+
 </html>

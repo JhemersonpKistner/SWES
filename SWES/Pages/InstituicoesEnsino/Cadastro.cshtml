@@ -1,74 +1,127 @@
+
 @page
 @model SWES.Pages.InstituicoesEnsino.CadastroModel
 
-<div class="container mt-4">
-    <div class="mb-4">
-        <h1>
-            @(Model.Instituicao.Id.HasValue
-                ? "Editar Instituição de Ensino"
-                : "Cadastrar Instituição de Ensino")
-        </h1>
+<div class="instituicoes-page">
 
-        <p>Preencha os dados da instituição.</p>
+    <div class="instituicoes-header">
+        <div>
+            <span class="instituicoes-eyebrow">
+                <i class="bi bi-building"></i>
+                GESTÃO ACADÊMICA
+            </span>
+
+            <h1>
+                @(Model.Instituicao.Id.HasValue
+                    ? "Editar instituição"
+                    : "Cadastrar instituição")
+            </h1>
+
+            <p>
+                @(Model.Instituicao.Id.HasValue
+                    ? "Atualize os dados da instituição de ensino."
+                    : "Preencha os dados para registrar uma instituição de ensino.")
+            </p>
+        </div>
+
+        <a asp-page="/InstituicoesEnsino/Index"
+           class="instituicoes-btn instituicoes-btn-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Voltar para listagem
+        </a>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger mb-3">
+    <div class="instituicoes-form-card cadastro-card">
+
+        <div class="instituicoes-form-cabecalho">
+            <div class="instituicoes-form-icone">
+                <i class="bi bi-building-add"></i>
             </div>
 
-            <form method="post" asp-page-handler="Salvar">
-                <input type="hidden" asp-for="Instituicao.Id" />
+            <div>
+                <h2>Dados da instituição</h2>
+                <p>Informe os dados cadastrais solicitados abaixo.</p>
+            </div>
+        </div>
 
-                <div class="mb-3">
-                    <label asp-for="Instituicao.Nome"
-                           class="form-label">
+        <div asp-validation-summary="ModelOnly"
+             class="instituicoes-validacao-resumo"
+             role="alert">
+        </div>
+
+        <form method="post" asp-page-handler="Salvar">
+            <input type="hidden" asp-for="Instituicao.Id" />
+
+            <div class="instituicoes-form-grid">
+
+                <div class="instituicoes-form-campo">
+                    <label asp-for="Instituicao.Nome">
                         Nome da instituição
+                        <span class="campo-obrigatorio">*</span>
                     </label>
 
-                    <input asp-for="Instituicao.Nome"
-                           class="form-control"
-                           maxlength="150"
-                           placeholder="Digite o nome da instituição" />
+                    <div class="instituicoes-form-input">
+                        <i class="bi bi-building"></i>
+                        <input asp-for="Instituicao.Nome"
+                               maxlength="150"
+                               placeholder="Ex.: Centro Universitário"
+                               autocomplete="organization"
+                               required />
+                    </div>
 
                     <span asp-validation-for="Instituicao.Nome"
-                          class="text-danger">
+                          class="instituicoes-validacao-campo">
                     </span>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Instituicao.Cnpj"
-                           class="form-label">
+                <div class="instituicoes-form-campo">
+                    <label asp-for="Instituicao.Cnpj">
                         CNPJ
+                        <span class="campo-obrigatorio">*</span>
                     </label>
 
-                    <input asp-for="Instituicao.Cnpj"
-                           id="cnpj"
-                           class="form-control"
-                           maxlength="18"
-                           inputmode="numeric"
-                           placeholder="00.000.000/0000-00" />
+                    <div class="instituicoes-form-input">
+                        <i class="bi bi-card-text"></i>
+                        <input asp-for="Instituicao.Cnpj"
+                               id="cnpj"
+                               maxlength="18"
+                               inputmode="numeric"
+                               autocomplete="off"
+                               placeholder="00.000.000/0000-00"
+                               required />
+                    </div>
+
+                    <small class="instituicoes-ajuda">
+                        Informe os 14 dígitos do CNPJ.
+                    </small>
 
                     <span asp-validation-for="Instituicao.Cnpj"
-                          class="text-danger">
+                          class="instituicoes-validacao-campo">
                     </span>
                 </div>
 
-                <div class="d-flex gap-2">
-                    <a asp-page="/InstituicoesEnsino/Index"
-                       class="btn btn-secondary">
-                        Cancelar
-                    </a>
+            </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        @(Model.Instituicao.Id.HasValue
-                            ? "Salvar alterações"
-                            : "Cadastrar")
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div class="instituicoes-form-nota">
+                <i class="bi bi-info-circle"></i>
+                Os campos marcados com asterisco são obrigatórios.
+            </div>
+
+            <div class="instituicoes-form-acoes form-acoes">
+                <a asp-page="/InstituicoesEnsino/Index"
+                   class="instituicoes-btn instituicoes-btn-secondary">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                        class="instituicoes-btn instituicoes-btn-primary">
+                    <i class="bi bi-check-lg"></i>
+                    @(Model.Instituicao.Id.HasValue
+                        ? "Salvar alterações"
+                        : "Cadastrar instituição")
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -78,28 +131,32 @@
     <script>
         const campoCnpj = document.getElementById("cnpj");
 
-        campoCnpj.addEventListener("input", function () {
-            let numeros = this.value.replace(/\D/g, "").slice(0, 14);
+        if (campoCnpj) {
+            campoCnpj.addEventListener("input", function () {
+                let numeros = this.value
+                    .replace(/\D/g, "")
+                    .slice(0, 14);
 
-            if (numeros.length > 12) {
-                numeros = numeros.replace(
-                    /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2}).*/,
-                    "$1.$2.$3/$4-$5");
-            } else if (numeros.length > 8) {
-                numeros = numeros.replace(
-                    /^(\d{2})(\d{3})(\d{3})(\d{0,4}).*/,
-                    "$1.$2.$3/$4");
-            } else if (numeros.length > 5) {
-                numeros = numeros.replace(
-                    /^(\d{2})(\d{3})(\d{0,3}).*/,
-                    "$1.$2.$3");
-            } else if (numeros.length > 2) {
-                numeros = numeros.replace(
-                    /^(\d{2})(\d{0,3}).*/,
-                    "$1.$2");
-            }
+                if (numeros.length > 12) {
+                    numeros = numeros.replace(
+                        /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2}).*/,
+                        "$1.$2.$3/$4-$5");
+                } else if (numeros.length > 8) {
+                    numeros = numeros.replace(
+                        /^(\d{2})(\d{3})(\d{3})(\d{0,4}).*/,
+                        "$1.$2.$3/$4");
+                } else if (numeros.length > 5) {
+                    numeros = numeros.replace(
+                        /^(\d{2})(\d{3})(\d{0,3}).*/,
+                        "$1.$2.$3");
+                } else if (numeros.length > 2) {
+                    numeros = numeros.replace(
+                        /^(\d{2})(\d{0,3}).*/,
+                        "$1.$2");
+                }
 
-            this.value = numeros;
-        });
+                this.value = numeros;
+            });
+        }
     </script>
 }
