@@ -1,0 +1,121 @@
+@page
+@model SWES.Pages.InstituicoesEnsino.IndexModel
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1>Instituições de Ensino</h1>
+            <p>Gerencie as instituições cadastradas no sistema.</p>
+        </div>
+
+        <a asp-page="/InstituicoesEnsino/Cadastro"
+           class="btn btn-primary">
+            Cadastrar instituição
+        </a>
+    </div>
+
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text"
+                   name="Pesquisa"
+                   value="@Model.Pesquisa"
+                   class="form-control"
+                   placeholder="Pesquisar por nome ou CNPJ..." />
+
+            <button type="submit" class="btn btn-outline-primary">
+                Pesquisar
+            </button>
+
+            <a asp-page="/InstituicoesEnsino/Index"
+               class="btn btn-outline-secondary">
+                Limpar
+            </a>
+        </div>
+    </form>
+
+    @if (Model.Instituicoes.Count == 0)
+    {
+        <div class="alert alert-info">
+            Nenhuma instituição de ensino encontrada.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CNPJ</th>
+                        <th>Cadastro</th>
+                        <th>Situação</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var instituicao in Model.Instituicoes)
+                    {
+                        <tr>
+                            <td>@instituicao.Nome</td>
+                            <td>@instituicao.Cnpj</td>
+                            <td>
+                                @instituicao.Cadastro.ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @if (instituicao.Ativo)
+                                {
+                                    <span class="badge bg-success">Ativa</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inativa</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a asp-page="/InstituicoesEnsino/Cadastro"
+                                       asp-route-id="@instituicao.Id"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Editar
+                                    </a>
+
+                                    @if (instituicao.Ativo)
+                                    {
+                                        <form method="post"
+                                              asp-page-handler="Inativar"
+                                              onsubmit="return confirm('Deseja inativar esta instituição?');">
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@instituicao.Id" />
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger">
+                                                Inativar
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form method="post"
+                                              asp-page-handler="Ativar"
+                                              onsubmit="return confirm('Deseja reativar esta instituição?');">
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@instituicao.Id" />
+
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-success">
+                                                Reativar
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
