@@ -2,14 +2,13 @@
 @model SWES.Pages.Usuarios.IndexModel
 
 
-<div class="usuarios-container">
+<div class="usuarios-container instituicoes-page">
 
-    <div class="usuarios-header">
+    <div class="usuarios-header instituicoes-header">
         <div>
-            <h1>Gerenciamento de Usuários</h1>
-            <p class="usuarios-subtitulo">
-                Gerencie os usuários cadastrados no sistema
-            </p>
+            <span class="instituicoes-eyebrow"><i class="bi bi-people"></i> GESTÃO DE ESTÁGIOS</span>
+            <h1>Usuários</h1>
+            <p class="usuarios-subtitulo">Gerencie os usuários cadastrados no sistema</p>
         </div>
 
         <div class="usuarios-botoes">
@@ -18,7 +17,7 @@
                 Voltar
             </a>
 
-            <a asp-page="/Usuarios/Cadastro" class="btn-cadastrar">
+            <a asp-page="/Usuarios/Cadastro" class="btn-cadastrar instituicoes-btn instituicoes-btn-primary">
                 <i class="bi bi-person-plus"></i>
                 Cadastrar Usuário
             </a>
@@ -33,7 +32,9 @@
         </div>
     </div>
 
-    <form method="get" class="barra-pesquisa">
+    <section class="instituicoes-card usuarios-card-listagem">
+    <div class="instituicoes-card-header"><div><h2>Usuários cadastrados</h2><p>Consulte, filtre e gerencie a situação dos usuários.</p></div><span class="instituicoes-contador">@Model.Usuarios.Count registro(s)</span></div>
+    <form method="get" class="barra-pesquisa instituicoes-filtros">
         <div class="campo-pesquisa">
             <i class="bi bi-search"></i>
             <input type="text" name="Pesquisa" value="@Model.Pesquisa"
@@ -92,14 +93,14 @@
 
         </div>
 
-        <button type="submit" class="btn-pesquisar">
+        <button type="submit" class="btn-pesquisar instituicoes-btn instituicoes-btn-primary">
             <i class="bi bi-search"></i>
             Pesquisar
         </button>
 
         @if (!string.IsNullOrWhiteSpace(Model.Pesquisa))
         {
-            <a asp-page="/Usuarios/Index" class="btn-limpar">
+            <a asp-page="/Usuarios/Index" class="btn-limpar instituicoes-btn instituicoes-btn-secondary">
                 Limpar
             </a>
         }
@@ -109,7 +110,7 @@
            asp-route-Situacao="@Model.Situacao"
            asp-route-Perfil="@Model.Perfil"
            asp-route-pagina="@Model.PaginaAtual"
-           class="btn-pesquisar">
+           class="btn-pesquisar instituicoes-btn instituicoes-btn-primary">
             <i class="bi bi-file-earmark-excel"></i>
             Exportar Excel
         </a>
@@ -125,9 +126,9 @@
     }
     else
     {
-        <div class="tabela-wrapper">
+        <div class="tabela-wrapper instituicoes-tabela-wrapper">
 
-            <table class="tabela-usuarios">
+            <table class="tabela-usuarios instituicoes-tabela usuarios-tabela-padronizada">
 
                 <thead>
                     <tr>
@@ -146,9 +147,9 @@
                     {
                         <tr>
 
-                            <td>@(usuario.Inscricao == null ? "-" : usuario.Inscricao)</td>
+                            <td><span class="usuario-inscricao">@(usuario.Inscricao == null ? "-" : usuario.Inscricao)</span></td>
 
-                            <td>@usuario.Nome</td>
+                            <td><div class="instituicoes-identificacao"><div class="instituicoes-avatar"><i class="bi bi-person"></i></div><div class="instituicoes-nome"><strong>@usuario.Nome</strong><span>Usuário do sistema</span></div></div></td>
 
                             <td>@usuario.Email</td>
 
@@ -157,55 +158,52 @@
                             <td>
                                 @if (usuario.Ativo)
                                 {
-                                    <span class="status status-ativo">
+                                    <span class="registro-status ativo"><span></span>
                                         Ativo
                                     </span>
                                 }
                                 else
                                 {
-                                    <span class="status status-inativo">
+                                    <span class="registro-status inativo"><span></span>
                                         Inativo
                                     </span>
                                 }
                             </td>
 
                             <td>
-                                <div class="acoes">
+                                <div class="acoes registro-acoes">
 
                                     <a asp-page="/Usuarios/Cadastro" asp-route-id="@usuario.Id" asp-route-tipo="@usuario.Tipo"
-                                       class="btn-editar">
+                                       class="registro-acao editar">
 
                                         <i class="bi bi-pencil"></i>
-                                        Editar
 
                                     </a>
 
                                     @if (usuario.Ativo)
                                     {
-                                        <button type="button" class="btn-inativar" onclick="abrirModalInativacao(
-                                            @usuario.Id,
-                                            '@usuario.Tipo',
-                                            '@usuario.Nome'
-                                            )">
-
-                                            <i class="bi bi-person-x"></i>
-                                            Inativar
-
-                                        </button>
+                                        <form method="post" asp-page-handler="Inativar"
+                                              onsubmit="return abrirConfirmacaoUsuario(this, 'inativar', 'usuário');">
+                                            <input type="hidden" name="id" value="@usuario.Id" />
+                                            <input type="hidden" name="tipo" value="@usuario.Tipo" />
+                                            <input type="hidden" name="nome" value="@usuario.Nome" />
+                                            <button type="submit" class="registro-acao inativar" title="Inativar usuário" aria-label="Inativar @usuario.Nome">
+                                                <i class="bi bi-person-x"></i>
+                                            </button>
+                                        </form>
                         
                                     }
                                     @if (!usuario.Ativo)
                                     {
-                                        <button type="button" class="btn-reativar" onclick="abrirModalReativacao(
-                                            @usuario.Id,
-                                            '@usuario.Tipo',
-                                            '@usuario.Nome'
-                                            )">
-
-                                            <i class="bi bi-person-check"></i>
-                                            Reativar
-
-                                        </button>
+                                        <form method="post" asp-page-handler="Ativar"
+                                              onsubmit="return abrirConfirmacaoUsuario(this, 'reativar', 'usuário');">
+                                            <input type="hidden" name="id" value="@usuario.Id" />
+                                            <input type="hidden" name="tipo" value="@usuario.Tipo" />
+                                            <input type="hidden" name="nome" value="@usuario.Nome" />
+                                            <button type="submit" class="registro-acao reativar" title="Reativar usuário" aria-label="Reativar @usuario.Nome">
+                                                <i class="bi bi-person-check"></i>
+                                            </button>
+                                        </form>
                                     }
 
                                 </div>
@@ -264,167 +262,59 @@
             </div>
         }
 
-        <!-- MODAL DE INATIVAÇÃO -->
-
-        <div id="modalInativacao" class="modal-inativacao">
-
-            <div class="modal-conteudo">
-
-                <div class="modal-icone">
-                    <i class="bi bi-exclamation-triangle"></i>
+        <!-- Modal de confirmação para ativação/inativação de usuário -->
+        <div class="swes-modal-overlay" id="modalConfirmacaoUsuario" aria-hidden="true">
+            <section class="swes-modal" role="dialog" aria-modal="true" aria-labelledby="tituloConfirmacaoUsuario">
+                <div class="swes-modal-icone" id="iconeConfirmacaoUsuario"><i class="bi bi-exclamation-triangle"></i></div>
+                <h2 id="tituloConfirmacaoUsuario">Confirmar ação</h2>
+                <p id="mensagemConfirmacaoUsuario">Deseja realmente continuar?</p>
+                <div class="swes-modal-acoes">
+                    <button type="button" class="swes-modal-cancelar" onclick="fecharConfirmacaoUsuario()">Cancelar</button>
+                    <button type="button" class="swes-modal-confirmar" id="btnConfirmarUsuario" onclick="confirmarAcaoUsuario()">Confirmar</button>
                 </div>
-
-                <h2>Inativar usuário</h2>
-
-                <p>
-                    Tem certeza que deseja inativar este usuário?
-                </p>
-
-                <div class="modal-dados">
-
-                    <p>
-                        <strong>Nome:</strong>
-                        <span id="nomeUsuarioModal"></span>
-                    </p>
-
-                    <p>
-                        <strong>Perfil:</strong>
-                        <span id="tipoUsuarioModal"></span>
-                    </p>
-
-                </div>
-
-                <form method="post" asp-page-handler="Inativar">
-
-                    <input type="hidden" id="idUsuarioModal" name="id" />
-
-                    <input type="hidden" id="tipoUsuarioModalInput" name="tipo" />
-
-                    <div class="modal-acoes">
-
-                        <button type="button" class="btn-cancelar" onclick="fecharModalInativacao()">
-
-                            Cancelar
-
-                        </button>
-
-                        <button type="submit" class="btn-confirmar">
-
-                            Inativar
-
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
+            </section>
         </div>
-
-
-        <!-- MODAL DE REATIVAÇÃO -->
-
-        <div id="modalReativacao" class="modal-inativacao">
-
-            <div class="modal-conteudo">
-
-                <div class="modal-icone">
-                    <i class="bi bi-exclamation-triangle"></i>
-                </div>
-
-                <h2>Reativar usuário</h2>
-
-                <p>
-                    Tem certeza que deseja reativar este usuário?
-                </p>
-
-                <div class="modal-dados">
-
-                    <p>
-                        <strong>Nome:</strong>
-                        <span id="nomeUsuarioReativacaoModal"></span>
-                    </p>
-
-                    <p>
-                        <strong>Perfil:</strong>
-                        <span id="tipoUsuarioReativacaoModal"></span>
-                    </p>
-
-                </div>
-
-                <form method="post" asp-page-handler="Ativar">
-
-                    <input type="hidden" id="idUsuarioReativacaoModal" name="id" />
-
-                    <input type="hidden" id="tipoUsuarioReativacaoModalInput" name="tipo" />
-
-                    <div class="modal-acoes">
-
-                        <button type="button" class="btn-cancelar" onclick="fecharModalReativacao()">
-
-                            Cancelar
-
-                        </button>
-
-                        <button type="submit" class="btn-confirmar">
-
-                            Reativar
-
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-        </div>
-
     }
+    </section>
 
 </div>
 
 
 
 <script>
+    let formularioUsuarioPendente = null;
 
-    function abrirModalInativacao(id, tipo, nome) {
-
-        document.getElementById("idUsuarioModal").value = id;
-
-        document.getElementById("tipoUsuarioModalInput").value = tipo;
-
-        document.getElementById("nomeUsuarioModal").textContent = nome;
-
-        document.getElementById("tipoUsuarioModal").textContent = tipo;
-
-        document.getElementById("modalInativacao").style.display = "flex";
+    function abrirConfirmacaoUsuario(formulario, acao, tipo) {
+        formularioUsuarioPendente = formulario;
+        const reativar = acao === 'reativar';
+        document.getElementById('tituloConfirmacaoUsuario').textContent = reativar ? 'Reativar usuário' : 'Inativar usuário';
+        document.getElementById('mensagemConfirmacaoUsuario').textContent = `Deseja realmente ${reativar ? 'reativar' : 'inativar'} este ${tipo}?`;
+        document.getElementById('btnConfirmarUsuario').textContent = reativar ? 'Reativar' : 'Inativar';
+        document.getElementById('btnConfirmarUsuario').classList.toggle('reativar', reativar);
+        document.getElementById('iconeConfirmacaoUsuario').innerHTML = reativar ? '<i class="bi bi-person-check"></i>' : '<i class="bi bi-exclamation-triangle"></i>';
+        const modal = document.getElementById('modalConfirmacaoUsuario');
+        modal.classList.add('aberto');
+        modal.setAttribute('aria-hidden', 'false');
+        document.getElementById('btnConfirmarUsuario').focus();
+        return false;
     }
 
-    function abrirModalReativacao(id, tipo, nome) {
-
-        document.getElementById("idUsuarioReativacaoModal").value = id;
-
-        document.getElementById("tipoUsuarioReativacaoModalInput").value = tipo;
-
-        document.getElementById("nomeUsuarioReativacaoModal").textContent = nome;
-
-        document.getElementById("tipoUsuarioReativacaoModal").textContent = tipo;
-
-        document.getElementById("modalReativacao").style.display = "flex";
+    function fecharConfirmacaoUsuario() {
+        const modal = document.getElementById('modalConfirmacaoUsuario');
+        modal.classList.remove('aberto');
+        modal.setAttribute('aria-hidden', 'true');
+        formularioUsuarioPendente = null;
     }
 
-
-    function fecharModalInativacao() {
-
-        document.getElementById("modalInativacao").style.display = "none";
-
-    }
-    function fecharModalReativacao() {
-
-        document.getElementById("modalReativacao").style.display = "none";
-
+    function confirmarAcaoUsuario() {
+        if (formularioUsuarioPendente) formularioUsuarioPendente.submit();
     }
 
+    document.getElementById('modalConfirmacaoUsuario')?.addEventListener('click', function (event) {
+        if (event.target === this) fecharConfirmacaoUsuario();
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') fecharConfirmacaoUsuario();
+    });
 </script>

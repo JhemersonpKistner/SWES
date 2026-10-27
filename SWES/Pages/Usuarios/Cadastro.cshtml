@@ -99,7 +99,8 @@
                             Senha
                         </label>
 
-                        <input type="password" id="Usuario_Senha" name="Usuario.Senha" value="@Model.Usuario.Senha" maxlength="100" autocomplete="new-password" placeholder="Digite a senha" />
+                        <input type="password" id="Usuario_Senha" name="Usuario.Senha" value="@Model.Usuario.Senha"
+                               maxlength="100" autocomplete="new-password" placeholder="Digite a senha" />
 
                         <span asp-validation-for="Usuario.Senha" class="text-danger">
                         </span>
@@ -113,7 +114,8 @@
                             Confirmar senha
                         </label>
 
-                        <input type="password" id="Usuario_ConfirmacaoSenha" name="Usuario.ConfirmacaoSenha" value="@Model.Usuario.ConfirmacaoSenha" maxlength="100" autocomplete="new-password"
+                        <input type="password" id="Usuario_ConfirmacaoSenha" name="Usuario.ConfirmacaoSenha"
+                               value="@Model.Usuario.ConfirmacaoSenha" maxlength="100" autocomplete="new-password"
                                placeholder="Digite a senha novamente" />
 
                         <span asp-validation-for="Usuario.ConfirmacaoSenha" class="text-danger">
@@ -210,11 +212,8 @@
                             Matrícula
                         </label>
 
-                        <input asp-for="Usuario.Matricula"
-       class="form-control"
-       maxlength="10"
-       inputmode="numeric"
-       oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);" />
+                        <input asp-for="Usuario.Matricula" class="form-control" maxlength="10" inputmode="numeric"
+                               oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10);" />
 
                         <span asp-validation-for="Usuario.Matricula" class="text-danger">
                         </span>
@@ -360,16 +359,11 @@
                             Data de nascimento
                         </label>
 
-                     <input asp-for="Usuario.DataNasc"
-       type="date"
-       class="form-control"
-       id="Usuario_DataNasc"
-       min="1900-01-01"
-       max="@dataMaxima"
-       inputmode="numeric" />
+                        <input asp-for="Usuario.DataNasc" type="date" class="form-control" id="Usuario_DataNasc"
+                               min="1900-01-01" max="@dataMaxima" inputmode="numeric" />
 
-<span asp-validation-for="Usuario.DataNasc" class="text-danger"></span>
-<span id="mensagemDataNascimento" class="text-danger"></span>
+                        <span asp-validation-for="Usuario.DataNasc" class="text-danger"></span>
+                        <span id="mensagemDataNascimento" class="text-danger"></span>
 
                     </div>
 
@@ -410,57 +404,46 @@
                 </div>
 
 
-                <div class="campo">
+                <div class="campo campo-cursos-professor">
 
-                    <label>
+                    <label class="label-cursos-professor">
                         Cursos que leciona
                     </label>
 
-                    <div>
+                    <div class="lista-cursos-professor">
 
-                        <label>
+                        <label class="opcao-curso-professor">
                             <input type="checkbox" name="Usuario.CursosProfessor" value="Sistemas de Informação"
-                            @(Model.Usuario.CursosProfessor.Contains("Sistemas de Informação") ? "checked"
-       : "") />
+                                   checked="@(Model.Usuario.CursosProfessor.Contains("Sistemas de Informação"))" />
 
-                            Sistemas de Informação
+                            <span>Sistemas de Informação</span>
                         </label>
 
-                        <br />
-
-                        <label>
+                        <label class="opcao-curso-professor">
                             <input type="checkbox" name="Usuario.CursosProfessor" value="Administração"
-                            @(Model.Usuario.CursosProfessor.Contains("Administração") ? "checked"
-       : "") />
+                                   checked="@(Model.Usuario.CursosProfessor.Contains("Administração"))" />
 
-                            Administração
+                            <span>Administração</span>
                         </label>
 
-                        <br />
-
-                        <label>
+                        <label class="opcao-curso-professor">
                             <input type="checkbox" name="Usuario.CursosProfessor" value="Direito"
-                            @(Model.Usuario.CursosProfessor.Contains("Direito") ? "checked"
-       : "") />
+                                   checked="@(Model.Usuario.CursosProfessor.Contains("Direito"))" />
 
-                            Direito
+                            <span>Direito</span>
                         </label>
 
-                        <br />
-
-                        <label>
+                        <label class="opcao-curso-professor">
                             <input type="checkbox" name="Usuario.CursosProfessor" value="Engenharia Civil"
-                            @(Model.Usuario.CursosProfessor.Contains("Engenharia Civil") ? "checked"
-       : "") />
+                                   checked="@(Model.Usuario.CursosProfessor.Contains("Engenharia Civil"))" />
 
-                            Engenharia Civil
+                            <span>Engenharia Civil</span>
                         </label>
 
                     </div>
 
-                   <span asp-validation-for="Usuario.CursosProfessor"
-      class="text-danger d-block mt-2">
-</span>
+                    <span asp-validation-for="Usuario.CursosProfessor" class="text-danger d-block mt-2">
+                    </span>
 
                 </div>
 
@@ -694,4 +677,4 @@
         }
     </script>
 
-} 
+}

@@ -169,23 +169,23 @@
                                 <td>
                                     @if (instituicao.Ativo)
                                     {
-                                        <span class="instituicoes-status ativa">
+                                        <span class="registro-status ativo instituicoes-status ativa">
                                             <span></span> Ativa
                                         </span>
                                     }
                                     else
                                     {
-                                        <span class="instituicoes-status inativa">
+                                        <span class="registro-status inativo instituicoes-status inativa">
                                             <span></span> Inativa
                                         </span>
                                     }
                                 </td>
 
                                 <td>
-                                    <div class="instituicoes-acoes">
+                                    <div class="registro-acoes instituicoes-acoes">
                                         <a asp-page="/InstituicoesEnsino/Cadastro"
                                            asp-route-id="@instituicao.Id"
-                                           class="instituicoes-acao editar"
+                                           class="registro-acao editar instituicoes-acao"
                                            title="Editar instituição"
                                            aria-label="Editar @instituicao.Nome">
                                             <i class="bi bi-pencil"></i>
@@ -195,13 +195,13 @@
                                         {
                                             <form method="post"
                                                   asp-page-handler="Inativar"
-                                                  onsubmit="return confirm('Deseja realmente inativar esta instituição?');">
+                                                  onsubmit="return abrirConfirmacaoRegistro(this, 'inativar', 'instituição');">
                                                 <input type="hidden"
                                                        name="id"
                                                        value="@instituicao.Id" />
 
                                                 <button type="submit"
-                                                        class="instituicoes-acao inativar"
+                                                        class="registro-acao inativar instituicoes-acao"
                                                         title="Inativar instituição"
                                                         aria-label="Inativar @instituicao.Nome">
                                                     <i class="bi bi-pause-circle"></i>
@@ -212,13 +212,13 @@
                                         {
                                             <form method="post"
                                                   asp-page-handler="Ativar"
-                                                  onsubmit="return confirm('Deseja realmente reativar esta instituição?');">
+                                                  onsubmit="return abrirConfirmacaoRegistro(this, 'reativar', 'instituição');">
                                                 <input type="hidden"
                                                        name="id"
                                                        value="@instituicao.Id" />
 
                                                 <button type="submit"
-                                                        class="instituicoes-acao reativar"
+                                                        class="registro-acao reativar instituicoes-acao"
                                                         title="Reativar instituição"
                                                         aria-label="Reativar @instituicao.Nome">
                                                     <i class="bi bi-arrow-clockwise"></i>
@@ -234,6 +234,53 @@
             </div>
         }
     </section>
+
+
+
+<!-- Modal de confirmação para ativação/inativação -->
+<div class="swes-modal-overlay" id="modalConfirmacaoRegistro" aria-hidden="true">
+    <section class="swes-modal" role="dialog" aria-modal="true" aria-labelledby="tituloConfirmacaoRegistro">
+        <div class="swes-modal-icone" id="iconeConfirmacaoRegistro"><i class="bi bi-exclamation-triangle"></i></div>
+        <h2 id="tituloConfirmacaoRegistro">Confirmar ação</h2>
+        <p id="mensagemConfirmacaoRegistro">Deseja realmente continuar?</p>
+        <div class="swes-modal-acoes">
+            <button type="button" class="swes-modal-cancelar" onclick="fecharConfirmacaoRegistro()">Cancelar</button>
+            <button type="button" class="swes-modal-confirmar" id="btnConfirmarRegistro" onclick="confirmarAcaoRegistro()">Confirmar</button>
+        </div>
+    </section>
+</div>
+<script>
+    let formularioRegistroPendente = null;
+    function abrirConfirmacaoRegistro(formulario, acao, tipo) {
+        formularioRegistroPendente = formulario;
+        const reativar = acao === 'reativar';
+        document.getElementById('tituloConfirmacaoRegistro').textContent = reativar ? 'Reativar registro' : 'Inativar registro';
+        document.getElementById('mensagemConfirmacaoRegistro').textContent = `Deseja realmente ${reativar ? 'reativar' : 'inativar'} esta ${tipo}?`;
+        document.getElementById('btnConfirmarRegistro').textContent = reativar ? 'Reativar' : 'Inativar';
+        document.getElementById('btnConfirmarRegistro').classList.toggle('reativar', reativar);
+        document.getElementById('iconeConfirmacaoRegistro').innerHTML = reativar ? '<i class="bi bi-arrow-clockwise"></i>' : '<i class="bi bi-exclamation-triangle"></i>';
+        const modal = document.getElementById('modalConfirmacaoRegistro');
+        modal.classList.add('aberto');
+        modal.setAttribute('aria-hidden', 'false');
+        document.getElementById('btnConfirmarRegistro').focus();
+        return false;
+    }
+    function fecharConfirmacaoRegistro() {
+        const modal = document.getElementById('modalConfirmacaoRegistro');
+        modal.classList.remove('aberto');
+        modal.setAttribute('aria-hidden', 'true');
+        formularioRegistroPendente = null;
+    }
+    function confirmarAcaoRegistro() {
+        if (formularioRegistroPendente) formularioRegistroPendente.submit();
+    }
+    document.getElementById('modalConfirmacaoRegistro')?.addEventListener('click', function (event) {
+        if (event.target === this) fecharConfirmacaoRegistro();
+    });
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') fecharConfirmacaoRegistro();
+    });
+</script>
 
     <p class="instituicoes-rodape">
         <i class="bi bi-info-circle"></i>

@@ -2509,3 +2509,207 @@ body {
         min-width: 900px;
     }
 }
+
+/* ==========================================
+   CHECKBOXES DOS CURSOS DO PROFESSOR
+========================================== */
+
+.campo-cursos-professor {
+    width: 100%;
+    min-width: 0;
+}
+
+.label-cursos-professor {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.lista-cursos-professor {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.opcao-curso-professor {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    margin: 0;
+    cursor: pointer;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.opcao-curso-professor input[type="checkbox"] {
+    appearance: auto;
+    -webkit-appearance: checkbox;
+    display: inline-block;
+    flex: 0 0 18px;
+    width: 18px !important;
+    min-width: 18px;
+    max-width: 18px;
+    height: 18px !important;
+    min-height: 18px;
+    margin: 0 !important;
+    padding: 0 !important;
+    cursor: pointer;
+    accent-color: #009be3;
+}
+
+.opcao-curso-professor span {
+    display: inline-block;
+    margin: 0;
+}
+
+/* =========================================================
+   AJUSTES SOLICITADOS - MENU, USUÁRIOS E CONFIRMAÇÕES
+========================================================= */
+
+/* Menu lateral com rolagem; configurações ficam após Avaliações. */
+.sidebar {
+    height: 100vh;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #a8c9df transparent;
+}
+.sidebar::-webkit-scrollbar { width: 7px; }
+.sidebar::-webkit-scrollbar-thumb { background: #a8c9df; border-radius: 10px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.menu-bottom, .menu-configuracoes { margin-top: 8px; }
+.menu-configuracoes { flex: 0 0 auto; }
+.menu { flex: 0 0 auto; }
+
+/* Listagem de usuários alinhada visualmente às páginas de cadastros. */
+.usuarios-container.instituicoes-page { max-width: none; }
+.usuarios-container .usuarios-header { margin-bottom: 24px; }
+.usuarios-container .usuarios-header h1 { font-weight: 750; }
+.usuarios-container .usuarios-subtitulo { margin-bottom: 0; }
+.usuarios-container .usuarios-botoes .btn-voltar-dashboard { display: none; }
+.usuarios-card-listagem { margin-top: 0; }
+.usuarios-container .barra-pesquisa { box-shadow: none; border: 0; border-radius: 0; margin: 0; padding: 0 24px 24px; background: #fff; }
+.usuarios-container .campo-pesquisa { flex: 1 1 260px; }
+.usuarios-container .campo-pesquisa input { width: 100%; min-height: 44px; padding: 10px 14px 10px 40px; border: 1px solid #d0d5dd; border-radius: 8px; }
+.usuarios-container .campo-pesquisa i { left: 14px; top: 14px; }
+.usuarios-container .filtros-gerenciamento { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.usuarios-container .campo-filtro-select { min-width: 145px; }
+.usuarios-container .campo-filtro-select label { display: block; margin-bottom: 7px; color: #344054; font-size: 13px; }
+.usuarios-container .select-filtro-wrapper { position: relative; }
+.usuarios-container .select-filtro { min-height: 44px; padding: 9px 32px 9px 12px; border: 1px solid #d0d5dd; border-radius: 8px; background: #fff; }
+.usuarios-container .select-filtro-seta { position: absolute; right: 12px; top: 14px; pointer-events: none; }
+.usuarios-container .btn-pesquisar, .usuarios-container .btn-limpar { min-height: 44px; white-space: nowrap; }
+.usuarios-container .tabela-wrapper { border: 0; border-radius: 0; box-shadow: none; }
+.usuarios-container .tabela-usuarios { min-width: 900px; }
+.usuarios-container .tabela-usuarios th { background: #0050a0; padding: 15px 14px; font-size: 13px; white-space: nowrap; }
+.usuarios-container .tabela-usuarios td { padding: 13px 14px; color: #344054; vertical-align: middle; }
+.usuarios-container .tabela-usuarios .instituicoes-identificacao { min-width: 180px; }
+.usuarios-container .tabela-usuarios .instituicoes-avatar { width: 42px; height: 42px; }
+.usuarios-container .tabela-usuarios .instituicoes-nome strong { color: #101828; }
+.usuarios-container .tabela-usuarios .instituicoes-nome span { color: #98a2b3; }
+.usuarios-container .instituicoes-acoes { justify-content: center; }
+.usuarios-container .instituicoes-acao { width: 36px; height: 36px; padding: 0; border: 0; }
+.usuarios-container .instituicoes-acao.editar { background: #00a1df; color: #fff; }
+.usuarios-container .instituicoes-acao.inativar { background: #dc3545; color: #fff; }
+.usuarios-container .instituicoes-acao.reativar { background: #198754; color: #fff; }
+.usuarios-container .instituicoes-acao:hover { filter: brightness(.92); }
+.usuarios-container .informacao-paginacao, .usuarios-container .paginacao { margin: 16px 24px; }
+.usuarios-container .usuarios-vazio { padding: 45px 20px; text-align: center; color: #667085; }
+
+/* Modal próprio em vez do alert nativo do navegador. */
+.swes-modal-overlay {
+    position: fixed; inset: 0; z-index: 3000; display: none;
+    align-items: center; justify-content: center; padding: 20px;
+    background: rgba(16, 24, 40, .55); backdrop-filter: blur(3px);
+}
+.swes-modal-overlay.aberto { display: flex; }
+.swes-modal {
+    width: min(100%, 440px); padding: 28px; border-radius: 16px;
+    background: #fff; box-shadow: 0 24px 60px rgba(16, 24, 40, .24);
+    animation: swesModalEntrada .18s ease-out;
+}
+.swes-modal-icone {
+    display: flex; align-items: center; justify-content: center;
+    width: 52px; height: 52px; margin-bottom: 18px; border-radius: 14px;
+    background: #fff1f0; color: #d92d20; font-size: 24px;
+}
+.swes-modal h2 { margin: 0 0 9px; color: #101828; font-size: 21px; font-weight: 750; }
+.swes-modal p { margin: 0; color: #667085; line-height: 1.6; }
+.swes-modal-acoes { display: flex; justify-content: flex-end; gap: 10px; margin-top: 26px; }
+.swes-modal-acoes button { min-height: 42px; padding: 10px 17px; border-radius: 8px; font-weight: 650; cursor: pointer; }
+.swes-modal-cancelar { border: 1px solid #d0d5dd; background: #fff; color: #344054; }
+.swes-modal-cancelar:hover { background: #f9fafb; }
+.swes-modal-confirmar { border: 1px solid #d92d20; background: #d92d20; color: #fff; }
+.swes-modal-confirmar:hover { background: #b42318; }
+.swes-modal-confirmar.reativar { border-color: #16834a; background: #16834a; }
+.swes-modal-confirmar.reativar:hover { background: #126b3c; }
+@keyframes swesModalEntrada { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+@media (max-width: 900px) {
+    .usuarios-container .usuarios-header { align-items: flex-start; flex-direction: column; }
+    .usuarios-container .usuarios-botoes { width: 100%; flex-wrap: wrap; }
+    .usuarios-container .barra-pesquisa { align-items: stretch; }
+    .usuarios-container .filtros-gerenciamento { flex: 1 1 100%; }
+}
+@media (max-width: 600px) {
+    .swes-modal { padding: 22px; }
+    .swes-modal-acoes { flex-direction: column-reverse; }
+    .swes-modal-acoes button { width: 100%; }
+}
+
+
+/* =========================================================
+   COMPONENTES COMPARTILHADOS DE LISTAGEM
+   Classes genéricas reutilizáveis em usuários, instituições
+   e unidades concedentes.
+========================================================= */
+.registro-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.registro-status > span {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    flex: 0 0 7px;
+}
+.registro-status.ativo { background: #dff7e8; color: #087443; }
+.registro-status.inativo { background: #eef0f2; color: #667085; }
+.registro-acoes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.registro-acoes form { margin: 0; display: inline-flex; }
+.registro-acao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: filter .15s ease, transform .15s ease;
+}
+.registro-acao:hover { filter: brightness(.92); transform: translateY(-1px); }
+.registro-acao.editar { background: #00a1df; color: #fff; }
+.registro-acao.inativar { background: #dc3545; color: #fff; }
+.registro-acao.reativar { background: #198754; color: #fff; }
+.registro-acao:focus-visible { outline: 3px solid rgba(0, 155, 227, .3); outline-offset: 2px; }
+@media (max-width: 768px) {
+    .registro-acoes { flex-wrap: wrap; }
+}
