@@ -27,10 +27,10 @@ namespace SWES.Models
         public Coordenador Coordenador { get; private set; }
 
         public Guid UnidadeConcedenteId { get; private set; }
-        public UnidadeConcedente UnidadeConcedente { get; private set; }
+        public UnidadeConcedente UnidadeConcedente { get; private set; } = null!;
 
         public Guid InstituicaoEnsinoId { get; private set; }
-        public InstituicaoEnsino InstituicaoEnsino { get; private set; }
+        public InstituicaoEnsino InstituicaoEnsino { get; private set; } = null!;
 
         public ICollection<Documento> Documentos { get; private set; } = new List<Documento>();
         public ICollection<Atividade> Atividades { get; private set; } = new List<Atividade>();

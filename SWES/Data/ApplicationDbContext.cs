@@ -63,6 +63,27 @@ namespace SWES.Data
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<ProfessorOrientador>()
+                .HasMany(p => p.Cursos)
+                .WithMany(c => c.Professores);
+
+            builder.Entity<Curso>()
+                .HasOne(c => c.Instituicao)
+                .WithMany()
+                .HasForeignKey(c => c.InstituicaoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Estagio>()
+                .HasOne(e => e.UnidadeConcedente)
+                .WithMany(u => u.Estagios)
+                .HasForeignKey(e => e.UnidadeConcedenteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Estagio>()
+                .HasOne(e => e.InstituicaoEnsino)
+                .WithMany()
+                .HasForeignKey(e => e.InstituicaoEnsinoId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

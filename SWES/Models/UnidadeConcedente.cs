@@ -32,13 +32,15 @@ namespace SWES.Models
             string cnpj,
             string endereco,
             string telefone,
-            string email)
+            string email,
+            bool instituicaoEnsino = false)
         {
             RazaoSocial = razaoSocial;
             Cnpj = cnpj;
             Endereco = endereco;
             Telefone = telefone;
             Email = email;
+            InstituicaoEnsino = instituicaoEnsino;
             Ativo = true;
         }
 
@@ -47,13 +49,15 @@ namespace SWES.Models
             string cnpj,
             string endereco,
             string telefone,
-            string email)
+            string email,
+            bool instituicaoEnsino)
         {
             RazaoSocial = razaoSocial;
             Cnpj = cnpj;
             Endereco = endereco;
             Telefone = telefone;
             Email = email;
+            InstituicaoEnsino = instituicaoEnsino;
             Alteracao = DateTime.UtcNow;
         }
          
