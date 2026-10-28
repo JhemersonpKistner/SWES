@@ -40,7 +40,8 @@ namespace SWES.Pages.UnidadesConcedentes
                 Cnpj = existente.Cnpj,
                 Endereco = existente.Endereco,
                 Telefone = existente.Telefone,
-                Email = existente.Email
+                Email = existente.Email,
+                InstituicaoEnsino = existente.InstituicaoEnsino
             };
 
             return Page();
@@ -99,7 +100,8 @@ namespace SWES.Pages.UnidadesConcedentes
                     cnpj,
                     endereco,
                     telefone,
-                    email);
+                    email,
+                    UnidadeConcedente.InstituicaoEnsino);
             }
             else
             {
@@ -108,7 +110,8 @@ namespace SWES.Pages.UnidadesConcedentes
                     cnpj,
                     endereco,
                     telefone,
-                    email);
+                    email,
+                    UnidadeConcedente.InstituicaoEnsino);
 
                 _context.UnidadesConcedentes.Add(novaUnidade);
             }

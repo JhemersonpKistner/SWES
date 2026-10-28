@@ -29,5 +29,7 @@ namespace SWES.ViewModels
         [EmailAddress(ErrorMessage = "Informe um e-mail válido.")]
         [MaxLength(150, ErrorMessage = "O e-mail deve ter no máximo 150 caracteres.")]
         public string Email { get; set; } = string.Empty;
+        
+        public bool InstituicaoEnsino { get; set; } = false;
     }
 }

@@ -81,7 +81,7 @@ namespace SWES.Data
 
             builder.Entity<Estagio>()
                 .HasOne(e => e.InstituicaoEnsino)
-                .WithMany()
+                .WithMany(i => i.Estagios)
                 .HasForeignKey(e => e.InstituicaoEnsinoId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

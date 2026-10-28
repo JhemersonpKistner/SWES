@@ -49,6 +49,18 @@
             <input type="hidden" asp-for="UnidadeConcedente.Id" />
 
             <div class="instituicoes-form-grid">
+
+                <div class="instituicoes-form-campo">
+                    <label asp-for="UnidadeConcedente.InstituicaoEnsino">
+                        Instituição de ensino
+                    </label>
+
+                    <div>
+                        <input asp-for="UnidadeConcedente.InstituicaoEnsino"
+                                type="checkbox" />
+                        <span>Esta unidade concedente também é uma instituição de ensino</span>
+                    </div>
+                </div>
                 <div class="instituicoes-form-campo">
                     <label asp-for="UnidadeConcedente.RazaoSocial">
                         Razão social <span class="campo-obrigatorio">*</span>

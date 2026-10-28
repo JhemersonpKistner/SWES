@@ -24,8 +24,8 @@ namespace SWES.Data.Migrations
 
             modelBuilder.Entity("CursoProfessorOrientador", b =>
                 {
-                    b.Property<int>("CursosId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CursosId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("ProfessoresId")
                         .HasColumnType("uniqueidentifier");
@@ -420,21 +420,38 @@ namespace SWES.Data.Migrations
 
             modelBuilder.Entity("SWES.Models.Curso", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTime?>("Alteracao")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("Cadastro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("InstituicaoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Periodo")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("QuantidadeSemestres")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("InstituicaoId");
 
                     b.ToTable("Cursos");
                 });
@@ -875,6 +892,17 @@ namespace SWES.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SWES.Models.Curso", b =>
+                {
+                    b.HasOne("SWES.Models.UnidadeConcedente", "Instituicao")
+                        .WithMany()
+                        .HasForeignKey("InstituicaoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Instituicao");
+                });
+
             modelBuilder.Entity("SWES.Models.Documento", b =>
                 {
                     b.HasOne("SWES.Models.Estagio", "Estagio")
@@ -901,7 +929,7 @@ namespace SWES.Data.Migrations
                     b.HasOne("SWES.Models.InstituicaoEnsino", "InstituicaoEnsino")
                         .WithMany("Estagios")
                         .HasForeignKey("InstituicaoEnsinoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("SWES.Models.ProfessorOrientador", "ProfessorOrientador")
@@ -919,7 +947,7 @@ namespace SWES.Data.Migrations
                     b.HasOne("SWES.Models.UnidadeConcedente", "UnidadeConcedente")
                         .WithMany("Estagios")
                         .HasForeignKey("UnidadeConcedenteId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Aluno");
