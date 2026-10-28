@@ -1,62 +1,47 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using SWES.Services;
+using SWES.ViewModels;
 
 namespace SWES.Pages.Cursos;
 
 public class IndexModel : PageModel
 {
+    private readonly CursoService _cursoService;
+
+    public IndexModel(CursoService cursoService)
+    {
+        _cursoService = cursoService;
+    }
+
     [BindProperty(SupportsGet = true)]
     public string? Pesquisa { get; set; }
 
     [BindProperty(SupportsGet = true)]
     public string? Situacao { get; set; }
 
-    private static readonly List<CursoItem> CursosDemonstracao = new()
+    public List<CursoViewModel> Cursos { get; private set; } = new();
+
+    public async Task OnGetAsync()
     {
-        new() { Nome = "Sistemas de Informação",
-                QuantidadeProfessores = 4, Ativo = true },
-
-        new() { Nome = "Administração",
-                QuantidadeProfessores = 3, Ativo = true },
-
-        new() { Nome = "Ciências Contábeis",
-                QuantidadeProfessores = 2, Ativo = true },
-
-        new() { Nome = "Análise e Desenvolvimento de Sistemas",
-                QuantidadeProfessores = 2, Ativo = false }
-    };
-
-    public List<CursoItem> Cursos { get; private set; } = new();
-
-    public void OnGet()
-    {
-        IEnumerable<CursoItem> consulta = CursosDemonstracao;
-
-        if (!string.IsNullOrWhiteSpace(Pesquisa))
-        {
-            consulta = consulta.Where(c =>
-                c.Nome.Contains(
-                    Pesquisa,
-                    StringComparison.OrdinalIgnoreCase));
-        }
-
-        if (Situacao == "Ativo")
-        {
-            consulta = consulta.Where(c => c.Ativo);
-        }
-        else if (Situacao == "Inativo")
-        {
-            consulta = consulta.Where(c => !c.Ativo);
-        }
-
-        Cursos = consulta.ToList();
+        Cursos = await _cursoService.ListarAsync(Pesquisa, Situacao);
     }
 
-    public class CursoItem
+    public async Task<IActionResult> OnPostAlterarSituacaoAsync(
+        Guid id,
+        bool ativar)
     {
-        public string Nome { get; set; } = string.Empty;
-        public int QuantidadeProfessores { get; set; }
-        public bool Ativo { get; set; }
+        bool alterado = await _cursoService.AlterarSituacaoAsync(id, ativar);
+
+        if (!alterado)
+        {
+            return NotFound();
+        }
+
+        return RedirectToPage(new
+        {
+            Pesquisa,
+            Situacao
+        });
     }
 }
