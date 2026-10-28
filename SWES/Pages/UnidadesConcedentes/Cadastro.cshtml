@@ -1,168 +1,79 @@
 @page
 @model SWES.Pages.UnidadesConcedentes.CadastroModel
 
-<div class="instituicoes-page">
+@{
+    ViewData["Title"] = Model.UnidadeConcedente.Id.HasValue
+        ? "Editar cadastro"
+        : "Cadastrar unidade concedente";
+}
 
+<div class="instituicoes-page">
     <div class="instituicoes-header">
         <div>
-            <span class="instituicoes-eyebrow">
-                <i class="bi bi-building-check"></i>
-                GESTÃO DE ESTÁGIOS
-            </span>
-
-            <h1>
-                @(Model.UnidadeConcedente.Id.HasValue
-                    ? "Editar concedente"
-                    : "Cadastrar concedente")
-            </h1>
-
-            <p>
-                @(Model.UnidadeConcedente.Id.HasValue
-                    ? "Atualize os dados da unidade concedente."
-                    : "Preencha os dados para registrar uma unidade concedente.")
-            </p>
+            <h1>@(Model.UnidadeConcedente.Id.HasValue ? "Editar cadastro" : "Cadastrar unidade concedente")</h1>
+            <p>Cadastre uma unidade concedente e informe se ela também é uma instituição de ensino.</p>
         </div>
-
-        <a asp-page="/UnidadesConcedentes/Index"
-           class="instituicoes-btn instituicoes-btn-secondary">
-            <i class="bi bi-arrow-left"></i>
-            Voltar para listagem
-        </a>
+        <a asp-page="/UnidadesConcedentes/Index" class="instituicoes-btn-secundario">Voltar</a>
     </div>
 
     <div class="instituicoes-form-card">
-        <div class="instituicoes-form-cabecalho">
-            <div class="instituicoes-form-icone">
-                <i class="bi bi-building-add"></i>
-            </div>
-            <div>
-                <h2>Dados do concedente</h2>
-                <p>Informe os dados cadastrais da empresa ou unidade concedente.</p>
-            </div>
-        </div>
-
-        <div asp-validation-summary="ModelOnly"
-             class="instituicoes-validacao-resumo"
-             role="alert"></div>
-
         <form method="post" asp-page-handler="Salvar">
             <input type="hidden" asp-for="UnidadeConcedente.Id" />
 
+            <div asp-validation-summary="ModelOnly" class="instituicoes-validacao-resumo"></div>
+
             <div class="instituicoes-form-grid">
-
                 <div class="instituicoes-form-campo">
-                    <label asp-for="UnidadeConcedente.InstituicaoEnsino">
-                        Instituição de ensino
-                    </label>
-
-                    <div>
-                        <input asp-for="UnidadeConcedente.InstituicaoEnsino"
-                                type="checkbox" />
-                        <span>Esta unidade concedente também é uma instituição de ensino</span>
-                    </div>
-                </div>
-                <div class="instituicoes-form-campo">
-                    <label asp-for="UnidadeConcedente.RazaoSocial">
-                        Razão social <span class="campo-obrigatorio">*</span>
-                    </label>
-                    <div class="instituicoes-form-input">
-                        <i class="bi bi-building"></i>
-                        <input asp-for="UnidadeConcedente.RazaoSocial"
-                               placeholder="Ex.: Empresa Exemplo Ltda."
-                               autocomplete="organization"
-                               maxlength="180"
-                               required />
-                    </div>
+                    <label asp-for="UnidadeConcedente.RazaoSocial">Razão social / Nome</label>
+                    <input asp-for="UnidadeConcedente.RazaoSocial" class="instituicoes-form-input" maxlength="150" />
                     <span asp-validation-for="UnidadeConcedente.RazaoSocial"
                           class="instituicoes-validacao-campo"></span>
                 </div>
 
                 <div class="instituicoes-form-campo">
-                    <label asp-for="UnidadeConcedente.Cnpj">
-                        CNPJ <span class="campo-obrigatorio">*</span>
-                    </label>
-                    <div class="instituicoes-form-input">
-                        <i class="bi bi-card-text"></i>
-                        <input asp-for="UnidadeConcedente.Cnpj"
-                               id="cnpj-concedente"
-                               placeholder="00.000.000/0000-00"
-                               inputmode="numeric"
-                               autocomplete="off"
-                               maxlength="18"
-                               required />
-                    </div>
-                    <small class="instituicoes-ajuda">Informe os 14 dígitos do CNPJ.</small>
-                    <span asp-validation-for="UnidadeConcedente.Cnpj"
-                          class="instituicoes-validacao-campo"></span>
+                    <label asp-for="UnidadeConcedente.Cnpj">CNPJ</label>
+                    <input asp-for="UnidadeConcedente.Cnpj" id="cnpj-concedente" class="instituicoes-form-input"
+                           maxlength="18" placeholder="00.000.000/0000-00" inputmode="numeric" />
+                    <span asp-validation-for="UnidadeConcedente.Cnpj" class="instituicoes-validacao-campo"></span>
                 </div>
 
                 <div class="instituicoes-form-campo">
-                    <label asp-for="UnidadeConcedente.Endereco">
-                        Endereço <span class="campo-obrigatorio">*</span>
-                    </label>
-                    <div class="instituicoes-form-input">
-                        <i class="bi bi-geo-alt"></i>
-                        <input asp-for="UnidadeConcedente.Endereco"
-                               placeholder="Rua, número, bairro, cidade..."
-                               autocomplete="street-address"
-                               maxlength="200"
-                               required />
-                    </div>
-                    <span asp-validation-for="UnidadeConcedente.Endereco"
-                          class="instituicoes-validacao-campo"></span>
+                    <label asp-for="UnidadeConcedente.Endereco">Endereço</label>
+                    <input asp-for="UnidadeConcedente.Endereco" class="instituicoes-form-input" maxlength="200" />
+                    <span asp-validation-for="UnidadeConcedente.Endereco" class="instituicoes-validacao-campo"></span>
                 </div>
 
                 <div class="instituicoes-form-campo">
-                    <label asp-for="UnidadeConcedente.Telefone">
-                        Telefone <span class="campo-obrigatorio">*</span>
-                    </label>
-                    <div class="instituicoes-form-input">
-                        <i class="bi bi-telephone"></i>
-                        <input asp-for="UnidadeConcedente.Telefone"
-                               placeholder="(00) 00000-0000"
-                               inputmode="tel"
-                               autocomplete="tel"
-                               maxlength="20"
-                               required />
-                    </div>
-                    <span asp-validation-for="UnidadeConcedente.Telefone"
-                          class="instituicoes-validacao-campo"></span>
+                    <label asp-for="UnidadeConcedente.Telefone">Telefone</label>
+                    <input asp-for="UnidadeConcedente.Telefone" class="instituicoes-form-input" maxlength="12" />
+                    <span asp-validation-for="UnidadeConcedente.Telefone" class="instituicoes-validacao-campo"></span>
                 </div>
 
                 <div class="instituicoes-form-campo">
-                    <label asp-for="UnidadeConcedente.Email">
-                        E-mail <span class="campo-obrigatorio">*</span>
-                    </label>
-                    <div class="instituicoes-form-input">
-                        <i class="bi bi-envelope"></i>
-                        <input asp-for="UnidadeConcedente.Email"
-                               type="email"
-                               placeholder="contato@empresa.com.br"
-                               autocomplete="email"
-                               maxlength="150"
-                               required />
-                    </div>
-                    <span asp-validation-for="UnidadeConcedente.Email"
-                          class="instituicoes-validacao-campo"></span>
+                    <label asp-for="UnidadeConcedente.Email">E-mail</label>
+                    <input asp-for="UnidadeConcedente.Email" type="email" class="instituicoes-form-input"
+                           maxlength="150" />
+                    <span asp-validation-for="UnidadeConcedente.Email" class="instituicoes-validacao-campo"></span>
                 </div>
             </div>
 
-            <div class="instituicoes-form-nota">
-                <i class="bi bi-info-circle"></i>
-                Os campos marcados com asterisco são obrigatórios.
-            </div>
+            @if (!Model.SomenteInstituicao)
+            {
+                <div class="instituicoes-form-campo">
+                    <label>
+                        <input asp-for="UnidadeConcedente.InstituicaoEnsino" />
+                        É uma instituição
+                    </label>
+                </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="UnidadeConcedente.InstituicaoEnsino" value="true" />
+            }
 
             <div class="instituicoes-form-acoes">
-                <a asp-page="/UnidadesConcedentes/Index"
-                   class="instituicoes-btn instituicoes-btn-secondary">
-                    Cancelar
-                </a>
-                <button type="submit" class="instituicoes-btn instituicoes-btn-primary">
-                    <i class="bi bi-check-lg"></i>
-                    @(Model.UnidadeConcedente.Id.HasValue
-                        ? "Salvar alterações"
-                        : "Cadastrar concedente")
-                </button>
+                <a asp-page="/UnidadesConcedentes/Index" class="instituicoes-btn-secundario">Cancelar</a>
+                <button type="submit" class="instituicoes-btn-primario">Salvar cadastro</button>
             </div>
         </form>
     </div>
@@ -172,23 +83,23 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        const campoCnpjConcedente = document.getElementById("cnpj-concedente");
+        const campoCnpj = document.getElementById("cnpj-concedente");
 
-        if (campoCnpjConcedente) {
-            campoCnpjConcedente.addEventListener("input", function () {
-                let numeros = this.value.replace(/\D/g, "").slice(0, 14);
+        if (campoCnpj) {
+            campoCnpj.addEventListener("input", function () {
+                let valor = this.value.replace(/\D/g, "").substring(0, 14);
 
-                if (numeros.length > 12) {
-                    numeros = numeros.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2}).*/, "$1.$2.$3/$4-$5");
-                } else if (numeros.length > 8) {
-                    numeros = numeros.replace(/^(\d{2})(\d{3})(\d{3})(\d{0,4}).*/, "$1.$2.$3/$4");
-                } else if (numeros.length > 5) {
-                    numeros = numeros.replace(/^(\d{2})(\d{3})(\d{0,3}).*/, "$1.$2.$3");
-                } else if (numeros.length > 2) {
-                    numeros = numeros.replace(/^(\d{2})(\d{0,3}).*/, "$1.$2");
+                if (valor.length > 12) {
+                    valor = valor.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2}).*/, "$1.$2.$3/$4-$5");
+                } else if (valor.length > 8) {
+                    valor = valor.replace(/^(\d{2})(\d{3})(\d{3})(\d{0,4}).*/, "$1.$2.$3/$4");
+                } else if (valor.length > 5) {
+                    valor = valor.replace(/^(\d{2})(\d{3})(\d{0,3}).*/, "$1.$2.$3");
+                } else if (valor.length > 2) {
+                    valor = valor.replace(/^(\d{2})(\d{0,3}).*/, "$1.$2");
                 }
 
-                this.value = numeros;
+                this.value = valor;
             });
         }
     </script>

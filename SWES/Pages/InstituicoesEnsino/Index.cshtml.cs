@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -15,36 +16,37 @@ namespace SWES.Pages.InstituicoesEnsino
             _context = context;
         }
 
-        public List<InstituicaoEnsino> Instituicoes { get; set; }
-            = new();
+        public List<UnidadeConcedente> Instituicoes { get; set; } = new();
 
         [BindProperty(SupportsGet = true)]
         public string? Pesquisa { get; set; }
 
         public async Task OnGetAsync()
         {
-            var consulta = _context.InstituicoesEnsino
+            var consulta = _context.UnidadesConcedentes
                 .AsNoTracking()
-                .AsQueryable();
+                .Where(i => i.InstituicaoEnsino);
 
             if (!string.IsNullOrWhiteSpace(Pesquisa))
             {
                 Pesquisa = Pesquisa.Trim();
 
                 consulta = consulta.Where(i =>
-                    i.Nome.Contains(Pesquisa) ||
+                    i.RazaoSocial.Contains(Pesquisa) ||
                     i.Cnpj.Contains(Pesquisa));
             }
 
             Instituicoes = await consulta
-                .OrderBy(i => i.Nome)
+                .OrderBy(i => i.RazaoSocial)
                 .ToListAsync();
         }
 
         public async Task<IActionResult> OnPostInativarAsync(Guid id)
         {
-            var instituicao = await _context.InstituicoesEnsino
-                .FirstOrDefaultAsync(i => i.Id == id);
+            var instituicao = await _context.UnidadesConcedentes
+                .FirstOrDefaultAsync(i =>
+                    i.Id == id &&
+                    i.InstituicaoEnsino);
 
             if (instituicao == null)
                 return NotFound();
@@ -58,8 +60,10 @@ namespace SWES.Pages.InstituicoesEnsino
 
         public async Task<IActionResult> OnPostAtivarAsync(Guid id)
         {
-            var instituicao = await _context.InstituicoesEnsino
-                .FirstOrDefaultAsync(i => i.Id == id);
+            var instituicao = await _context.UnidadesConcedentes
+                .FirstOrDefaultAsync(i =>
+                    i.Id == id &&
+                    i.InstituicaoEnsino);
 
             if (instituicao == null)
                 return NotFound();

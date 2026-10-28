@@ -10,6 +10,7 @@ namespace SWES.Pages.UnidadesConcedentes
 {
     public class CadastroModel : PageModel
     {
+        public bool SomenteInstituicao { get; set; }
         private readonly ApplicationDbContext _context;
 
         public CadastroModel(ApplicationDbContext context)
@@ -18,13 +19,17 @@ namespace SWES.Pages.UnidadesConcedentes
         }
 
         [BindProperty]
-        public UnidadeConcedenteViewModel UnidadeConcedente { get; set; }
-            = new();
+        public UnidadeConcedenteViewModel UnidadeConcedente { get; set; } = new();
 
-        public async Task<IActionResult> OnGetAsync(Guid? id)
+        public async Task<IActionResult> OnGetAsync(Guid? id, bool instituicao = false)
         {
+            SomenteInstituicao = instituicao;
+
             if (!id.HasValue)
+            {
+                UnidadeConcedente.InstituicaoEnsino = instituicao;
                 return Page();
+            }
 
             var existente = await _context.UnidadesConcedentes
                 .AsNoTracking()
@@ -43,6 +48,8 @@ namespace SWES.Pages.UnidadesConcedentes
                 Email = existente.Email,
                 InstituicaoEnsino = existente.InstituicaoEnsino
             };
+
+            SomenteInstituicao = existente.InstituicaoEnsino;
 
             return Page();
         }
@@ -76,7 +83,7 @@ namespace SWES.Pages.UnidadesConcedentes
             {
                 ModelState.AddModelError(
                     "UnidadeConcedente.Cnpj",
-                    "Já existe um concedente cadastrado com esse CNPJ.");
+                    "Já existe um cadastro com esse CNPJ.");
 
                 return Page();
             }
@@ -85,12 +92,12 @@ namespace SWES.Pages.UnidadesConcedentes
             var endereco = UnidadeConcedente.Endereco.Trim();
             var telefone = UnidadeConcedente.Telefone.Trim();
             var email = UnidadeConcedente.Email.Trim();
+            var instituicaoEnsino = UnidadeConcedente.InstituicaoEnsino;
 
             if (UnidadeConcedente.Id.HasValue)
             {
                 var existente = await _context.UnidadesConcedentes
-                    .FirstOrDefaultAsync(u =>
-                        u.Id == UnidadeConcedente.Id.Value);
+                    .FirstOrDefaultAsync(u => u.Id == UnidadeConcedente.Id.Value);
 
                 if (existente == null)
                     return NotFound();
@@ -101,7 +108,7 @@ namespace SWES.Pages.UnidadesConcedentes
                     endereco,
                     telefone,
                     email,
-                    UnidadeConcedente.InstituicaoEnsino);
+                    instituicaoEnsino);
             }
             else
             {
@@ -111,7 +118,7 @@ namespace SWES.Pages.UnidadesConcedentes
                     endereco,
                     telefone,
                     email,
-                    UnidadeConcedente.InstituicaoEnsino);
+                    instituicaoEnsino);
 
                 _context.UnidadesConcedentes.Add(novaUnidade);
             }

@@ -16,8 +16,7 @@ namespace SWES.Pages.UnidadesConcedentes
             _context = context;
         }
 
-        public List<UnidadeConcedente> UnidadesConcedentes { get; set; }
-            = new();
+        public List<UnidadeConcedente> UnidadesConcedentes { get; set; } = new();
 
         [BindProperty(SupportsGet = true)]
         public string? Pesquisa { get; set; }

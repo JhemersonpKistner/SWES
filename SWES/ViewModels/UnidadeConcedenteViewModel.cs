@@ -13,8 +13,8 @@ namespace SWES.ViewModels
 
         [Required(ErrorMessage = "O CNPJ é obrigatório.")]
         [RegularExpression(
-            @"^(\d{14}|\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2})$",
-            ErrorMessage = "Informe um CNPJ no formato 00.000.000/0000-00 ou com 14 números.")]
+    @"^(\d{14}|\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2})$",
+    ErrorMessage = "Informe um CNPJ válido no formato 00.000.000/0000-00.")]
         public string Cnpj { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "O endereço é obrigatório.")]
