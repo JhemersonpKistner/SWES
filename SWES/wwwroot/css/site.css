@@ -2713,3 +2713,157 @@ body {
 @media (max-width: 768px) {
     .registro-acoes { flex-wrap: wrap; }
 }
+
+/* =========================================================
+   CURSOS - COMPLEMENTOS VISUAIS
+   Reutiliza os componentes compartilhados das telas de gestão.
+========================================================= */
+
+.cursos-page {
+    min-width: 0;
+}
+
+.cursos-filtros > label,
+.cursos-filtros label {
+    display: block;
+    margin-bottom: 7px;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.cursos-filtro-situacao {
+    flex: 0 1 210px;
+    min-width: 170px;
+}
+
+.cursos-select-filtro {
+    width: 100%;
+    min-height: 43px;
+    padding: 10px 34px 10px 12px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #101828;
+    font: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.cursos-select-filtro:focus,
+.cursos-select-wrapper select:focus {
+    border-color: #258cfb;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 140, 251, .13);
+}
+
+.cursos-tabela {
+    min-width: 900px;
+}
+
+.cursos-dado-numero {
+    display: inline-flex;
+    min-width: 32px;
+    min-height: 30px;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 8px;
+    border-radius: 7px;
+    background: #f2f4f7;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.cursos-periodo {
+    display: inline-block;
+    padding: 5px 9px;
+    border: 1px solid #dbeafe;
+    border-radius: 6px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.cursos-form-card {
+    max-width: 900px;
+}
+
+.cursos-campo-nome,
+.cursos-campo-instituicao {
+    grid-column: 1 / -1;
+}
+
+.cursos-select-wrapper > i {
+    z-index: 1;
+}
+
+.cursos-select-wrapper select {
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 13px 11px 40px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #101828;
+    font: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+    appearance: auto;
+}
+
+.cursos-aviso-instituicao {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    margin-top: 8px;
+    padding: 10px 12px;
+    border: 1px solid #fedf89;
+    border-radius: 8px;
+    background: #fffaeb;
+    color: #93370d;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.cursos-aviso-instituicao i {
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+    .cursos-tabela {
+        min-width: 900px;
+    }
+
+    .cursos-filtro-situacao {
+        flex: 1 1 200px;
+    }
+}
+
+@media (max-width: 600px) {
+    .cursos-page .instituicoes-header {
+        align-items: flex-start;
+    }
+
+    .cursos-page .instituicoes-header .instituicoes-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .cursos-filtro-situacao {
+        flex: 1 1 100%;
+    }
+
+    .cursos-page .instituicoes-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .cursos-campo-nome,
+    .cursos-campo-instituicao {
+        grid-column: auto;
+    }
+}

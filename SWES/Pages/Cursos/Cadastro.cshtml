@@ -6,76 +6,102 @@
     bool editando = Model.Dados.Id.HasValue;
 }
 
-<div class="container-fluid py-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+<div class="instituicoes-page cursos-page">
+    <div class="instituicoes-header">
         <div>
-            <h1 class="h3 mb-1">@(editando ? "Editar curso" : "Novo curso")</h1>
-            <p class="text-muted mb-0">
-                @(editando ? "Atualize as informações do curso." : "Preencha os dados para cadastrar um curso.")
-            </p>
+            <span class="instituicoes-eyebrow">
+                <i class="bi bi-mortarboard"></i>
+                GESTÃO ACADÊMICA
+            </span>
+            <h1>@(editando ? "Editar curso" : "Cadastrar curso")</h1>
+            <p>@(editando ? "Atualize as informações do curso." : "Preencha os dados para cadastrar um curso.")</p>
         </div>
-
-        <a asp-page="./Index" class="btn btn-outline-secondary">
-            Voltar para cursos
+        <a asp-page="./Index" class="instituicoes-btn instituicoes-btn-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar para cursos
         </a>
     </div>
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-            <form method="post">
-                <input type="hidden" asp-for="Dados.Id" />
+    <div class="instituicoes-form-card cursos-form-card">
+        <div class="instituicoes-form-cabecalho">
+            <div class="instituicoes-form-icone"><i class="bi bi-journal-bookmark"></i></div>
+            <div>
+                <h2>Dados do curso</h2>
+                <p>Informe os dados acadêmicos e a instituição responsável pelo curso.</p>
+            </div>
+        </div>
 
-                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+        <div asp-validation-summary="ModelOnly" class="instituicoes-validacao-resumo" role="alert"></div>
 
-                <div class="row g-3">
-                    <div class="col-12">
-                        <label asp-for="Dados.Nome" class="form-label">Nome do curso</label>
-                        <input asp-for="Dados.Nome" class="form-control" maxlength="100" placeholder="Ex.: Sistemas de Informação" />
-                        <span asp-validation-for="Dados.Nome" class="text-danger"></span>
+        <form method="post">
+            <input type="hidden" asp-for="Dados.Id" />
+
+            <div class="instituicoes-form-grid">
+                <div class="instituicoes-form-campo cursos-campo-nome">
+                    <label asp-for="Dados.Nome">Nome do curso <span class="campo-obrigatorio">*</span></label>
+                    <div class="instituicoes-form-input">
+                        <i class="bi bi-book"></i>
+                        <input asp-for="Dados.Nome" maxlength="100" placeholder="Ex.: Sistemas de Informação" required />
                     </div>
+                    <span asp-validation-for="Dados.Nome" class="instituicoes-validacao-campo"></span>
+                </div>
 
-                    <div class="col-12 col-md-6">
-                        <label asp-for="Dados.QuantidadeSemestres" class="form-label">Quantidade de semestres</label>
-                        <input asp-for="Dados.QuantidadeSemestres" type="number" min="1" max="20" class="form-control" />
-                        <span asp-validation-for="Dados.QuantidadeSemestres" class="text-danger"></span>
+                <div class="instituicoes-form-campo">
+                    <label asp-for="Dados.QuantidadeSemestres">Quantidade de semestres <span class="campo-obrigatorio">*</span></label>
+                    <div class="instituicoes-form-input">
+                        <i class="bi bi-calendar3"></i>
+                        <input asp-for="Dados.QuantidadeSemestres" type="number" min="1" max="20" placeholder="Ex.: 8" required />
                     </div>
+                    <span asp-validation-for="Dados.QuantidadeSemestres" class="instituicoes-validacao-campo"></span>
+                    <small class="instituicoes-ajuda">Informe um valor entre 1 e 20 semestres.</small>
+                </div>
 
-                    <div class="col-12 col-md-6">
-                        <label asp-for="Dados.Periodo" class="form-label">Período</label>
-                        <select asp-for="Dados.Periodo" class="form-select">
+                <div class="instituicoes-form-campo">
+                    <label asp-for="Dados.Periodo">Período <span class="campo-obrigatorio">*</span></label>
+                    <div class="instituicoes-form-input cursos-select-wrapper">
+                        <i class="bi bi-clock"></i>
+                        <select asp-for="Dados.Periodo" required>
                             <option value="">Selecione o período</option>
                             <option value="Matutino">Matutino</option>
                             <option value="Vespertino">Vespertino</option>
                             <option value="Noturno">Noturno</option>
                             <option value="Integral">Integral</option>
                         </select>
-                        <span asp-validation-for="Dados.Periodo" class="text-danger"></span>
                     </div>
+                    <span asp-validation-for="Dados.Periodo" class="instituicoes-validacao-campo"></span>
+                </div>
 
-                    <div class="col-12">
-                        <label asp-for="Dados.InstituicaoId" class="form-label">Instituição de ensino</label>
-                        <select asp-for="Dados.InstituicaoId" asp-items="Model.Instituicoes" class="form-select">
+                <div class="instituicoes-form-campo cursos-campo-instituicao">
+                    <label asp-for="Dados.InstituicaoId">Instituição de ensino <span class="campo-obrigatorio">*</span></label>
+                    <div class="instituicoes-form-input cursos-select-wrapper">
+                        <i class="bi bi-building"></i>
+                        <select asp-for="Dados.InstituicaoId" asp-items="Model.Instituicoes" required>
                             <option value="">Selecione a instituição de ensino</option>
                         </select>
-                        <span asp-validation-for="Dados.InstituicaoId" class="text-danger"></span>
-
-                        @if (Model.Instituicoes.Count == 0)
-                        {
-                            <div class="form-text text-warning">
-                                Nenhuma instituição de ensino ativa foi encontrada. Cadastre ou ative uma instituição antes de continuar.
-                            </div>
-                        }
                     </div>
+                    <span asp-validation-for="Dados.InstituicaoId" class="instituicoes-validacao-campo"></span>
+                    @if (Model.Instituicoes.Count == 0)
+                    {
+                        <small class="cursos-aviso-instituicao">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Nenhuma instituição de ensino ativa foi encontrada. Cadastre ou ative uma instituição antes de continuar.
+                        </small>
+                    }
                 </div>
+            </div>
 
-                <div class="d-flex justify-content-end gap-2 mt-4">
-                    <a asp-page="./Index" class="btn btn-outline-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-primary" disabled="@(Model.Instituicoes.Count == 0)">
-                        @(editando ? "Salvar alterações" : "Cadastrar curso")
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div class="instituicoes-form-nota">
+                <i class="bi bi-info-circle"></i>
+                Os campos marcados com asterisco são obrigatórios.
+            </div>
+
+            <div class="instituicoes-form-acoes">
+                <a asp-page="./Index" class="instituicoes-btn instituicoes-btn-secondary">Cancelar</a>
+                <button type="submit" class="instituicoes-btn instituicoes-btn-primary" disabled="@(Model.Instituicoes.Count == 0)">
+                    <i class="bi bi-check-lg"></i>
+                    @(editando ? "Salvar alterações" : "Cadastrar curso")
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 

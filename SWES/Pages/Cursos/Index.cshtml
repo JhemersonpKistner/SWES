@@ -6,79 +6,96 @@
     ViewData["Title"] = "Cursos";
 }
 
-<div class="container-fluid py-4">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+<div class="instituicoes-page cursos-page">
+    <div class="instituicoes-header">
         <div>
-            <h1 class="h3 mb-1">Cursos</h1>
-            <p class="text-muted mb-0">Gerencie os cursos e suas instituições de ensino.</p>
+            <span class="instituicoes-eyebrow">
+                <i class="bi bi-mortarboard"></i>
+                GESTÃO ACADÊMICA
+            </span>
+            <h1>Cursos</h1>
+            <p>Gerencie os cursos e suas instituições de ensino.</p>
         </div>
-        <a asp-page="./Cadastro" class="btn btn-primary">
-            <i class="bi bi-plus-lg me-1"></i>
-            Novo curso
+
+        <a asp-page="./Cadastro" class="instituicoes-btn instituicoes-btn-primary">
+            <i class="bi bi-plus-lg"></i>
+            Cadastrar curso
         </a>
     </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-12 col-md-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <p class="text-muted mb-1">Total de cursos encontrados</p>
-                    <h2 class="h3 mb-0">@Model.Cursos.Count</h2>
-                </div>
-            </div>
+    <div class="instituicoes-resumo">
+        <div class="instituicoes-resumo-card">
+            <div class="instituicoes-resumo-icone azul"><i class="bi bi-mortarboard"></i></div>
+            <div><span>Total de cursos</span><strong>@Model.Cursos.Count</strong></div>
         </div>
-        <div class="col-12 col-md-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <p class="text-muted mb-1">Cursos ativos encontrados</p>
-                    <h2 class="h3 mb-0">@Model.Cursos.Count(c => c.Ativo)</h2>
-                </div>
-            </div>
+        <div class="instituicoes-resumo-card">
+            <div class="instituicoes-resumo-icone verde"><i class="bi bi-check-circle"></i></div>
+            <div><span>Cursos ativos</span><strong>@Model.Cursos.Count(c => c.Ativo)</strong></div>
         </div>
-        <div class="col-12 col-md-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <p class="text-muted mb-1">Professores vinculados</p>
-                    <h2 class="h3 mb-0">@Model.Cursos.Sum(c => c.QuantidadeProfessores)</h2>
-                </div>
-            </div>
+        <div class="instituicoes-resumo-card">
+            <div class="instituicoes-resumo-icone cinza"><i class="bi bi-person-workspace"></i></div>
+            <div><span>Professores vinculados</span><strong>@Model.Cursos.Sum(c => c.QuantidadeProfessores)</strong></div>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
-            <form method="get" class="row g-3 align-items-end">
-                <div class="col-12 col-md-6">
-                    <label asp-for="Pesquisa" class="form-label">Pesquisar curso</label>
-                    <input asp-for="Pesquisa" class="form-control" placeholder="Digite o nome do curso" />
-                </div>
-
-                <div class="col-12 col-md-4">
-                    <label asp-for="Situacao" class="form-label">Situação</label>
-                    <select asp-for="Situacao" class="form-select">
-                        <option value="">Todos os cursos</option>
-                        <option value="Ativo">Ativos</option>
-                        <option value="Inativo">Inativos</option>
-                    </select>
-                </div>
-
-                <div class="col-12 col-md-2 d-flex gap-2">
-                    <button type="submit" class="btn btn-primary flex-grow-1">
-                        Filtrar
-                    </button>
-                    <a asp-page="./Index" class="btn btn-outline-secondary">
-                        Limpar
-                    </a>
-                </div>
-            </form>
+    <section class="instituicoes-card">
+        <div class="instituicoes-card-header">
+            <div>
+                <h2>Cursos cadastrados</h2>
+                <p>Consulte os cursos, suas instituições e a situação dos registros.</p>
+            </div>
+            <span class="instituicoes-contador">@Model.Cursos.Count curso(s)</span>
         </div>
-    </div>
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+        <form method="get" class="instituicoes-filtros cursos-filtros">
+            <div class="instituicoes-pesquisa">
+                <label asp-for="Pesquisa">Pesquisar curso</label>
+                <div class="instituicoes-input-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input asp-for="Pesquisa" placeholder="Digite o nome do curso..." />
+                </div>
+            </div>
+
+            <div class="cursos-filtro-situacao">
+                <label asp-for="Situacao">Situação</label>
+                <select asp-for="Situacao" class="cursos-select-filtro">
+                    <option value="">Todos os cursos</option>
+                    <option value="Ativo">Ativos</option>
+                    <option value="Inativo">Inativos</option>
+                </select>
+            </div>
+
+            <button type="submit" class="instituicoes-btn instituicoes-btn-primary">
+                <i class="bi bi-search"></i> Filtrar
+            </button>
+            <a asp-page="./Index" class="instituicoes-btn instituicoes-btn-secondary">
+                <i class="bi bi-arrow-counterclockwise"></i> Limpar
+            </a>
+        </form>
+
+        @if (Model.Cursos.Count == 0)
+        {
+            <div class="instituicoes-vazio">
+                <div class="instituicoes-vazio-icone"><i class="bi bi-mortarboard"></i></div>
+                @if (!string.IsNullOrWhiteSpace(Model.Pesquisa) || !string.IsNullOrWhiteSpace(Model.Situacao))
+                {
+                    <h3>Nenhum curso encontrado</h3>
+                    <p>Não encontramos cursos correspondentes aos filtros informados.</p>
+                    <a asp-page="./Index" class="instituicoes-btn instituicoes-btn-secondary">Limpar filtros</a>
+                }
+                else
+                {
+                    <h3>Nenhum curso cadastrado</h3>
+                    <p>Cadastre o primeiro curso para começar a gerenciar os vínculos acadêmicos.</p>
+                    <a asp-page="./Cadastro" class="instituicoes-btn instituicoes-btn-primary"><i class="bi bi-plus-lg"></i> Cadastrar curso</a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="instituicoes-tabela-wrapper">
+                <table class="instituicoes-tabela cursos-tabela">
+                    <thead>
                         <tr>
                             <th>Curso</th>
                             <th>Instituição de ensino</th>
@@ -86,64 +103,59 @@
                             <th>Período</th>
                             <th>Professores</th>
                             <th>Situação</th>
-                            <th class="text-end">Ações</th>
+                            <th class="instituicoes-coluna-acoes">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (Model.Cursos.Count == 0)
+                        @foreach (var curso in Model.Cursos)
                         {
                             <tr>
-                                <td colspan="7" class="text-center py-4 text-muted">
-                                    Nenhum curso encontrado.
+                                <td>
+                                    <div class="instituicoes-identificacao">
+                                        <div class="instituicoes-avatar"><i class="bi bi-mortarboard"></i></div>
+                                        <div class="instituicoes-nome">
+                                            <strong>@curso.Nome</strong>
+                                            <span>Curso de graduação</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@curso.InstituicaoNome</td>
+                                <td><span class="cursos-dado-numero">@curso.QuantidadeSemestres</span></td>
+                                <td><span class="cursos-periodo">@curso.Periodo</span></td>
+                                <td><span class="cursos-dado-numero">@curso.QuantidadeProfessores</span></td>
+                                <td>
+                                    @if (curso.Ativo)
+                                    {
+                                        <span class="registro-status ativo"><span></span>Ativo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="registro-status inativo"><span></span>Inativo</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="registro-acoes">
+                                        <a asp-page="./Cadastro" asp-route-id="@curso.Id"
+                                           class="registro-acao editar" title="Editar curso" aria-label="Editar @curso.Nome">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form method="post" asp-page-handler="AlterarSituacao"
+                                              asp-route-id="@curso.Id" asp-route-ativar="@(!curso.Ativo)"
+                                              onsubmit="return confirm('Deseja realmente @(curso.Ativo ? "inativar" : "ativar") este curso?');">
+                                            <button type="submit"
+                                                    class="registro-acao @(curso.Ativo ? "inativar" : "reativar")"
+                                                    title="@(curso.Ativo ? "Inativar curso" : "Ativar curso")"
+                                                    aria-label="@(curso.Ativo ? "Inativar curso " : "Ativar curso ")@curso.Nome">
+                                                <i class="bi @(curso.Ativo ? "bi-pause-circle" : "bi-arrow-clockwise")"></i>
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
-                        }
-                        else
-                        {
-                            @foreach (var curso in Model.Cursos)
-                            {
-                                <tr>
-                                    <td class="fw-semibold">@curso.Nome</td>
-                                    <td>@curso.InstituicaoNome</td>
-                                    <td>@curso.QuantidadeSemestres</td>
-                                    <td>@curso.Periodo</td>
-                                    <td>@curso.QuantidadeProfessores</td>
-                                    <td>
-                                        @if (curso.Ativo)
-                                        {
-                                            <span class="badge bg-success">Ativo</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-secondary">Inativo</span>
-                                        }
-                                    </td>
-                                    <td>
-                                        <div class="d-flex justify-content-end gap-2">
-                                            <a asp-page="./Cadastro"
-                                               asp-route-id="@curso.Id"
-                                               class="btn btn-sm btn-outline-primary">
-                                                Editar
-                                            </a>
-
-                                            <form method="post"
-                                                  asp-page-handler="AlterarSituacao"
-                                                  asp-route-id="@curso.Id"
-                                                  asp-route-ativar="@(!curso.Ativo)"
-                                                  onsubmit="return confirm('Deseja realmente @(curso.Ativo ? "inativar" : "ativar") este curso?');">
-                                                <button type="submit"
-                                                        class="btn btn-sm @(curso.Ativo ? "btn-outline-danger" : "btn-outline-success")">
-                                                    @(curso.Ativo ? "Inativar" : "Ativar")
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
                         }
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
+        }
+    </section>
 </div>
