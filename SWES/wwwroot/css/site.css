@@ -2867,3 +2867,200 @@ body {
         grid-column: auto;
     }
 }
+
+
+/* =========================================================
+   CADASTRO DE UNIDADES CONCEDENTES E INSTITUICOES
+   Complementos visuais compartilhados do formulário unificado
+========================================================= */
+.cadastro-entidade-page {
+    max-width: 1180px;
+}
+
+.cadastro-entidade-header {
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.cadastro-entidade-titulo {
+    min-width: 0;
+}
+
+.cadastro-entidade-titulo .instituicoes-eyebrow {
+    margin-bottom: 8px;
+}
+
+.cadastro-entidade-header .instituicoes-btn-secundario,
+.cadastro-entidade-acoes .instituicoes-btn-secundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 10px 16px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background: #fff;
+    color: #344054;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .15s ease, border-color .15s ease;
+}
+
+.cadastro-entidade-header .instituicoes-btn-secundario:hover,
+.cadastro-entidade-acoes .instituicoes-btn-secundario:hover {
+    background: #f8fafc;
+    border-color: #98a2b3;
+    color: #101828;
+}
+
+.cadastro-entidade-card {
+    max-width: 1000px;
+    padding: clamp(20px, 3vw, 32px);
+}
+
+.cadastro-entidade-card .instituicoes-form-cabecalho {
+    margin-bottom: 26px;
+}
+
+.cadastro-entidade-card .instituicoes-form-grid {
+    row-gap: 22px;
+    column-gap: 24px;
+}
+
+.cadastro-entidade-card .instituicoes-form-campo > label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.cadastro-entidade-card .instituicoes-form-input {
+    width: 100%;
+}
+
+.cadastro-entidade-card .instituicoes-form-input input {
+    min-height: 46px;
+    padding-left: 40px;
+}
+
+.cadastro-entidade-card .instituicoes-form-input input:focus {
+    border-color: #258cfb;
+    box-shadow: 0 0 0 3px rgba(37, 140, 251, .13);
+}
+
+.concedente-opcao-instituicao {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 26px;
+    padding: 18px 20px;
+    border: 1px solid #d6e5f1;
+    border-radius: 10px;
+    background: #f7fbff;
+}
+
+.concedente-opcao-texto {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.concedente-opcao-icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: #e3effb;
+    color: #0050a0;
+    font-size: 20px;
+}
+
+.concedente-opcao-texto strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #1d2939;
+    font-size: 14px;
+}
+
+.concedente-opcao-texto small {
+    display: block;
+    color: #667085;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.concedente-checkbox {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    margin: 0 !important;
+    color: #344054 !important;
+    font-size: 13px !important;
+    font-weight: 650 !important;
+    cursor: pointer;
+}
+
+.concedente-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: #0050a0;
+    cursor: pointer;
+}
+
+.cadastro-entidade-acoes {
+    align-items: center;
+    margin-top: 28px;
+}
+
+.cadastro-entidade-acoes .instituicoes-btn-primary {
+    min-height: 42px;
+}
+
+@media (max-width: 700px) {
+    .cadastro-entidade-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .cadastro-entidade-header > .instituicoes-btn-secundario {
+        align-self: flex-start;
+    }
+
+    .concedente-opcao-instituicao {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+        padding: 16px;
+    }
+
+    .concedente-checkbox {
+        align-items: flex-start;
+        line-height: 1.5;
+    }
+}
+
+@media (max-width: 480px) {
+    .cadastro-entidade-card {
+        padding: 20px 16px;
+    }
+
+    .cadastro-entidade-card .instituicoes-form-cabecalho {
+        align-items: flex-start;
+    }
+
+    .cadastro-entidade-acoes {
+        align-items: stretch;
+        flex-direction: column-reverse;
+    }
+
+    .cadastro-entidade-acoes .instituicoes-btn {
+        width: 100%;
+    }
+}

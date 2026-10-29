@@ -10,7 +10,9 @@ namespace SWES.Pages.UnidadesConcedentes
 {
     public class CadastroModel : PageModel
     {
+        [BindProperty]
         public bool SomenteInstituicao { get; set; }
+
         private readonly ApplicationDbContext _context;
 
         public CadastroModel(ApplicationDbContext context)
@@ -125,7 +127,9 @@ namespace SWES.Pages.UnidadesConcedentes
 
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/UnidadesConcedentes/Index");
+            return SomenteInstituicao
+                ? RedirectToPage("/InstituicoesEnsino/Index")
+                : RedirectToPage("/UnidadesConcedentes/Index");
         }
     }
 }

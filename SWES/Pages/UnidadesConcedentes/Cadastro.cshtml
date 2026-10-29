@@ -2,78 +2,129 @@
 @model SWES.Pages.UnidadesConcedentes.CadastroModel
 
 @{
-    ViewData["Title"] = Model.UnidadeConcedente.Id.HasValue
-        ? "Editar cadastro"
-        : "Cadastrar unidade concedente";
+    var tituloCadastro = Model.SomenteInstituicao
+        ? (Model.UnidadeConcedente.Id.HasValue ? "Editar instituição de ensino" : "Cadastrar instituição de ensino")
+        : (Model.UnidadeConcedente.Id.HasValue ? "Editar unidade concedente" : "Cadastrar unidade concedente");
+
+    ViewData["Title"] = tituloCadastro;
+    var paginaVoltar = Model.SomenteInstituicao
+        ? "/InstituicoesEnsino/Index"
+        : "/UnidadesConcedentes/Index";
 }
 
-<div class="instituicoes-page">
-    <div class="instituicoes-header">
-        <div>
-            <h1>@(Model.UnidadeConcedente.Id.HasValue ? "Editar cadastro" : "Cadastrar unidade concedente")</h1>
-            <p>Cadastre uma unidade concedente e informe se ela também é uma instituição de ensino.</p>
+<div class="instituicoes-page cadastro-entidade-page">
+    <div class="instituicoes-header cadastro-entidade-header">
+        <div class="cadastro-entidade-titulo">
+            <span class="instituicoes-eyebrow">
+                <i class="bi @(Model.SomenteInstituicao ? "bi-mortarboard" : "bi-building")"></i>
+                @(Model.SomenteInstituicao ? "GESTÃO ACADÊMICA" : "GESTÃO DE ESTÁGIOS")
+            </span>
+            <h1>@tituloCadastro</h1>
+            <p>@(Model.SomenteInstituicao
+                ? "Informe os dados da instituição de ensino. Ela também será registrada como unidade concedente."
+                : "Cadastre os dados da organização e indique se ela também é uma instituição de ensino.")</p>
         </div>
-        <a asp-page="/UnidadesConcedentes/Index" class="instituicoes-btn-secundario">Voltar</a>
+        <a asp-page="@paginaVoltar" class="instituicoes-btn instituicoes-btn-secundario">
+            <i class="bi bi-arrow-left"></i>
+            Voltar
+        </a>
     </div>
 
-    <div class="instituicoes-form-card">
+    <div class="instituicoes-form-card cadastro-entidade-card">
+        <div class="instituicoes-form-cabecalho">
+            <div class="instituicoes-form-icone">
+                <i class="bi @(Model.SomenteInstituicao ? "bi-mortarboard" : "bi-building-gear")"></i>
+            </div>
+            <div>
+                <h2>Dados do cadastro</h2>
+                <p>Preencha as informações abaixo. Os campos são obrigatórios, salvo indicação em contrário.</p>
+            </div>
+        </div>
+
         <form method="post" asp-page-handler="Salvar">
             <input type="hidden" asp-for="UnidadeConcedente.Id" />
+            <input type="hidden" asp-for="SomenteInstituicao" />
 
             <div asp-validation-summary="ModelOnly" class="instituicoes-validacao-resumo"></div>
 
             <div class="instituicoes-form-grid">
                 <div class="instituicoes-form-campo">
-                    <label asp-for="UnidadeConcedente.RazaoSocial">Razão social / Nome</label>
-                    <input asp-for="UnidadeConcedente.RazaoSocial" class="instituicoes-form-input" maxlength="150" />
-                    <span asp-validation-for="UnidadeConcedente.RazaoSocial"
-                          class="instituicoes-validacao-campo"></span>
+                    <label asp-for="UnidadeConcedente.RazaoSocial">Razão social / Nome <span class="campo-obrigatorio">*</span></label>
+                    <div class="instituicoes-form-input">
+                        <i class="bi bi-building"></i>
+                        <input asp-for="UnidadeConcedente.RazaoSocial" maxlength="150" placeholder="Nome da organização" autocomplete="organization" />
+                    </div>
+                    <span asp-validation-for="UnidadeConcedente.RazaoSocial" class="instituicoes-validacao-campo"></span>
                 </div>
 
                 <div class="instituicoes-form-campo">
-                    <label asp-for="UnidadeConcedente.Cnpj">CNPJ</label>
-                    <input asp-for="UnidadeConcedente.Cnpj" id="cnpj-concedente" class="instituicoes-form-input"
-                           maxlength="18" placeholder="00.000.000/0000-00" inputmode="numeric" />
+                    <label asp-for="UnidadeConcedente.Cnpj">CNPJ <span class="campo-obrigatorio">*</span></label>
+                    <div class="instituicoes-form-input">
+                        <i class="bi bi-card-text"></i>
+                        <input asp-for="UnidadeConcedente.Cnpj" id="cnpj-concedente" maxlength="18" placeholder="00.000.000/0000-00" inputmode="numeric" />
+                    </div>
                     <span asp-validation-for="UnidadeConcedente.Cnpj" class="instituicoes-validacao-campo"></span>
                 </div>
 
                 <div class="instituicoes-form-campo">
-                    <label asp-for="UnidadeConcedente.Endereco">Endereço</label>
-                    <input asp-for="UnidadeConcedente.Endereco" class="instituicoes-form-input" maxlength="200" />
+                    <label asp-for="UnidadeConcedente.Endereco">Endereço <span class="campo-obrigatorio">*</span></label>
+                    <div class="instituicoes-form-input">
+                        <i class="bi bi-geo-alt"></i>
+                        <input asp-for="UnidadeConcedente.Endereco" maxlength="200" placeholder="Logradouro, número, cidade..." autocomplete="street-address" />
+                    </div>
                     <span asp-validation-for="UnidadeConcedente.Endereco" class="instituicoes-validacao-campo"></span>
                 </div>
 
                 <div class="instituicoes-form-campo">
-                    <label asp-for="UnidadeConcedente.Telefone">Telefone</label>
-                    <input asp-for="UnidadeConcedente.Telefone" class="instituicoes-form-input" maxlength="12" />
+                    <label asp-for="UnidadeConcedente.Telefone">Telefone <span class="campo-obrigatorio">*</span></label>
+                    <div class="instituicoes-form-input">
+                        <i class="bi bi-telephone"></i>
+                        <input asp-for="UnidadeConcedente.Telefone" maxlength="12" placeholder="(00) 00000-0000" inputmode="tel" autocomplete="tel" />
+                    </div>
                     <span asp-validation-for="UnidadeConcedente.Telefone" class="instituicoes-validacao-campo"></span>
                 </div>
 
                 <div class="instituicoes-form-campo">
-                    <label asp-for="UnidadeConcedente.Email">E-mail</label>
-                    <input asp-for="UnidadeConcedente.Email" type="email" class="instituicoes-form-input"
-                           maxlength="150" />
+                    <label asp-for="UnidadeConcedente.Email">E-mail <span class="campo-obrigatorio">*</span></label>
+                    <div class="instituicoes-form-input">
+                        <i class="bi bi-envelope"></i>
+                        <input asp-for="UnidadeConcedente.Email" type="email" maxlength="150" placeholder="contato@organizacao.com.br" autocomplete="email" />
+                    </div>
                     <span asp-validation-for="UnidadeConcedente.Email" class="instituicoes-validacao-campo"></span>
                 </div>
             </div>
 
             @if (!Model.SomenteInstituicao)
             {
-                <div class="instituicoes-form-campo">
-                    <label>
-                        <input asp-for="UnidadeConcedente.InstituicaoEnsino" />
-                        É uma instituição
+                <div class="concedente-opcao-instituicao">
+                    <div class="concedente-opcao-texto">
+                        <span class="concedente-opcao-icone"><i class="bi bi-mortarboard"></i></span>
+                        <span>
+                            <strong>Classificação da organização</strong>
+                            <small>Marque a opção abaixo se esta unidade também for uma instituição de ensino.</small>
+                        </span>
+                    </div>
+                    <label class="concedente-checkbox" for="UnidadeConcedente_InstituicaoEnsino">
+                        <input asp-for="UnidadeConcedente.InstituicaoEnsino" id="UnidadeConcedente_InstituicaoEnsino" />
+                        <span>Também é uma instituição de ensino</span>
                     </label>
                 </div>
             }
             else
             {
                 <input type="hidden" asp-for="UnidadeConcedente.InstituicaoEnsino" value="true" />
+                <div class="instituicoes-form-nota">
+                    <i class="bi bi-info-circle"></i>
+                    Este registro será tratado como instituição de ensino e também ficará disponível na listagem de unidades concedentes.
+                </div>
             }
 
-            <div class="instituicoes-form-acoes">
-                <a asp-page="/UnidadesConcedentes/Index" class="instituicoes-btn-secundario">Cancelar</a>
-                <button type="submit" class="instituicoes-btn-primario">Salvar cadastro</button>
+            <div class="instituicoes-form-acoes cadastro-entidade-acoes">
+                <a asp-page="@paginaVoltar" class="instituicoes-btn instituicoes-btn-secundario">Cancelar</a>
+                <button type="submit" class="instituicoes-btn instituicoes-btn-primary">
+                    <i class="bi bi-check2-circle"></i>
+                    Salvar cadastro
+                </button>
             </div>
         </form>
     </div>
