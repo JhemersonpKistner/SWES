@@ -251,6 +251,14 @@ namespace SWES.Data.Migrations
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Bairro")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("CEP")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
                     b.Property<string>("CPF")
                         .IsRequired()
                         .HasMaxLength(11)
@@ -259,10 +267,12 @@ namespace SWES.Data.Migrations
                     b.Property<DateTime>("Cadastro")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Curso")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<string>("Cidade")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<Guid?>("CursoId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DataNasc")
                         .HasColumnType("datetime2");
@@ -272,13 +282,37 @@ namespace SWES.Data.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<string>("Endereco")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Estado")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<string>("EstadoCivil")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<int>("Matricula")
                         .HasColumnType("int");
+
+                    b.Property<string>("Nacionalidade")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("OrgaoExpedidor")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("RG")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Semestre")
                         .IsRequired()
@@ -287,6 +321,10 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("Telefone")
                         .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
+
+                    b.Property<string>("TelefoneSecundario")
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
@@ -300,6 +338,8 @@ namespace SWES.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CursoId");
 
                     b.HasIndex("UserId");
 
@@ -380,6 +420,14 @@ namespace SWES.Data.Migrations
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Bairro")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("CEP")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
                     b.Property<string>("CPF")
                         .IsRequired()
                         .HasMaxLength(11)
@@ -388,15 +436,43 @@ namespace SWES.Data.Migrations
                     b.Property<DateTime>("Cadastro")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Cidade")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<string>("Endereco")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Estado")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<string>("EstadoCivil")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Nacionalidade")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("OrgaoExpedidor")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("RG")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Setor")
                         .IsRequired()
@@ -404,6 +480,10 @@ namespace SWES.Data.Migrations
 
                     b.Property<string>("Telefone")
                         .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
+
+                    b.Property<string>("TelefoneSecundario")
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
@@ -556,36 +636,6 @@ namespace SWES.Data.Migrations
                     b.ToTable("Estagios");
                 });
 
-            modelBuilder.Entity("SWES.Models.InstituicaoEnsino", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("Alteracao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Ativo")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("Cadastro")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Cnpj")
-                        .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("nvarchar(14)");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("InstituicoesEnsino");
-                });
-
             modelBuilder.Entity("SWES.Models.Notificacao", b =>
                 {
                     b.Property<int>("Id")
@@ -627,6 +677,14 @@ namespace SWES.Data.Migrations
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Bairro")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("CEP")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
                     b.Property<string>("CPF")
                         .IsRequired()
                         .HasMaxLength(11)
@@ -635,26 +693,53 @@ namespace SWES.Data.Migrations
                     b.Property<DateTime>("Cadastro")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Curso")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<string>("Cidade")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<string>("Endereco")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Estado")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<string>("EstadoCivil")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Nacionalidade")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
+
+                    b.Property<string>("OrgaoExpedidor")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("RG")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("Registro")
                         .HasColumnType("int");
 
                     b.Property<string>("Telefone")
                         .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
+
+                    b.Property<string>("TelefoneSecundario")
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
@@ -681,10 +766,13 @@ namespace SWES.Data.Migrations
                     b.Property<bool>("Ativo")
                         .HasColumnType("bit");
 
-                    b.Property<string>("CNPJ")
-                        .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("nvarchar(14)");
+                    b.Property<string>("Bairro")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("CEP")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("CPF")
                         .IsRequired()
@@ -699,31 +787,63 @@ namespace SWES.Data.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
+                    b.Property<string>("Cidade")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("Empresa")
-                        .IsRequired()
+                    b.Property<string>("Endereco")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Estado")
+                        .HasMaxLength(2)
+                        .HasColumnType("nvarchar(2)");
+
+                    b.Property<string>("EstadoCivil")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Nacionalidade")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
+                    b.Property<string>("OrgaoExpedidor")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("RG")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("Telefone")
                         .IsRequired()
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
+
+                    b.Property<string>("TelefoneSecundario")
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
+
+                    b.Property<Guid?>("UnidadeConcedenteId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UnidadeConcedenteId");
 
                     b.HasIndex("UserId");
 
@@ -846,11 +966,18 @@ namespace SWES.Data.Migrations
 
             modelBuilder.Entity("SWES.Models.Aluno", b =>
                 {
+                    b.HasOne("SWES.Models.Curso", "Curso")
+                        .WithMany()
+                        .HasForeignKey("CursoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Curso");
                 });
 
             modelBuilder.Entity("SWES.Models.Atividade", b =>
@@ -926,8 +1053,8 @@ namespace SWES.Data.Migrations
                         .WithMany()
                         .HasForeignKey("CoordenadorId");
 
-                    b.HasOne("SWES.Models.InstituicaoEnsino", "InstituicaoEnsino")
-                        .WithMany("Estagios")
+                    b.HasOne("SWES.Models.UnidadeConcedente", "InstituicaoEnsino")
+                        .WithMany("EstagiosComoInstituicao")
                         .HasForeignKey("InstituicaoEnsinoId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -985,11 +1112,18 @@ namespace SWES.Data.Migrations
 
             modelBuilder.Entity("SWES.Models.SupervisorEstagio", b =>
                 {
+                    b.HasOne("SWES.Models.UnidadeConcedente", "UnidadeConcedente")
+                        .WithMany()
+                        .HasForeignKey("UnidadeConcedenteId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("UnidadeConcedente");
                 });
 
             modelBuilder.Entity("SWES.Models.Aluno", b =>
@@ -1006,14 +1140,11 @@ namespace SWES.Data.Migrations
                     b.Navigation("Documentos");
                 });
 
-            modelBuilder.Entity("SWES.Models.InstituicaoEnsino", b =>
-                {
-                    b.Navigation("Estagios");
-                });
-
             modelBuilder.Entity("SWES.Models.UnidadeConcedente", b =>
                 {
                     b.Navigation("Estagios");
+
+                    b.Navigation("EstagiosComoInstituicao");
                 });
 #pragma warning restore 612, 618
         }

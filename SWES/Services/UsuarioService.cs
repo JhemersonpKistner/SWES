@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using SWES.Data;
 using SWES.Models;
 using SWES.ViewModels;
@@ -16,100 +17,206 @@ namespace SWES.Services
             _userManager = userManager;
         }
 
+        // OPÇÕES DOS SELECTS DO CADASTRO (cursos e unidades/instituições)
+
+        public OpcoesCadastroViewModel ObterOpcoesCadastro()
+        {
+            var cursos = _context.Cursos
+                .AsNoTracking()
+                .Where(c => c.Ativo)
+                .OrderBy(c => c.Nome)
+                .Select(c => new OpcaoViewModel
+                {
+                    Id = c.Id,
+                    Nome = c.Nome + " - " + c.Instituicao.RazaoSocial
+                })
+                .ToList();
+
+            var unidades = _context.UnidadesConcedentes
+                .AsNoTracking()
+                .Where(u => u.Ativo)
+                .OrderBy(u => u.RazaoSocial)
+                .Select(u => new OpcaoViewModel
+                {
+                    Id = u.Id,
+                    Nome = u.InstituicaoEnsino
+                        ? u.RazaoSocial + " (Instituição de ensino)"
+                        : u.RazaoSocial
+                })
+                .ToList();
+
+            return new OpcoesCadastroViewModel
+            {
+                Cursos = cursos,
+                UnidadesConcedentes = unidades
+            };
+        }
+
+        private async Task<List<Curso>?> ResolverCursosAsync(List<Guid>? ids)
+        {
+            var distintos = (ids ?? new List<Guid>()).Distinct().ToList();
+
+            if (distintos.Count == 0)
+                return null;
+
+            var cursos = await _context.Cursos
+                .Where(c => distintos.Contains(c.Id))
+                .ToListAsync();
+
+            return cursos.Count == distintos.Count ? cursos : null;
+        }
+
+        private static IdentityResult Falha(string codigo, string mensagem)
+        {
+            return IdentityResult.Failed(new IdentityError
+            {
+                Code = codigo,
+                Description = mensagem
+            });
+        }
+
+        // DADOS PESSOAIS (RG, endereço etc.)
+
+        private static UsuarioViewModel ComDadosPessoais(UsuarioViewModel vm, Usuario u)
+        {
+            vm.RG = u.RG;
+            vm.OrgaoExpedidor = u.OrgaoExpedidor;
+            vm.EstadoCivil = u.EstadoCivil;
+            vm.Nacionalidade = u.Nacionalidade;
+            vm.Endereco = u.Endereco;
+            vm.Bairro = u.Bairro;
+            vm.Cidade = u.Cidade;
+            vm.Estado = u.Estado;
+            vm.CEP = u.CEP;
+            vm.TelefoneSecundario = u.TelefoneSecundario;
+            return vm;
+        }
+
+        private static UsuarioCadastroViewModel ComDadosPessoais(UsuarioCadastroViewModel vm, Usuario u)
+        {
+            vm.RG = u.RG ?? string.Empty;
+            vm.OrgaoExpedidor = u.OrgaoExpedidor ?? string.Empty;
+            vm.EstadoCivil = u.EstadoCivil ?? string.Empty;
+            vm.Nacionalidade = u.Nacionalidade ?? string.Empty;
+            vm.Endereco = u.Endereco ?? string.Empty;
+            vm.Bairro = u.Bairro ?? string.Empty;
+            vm.Cidade = u.Cidade ?? string.Empty;
+            vm.Estado = u.Estado ?? string.Empty;
+            vm.CEP = u.CEP ?? string.Empty;
+            vm.TelefoneSecundario = u.TelefoneSecundario;
+            return vm;
+        }
+
+        private static void AplicarDadosPessoais(Usuario usuario, UsuarioCadastroViewModel m)
+        {
+            usuario.AtualizarDadosPessoais(
+                m.RG, m.OrgaoExpedidor, m.EstadoCivil, m.Nacionalidade,
+                m.Endereco, m.Bairro, m.Cidade, m.Estado, m.CEP,
+                m.TelefoneSecundario);
+        }
+
+        // LISTAGEM
+
         public List<UsuarioViewModel> ListarUsuarios()
-{
-    var usuarios = new List<UsuarioViewModel>();
-
-    var alunos = _context.Alunos.ToList();
-
-    foreach (var aluno in alunos)
-    {
-        usuarios.Add(new UsuarioViewModel
         {
-            Id = aluno.Id,
-            Nome = aluno.Nome,
-            Email = aluno.Email,
-            Telefone = aluno.Telefone,
-            CPF = aluno.CPF,
-            Inscricao = aluno.Matricula,
-            Tipo = "Aluno",
-            Ativo = aluno.Ativo,
+            var usuarios = new List<UsuarioViewModel>();
 
-            Matricula = aluno.Matricula,
-            Curso = aluno.Curso,
-            Turno = aluno.Turno,
-            Semestre = aluno.Semestre,
-            DataNasc = aluno.DataNasc
-        });
-    }
+            var alunos = _context.Alunos
+                .Include(a => a.Curso)
+                .ToList();
 
-    var professores = _context.ProfessoresOrientadores.ToList();
+            foreach (var aluno in alunos)
+            {
+                usuarios.Add(ComDadosPessoais(new UsuarioViewModel
+                {
+                    Id = aluno.Id,
+                    Nome = aluno.Nome,
+                    Email = aluno.Email,
+                    Telefone = aluno.Telefone,
+                    CPF = aluno.CPF,
+                    Inscricao = aluno.Matricula,
+                    Tipo = "Aluno",
+                    Ativo = aluno.Ativo,
 
-    foreach (var professor in professores)
-    {
-        usuarios.Add(new UsuarioViewModel
-        {
-            Id = professor.Id,
-            Nome = professor.Nome,
-            Email = professor.Email,
-            Telefone = professor.Telefone,
-            CPF = professor.CPF,
-            Inscricao = professor.Registro,
-            Tipo = "Professor",
-            Ativo = professor.Ativo,
+                    Matricula = aluno.Matricula,
+                    Curso = aluno.Curso?.Nome,
+                    Turno = aluno.Turno,
+                    Semestre = aluno.Semestre,
+                    DataNasc = aluno.DataNasc
+                }, aluno));
+            }
 
-            Registro = professor.Registro,
-            CursosProfessor = string.IsNullOrWhiteSpace(professor.Curso)
-                ? new List<string>()
-                : professor.Curso.Split(',')
-                    .Select(c => c.Trim())
-                    .Where(c => !string.IsNullOrWhiteSpace(c))
-                    .ToList()
-        });
-    }
+            var professores = _context.ProfessoresOrientadores
+                .Include(p => p.Cursos)
+                .ToList();
 
-    var supervisores = _context.SupervisoresEstagio.ToList();
+            foreach (var professor in professores)
+            {
+                usuarios.Add(ComDadosPessoais(new UsuarioViewModel
+                {
+                    Id = professor.Id,
+                    Nome = professor.Nome,
+                    Email = professor.Email,
+                    Telefone = professor.Telefone,
+                    CPF = professor.CPF,
+                    Inscricao = professor.Registro,
+                    Tipo = "Professor",
+                    Ativo = professor.Ativo,
 
-    foreach (var supervisor in supervisores)
-    {
-        usuarios.Add(new UsuarioViewModel
-        {
-            Id = supervisor.Id,
-            Nome = supervisor.Nome,
-            Email = supervisor.Email,
-            Telefone = supervisor.Telefone,
-            CPF = supervisor.CPF,
-            Inscricao = null,
-            Tipo = "Supervisor",
-            Ativo = supervisor.Ativo,
+                    Registro = professor.Registro,
+                    CursosProfessor = professor.Cursos
+                        .Select(c => c.Nome)
+                        .OrderBy(n => n)
+                        .ToList()
+                }, professor));
+            }
 
-            Cargo = supervisor.Cargo,
-            Empresa = supervisor.Empresa,
-            CNPJ = supervisor.CNPJ
-        });
-    }
+            var supervisores = _context.SupervisoresEstagio
+                .Include(s => s.UnidadeConcedente)
+                .ToList();
 
-    var coordenadores = _context.Coordenadores.ToList();
+            foreach (var supervisor in supervisores)
+            {
+                usuarios.Add(ComDadosPessoais(new UsuarioViewModel
+                {
+                    Id = supervisor.Id,
+                    Nome = supervisor.Nome,
+                    Email = supervisor.Email,
+                    Telefone = supervisor.Telefone,
+                    CPF = supervisor.CPF,
+                    Inscricao = null,
+                    Tipo = "Supervisor",
+                    Ativo = supervisor.Ativo,
 
-    foreach (var coordenador in coordenadores)
-    {
-        usuarios.Add(new UsuarioViewModel
-        {
-            Id = coordenador.Id,
-            Nome = coordenador.Nome,
-            Email = coordenador.Email,
-            Telefone = coordenador.Telefone,
-            CPF = coordenador.CPF,
-            Inscricao = null,
-            Tipo = "Coordenador",
-            Ativo = coordenador.Ativo,
+                    Cargo = supervisor.Cargo,
+                    Empresa = supervisor.UnidadeConcedente?.RazaoSocial,
+                    CNPJ = supervisor.UnidadeConcedente?.Cnpj
+                }, supervisor));
+            }
 
-            Setor = coordenador.Setor
-        });
-    }
+            var coordenadores = _context.Coordenadores.ToList();
 
-    return usuarios;
-}
+            foreach (var coordenador in coordenadores)
+            {
+                usuarios.Add(ComDadosPessoais(new UsuarioViewModel
+                {
+                    Id = coordenador.Id,
+                    Nome = coordenador.Nome,
+                    Email = coordenador.Email,
+                    Telefone = coordenador.Telefone,
+                    CPF = coordenador.CPF,
+                    Inscricao = null,
+                    Tipo = "Coordenador",
+                    Ativo = coordenador.Ativo,
+
+                    Setor = coordenador.Setor
+                }, coordenador));
+            }
+
+            return usuarios;
+        }
+
+        // CONSULTA SIMPLES
 
         public UsuarioViewModel? ObterUsuario(Guid id, string tipo)
         {
@@ -200,6 +307,8 @@ namespace SWES.Services
             return null;
         }
 
+        // CARREGAR PARA EDIÇÃO
+
         public UsuarioCadastroViewModel? ObterUsuarioParaEdicao(Guid id, string tipo)
         {
             if (tipo == "Aluno")
@@ -212,7 +321,7 @@ namespace SWES.Services
                     return null;
                 }
 
-                return new UsuarioCadastroViewModel
+                return ComDadosPessoais(new UsuarioCadastroViewModel
                 {
                     Id = aluno.Id,
                     Nome = aluno.Nome,
@@ -221,16 +330,17 @@ namespace SWES.Services
                     CPF = aluno.CPF,
                     Tipo = "Aluno",
                     Matricula = aluno.Matricula,
-                    Curso = aluno.Curso,
+                    CursoId = aluno.CursoId,
                     Turno = aluno.Turno,
                     Semestre = aluno.Semestre,
                     DataNasc = aluno.DataNasc
-                };
+                }, aluno);
             }
 
             if (tipo == "Professor")
             {
                 var professor = _context.ProfessoresOrientadores
+                    .Include(p => p.Cursos)
                     .FirstOrDefault(p => p.Id == id);
 
                 if (professor == null)
@@ -238,7 +348,7 @@ namespace SWES.Services
                     return null;
                 }
 
-                return new UsuarioCadastroViewModel
+                return ComDadosPessoais(new UsuarioCadastroViewModel
                 {
                     Id = professor.Id,
                     Nome = professor.Nome,
@@ -247,11 +357,10 @@ namespace SWES.Services
                     CPF = professor.CPF,
                     Tipo = "Professor",
                     Registro = professor.Registro,
-                    CursosProfessor = professor.Curso
-                        .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                        .Select(c => c.Trim())
+                    CursosProfessorIds = professor.Cursos
+                        .Select(c => c.Id)
                         .ToList()
-                };
+                }, professor);
             }
 
             if (tipo == "Supervisor")
@@ -264,7 +373,7 @@ namespace SWES.Services
                     return null;
                 }
 
-                return new UsuarioCadastroViewModel
+                return ComDadosPessoais(new UsuarioCadastroViewModel
                 {
                     Id = supervisor.Id,
                     Nome = supervisor.Nome,
@@ -273,9 +382,8 @@ namespace SWES.Services
                     CPF = supervisor.CPF,
                     Tipo = "Supervisor",
                     Cargo = supervisor.Cargo,
-                    Empresa = supervisor.Empresa,
-                    CNPJ = supervisor.CNPJ
-                };
+                    UnidadeConcedenteId = supervisor.UnidadeConcedenteId
+                }, supervisor);
             }
 
             if (tipo == "Coordenador")
@@ -288,7 +396,7 @@ namespace SWES.Services
                     return null;
                 }
 
-                return new UsuarioCadastroViewModel
+                return ComDadosPessoais(new UsuarioCadastroViewModel
                 {
                     Id = coordenador.Id,
                     Nome = coordenador.Nome,
@@ -297,11 +405,13 @@ namespace SWES.Services
                     CPF = coordenador.CPF,
                     Tipo = "Coordenador",
                     Setor = coordenador.Setor
-                };
+                }, coordenador);
             }
 
             return null;
         }
+
+        // ATUALIZAR
 
         public async Task<bool> AtualizarUsuario(UsuarioCadastroViewModel model)
         {
@@ -314,40 +424,51 @@ namespace SWES.Services
 
                 if (aluno == null) return false;
 
+                if (model.CursoId == null ||
+                    !await _context.Cursos.AnyAsync(c => c.Id == model.CursoId.Value))
+                {
+                    return false;
+                }
+
                 aluno.AtualizarDados(
                     model.Nome,
                     model.Email,
                     model.Telefone,
                     model.CPF);
 
+                AplicarDadosPessoais(aluno, model);
 
                 aluno.AtualizarDadosAcademicos(
-                    model.Matricula!,
-                    model.Curso!,
+                    (int)model.Matricula!,
+                    model.CursoId.Value,
                     model.Turno!,
                     model.Semestre!,
                     model.DataNasc!.Value);
-
             }
-   else if (model.Tipo == "Professor")
-{
-    var professor = _context.ProfessoresOrientadores
-        .FirstOrDefault(p => p.Id == model.Id.Value);
+            else if (model.Tipo == "Professor")
+            {
+                var professor = _context.ProfessoresOrientadores
+                    .Include(p => p.Cursos)
+                    .FirstOrDefault(p => p.Id == model.Id.Value);
 
-    if (professor == null) return false;
+                if (professor == null) return false;
 
-    professor.AtualizarDados(
-        model.Nome,
-        model.Email,
-        model.Telefone,
-        model.CPF);
+                var cursos = await ResolverCursosAsync(model.CursosProfessorIds);
 
-    professor.AtualizarRegistro((int)model.Registro!);
+                if (cursos == null) return false;
 
-    professor.AtualizarCurso(string.Join(", ", model.CursosProfessor));
-}
-        
+                professor.AtualizarDados(
+                    model.Nome,
+                    model.Email,
+                    model.Telefone,
+                    model.CPF);
 
+                AplicarDadosPessoais(professor, model);
+
+                professor.AtualizarRegistro((int)model.Registro!);
+
+                professor.DefinirCursos(cursos);
+            }
             else if (model.Tipo == "Supervisor")
             {
                 var supervisor = _context.SupervisoresEstagio
@@ -355,16 +476,23 @@ namespace SWES.Services
 
                 if (supervisor == null) return false;
 
+                if (model.UnidadeConcedenteId == null ||
+                    !await _context.UnidadesConcedentes.AnyAsync(u => u.Id == model.UnidadeConcedenteId.Value))
+                {
+                    return false;
+                }
+
                 supervisor.AtualizarDados(
                     model.Nome,
                     model.Email,
                     model.Telefone,
                     model.CPF);
 
+                AplicarDadosPessoais(supervisor, model);
+
                 supervisor.AtualizarDadosProfissionais(
                     model.Cargo!,
-                    model.Empresa!,
-                    model.CNPJ!);
+                    model.UnidadeConcedenteId.Value);
             }
             else if (model.Tipo == "Coordenador")
             {
@@ -379,6 +507,8 @@ namespace SWES.Services
                     model.Telefone,
                     model.CPF);
 
+                AplicarDadosPessoais(coordenador, model);
+
                 coordenador.AtualizarSetor(model.Setor!);
             }
             else
@@ -390,6 +520,8 @@ namespace SWES.Services
 
             return true;
         }
+
+        // INATIVAR / REATIVAR
 
         public async Task<bool> InativarUsuario(Guid id, string tipo)
         {
@@ -494,8 +626,44 @@ namespace SWES.Services
             return true;
         }
 
+        // CADASTRAR
+
         public async Task<IdentityResult> CadastrarUsuario(UsuarioCadastroViewModel model)
         {
+            // Valida os vínculos ANTES de criar o usuário no Identity,
+            // para não deixar usuário "órfão" se algo estiver errado.
+            List<Curso>? cursosProfessor = null;
+
+            if (model.Tipo == "Aluno")
+            {
+                if (model.CursoId == null ||
+                    !await _context.Cursos.AnyAsync(c => c.Id == model.CursoId.Value))
+                {
+                    return Falha("VinculoInvalido", "Selecione um curso válido.");
+                }
+            }
+            else if (model.Tipo == "Professor")
+            {
+                cursosProfessor = await ResolverCursosAsync(model.CursosProfessorIds);
+
+                if (cursosProfessor == null)
+                {
+                    return Falha("VinculoInvalido", "Selecione pelo menos um curso válido.");
+                }
+            }
+            else if (model.Tipo == "Supervisor")
+            {
+                if (model.UnidadeConcedenteId == null ||
+                    !await _context.UnidadesConcedentes.AnyAsync(u => u.Id == model.UnidadeConcedenteId.Value))
+                {
+                    return Falha("VinculoInvalido", "Selecione uma unidade concedente válida.");
+                }
+            }
+            else if (model.Tipo != "Coordenador")
+            {
+                return Falha("TipoInvalido", "Tipo de usuário inválido.");
+            }
+
             var identityUser = new IdentityUser
             {
                 UserName = model.Email,
@@ -504,7 +672,7 @@ namespace SWES.Services
 
             var resultado = await _userManager.CreateAsync(
                 identityUser,
-                model.Senha);
+                model.Senha!);
 
             if (!resultado.Succeeded)
             {
@@ -520,12 +688,13 @@ namespace SWES.Services
                     model.Telefone,
                     model.CPF,
                     (int)model.Matricula!,
-                    model.Curso!,
+                    model.CursoId!.Value,
                     model.Turno!,
                     model.Semestre!,
                     model.DataNasc!.Value
                 );
 
+                AplicarDadosPessoais(aluno, model);
                 _context.Alunos.Add(aluno);
             }
             else if (model.Tipo == "Professor")
@@ -536,11 +705,11 @@ namespace SWES.Services
                     model.Email,
                     model.Telefone,
                     model.CPF,
-                    string.Join(", ", model.CursosProfessor),
                     (int)model.Registro!
-
                 );
 
+                professor.DefinirCursos(cursosProfessor!);
+                AplicarDadosPessoais(professor, model);
                 _context.ProfessoresOrientadores.Add(professor);
             }
             else if (model.Tipo == "Supervisor")
@@ -551,15 +720,14 @@ namespace SWES.Services
                     model.Email,
                     model.Telefone,
                     model.CPF,
-                    (string)model.CNPJ,
-                    model.Cargo,
-                    model.Empresa
-
+                    model.Cargo!,
+                    model.UnidadeConcedenteId!.Value
                 );
 
+                AplicarDadosPessoais(supervisor, model);
                 _context.SupervisoresEstagio.Add(supervisor);
             }
-            else if (model.Tipo == "Coordenador")
+            else
             {
                 var coordenador = new Coordenador(
                     identityUser.Id,
@@ -570,22 +738,13 @@ namespace SWES.Services
                     model.Setor!
                 );
 
+                AplicarDadosPessoais(coordenador, model);
                 _context.Coordenadores.Add(coordenador);
-            }
-            else
-            {
-                return IdentityResult.Failed(
-                    new IdentityError
-                    {
-                        Description = "Tipo de usuário inválido."
-                    });
             }
 
             await _context.SaveChangesAsync();
 
             return resultado;
         }
-
     }
-
 }

@@ -7,11 +7,11 @@ namespace SWES.Models
 {
     public class Aluno : Usuario
     {
-
         public int Matricula { get; private set; }
-        [MaxLength(100)]
 
-        public string Curso { get; private set; }
+        public Guid? CursoId { get; private set; }
+        public Curso? Curso { get; private set; }
+
         [MaxLength(20)]
         public string Turno { get; private set; }
         [MaxLength(20)]
@@ -29,14 +29,14 @@ namespace SWES.Models
             string telefone,
             string cpf,
             int matricula,
-            string curso,
+            Guid cursoId,
             string turno,
             string semestre,
             DateTime dataNasc)
             : base(userId, nome, email, telefone, cpf)
         {
             Matricula = matricula;
-            Curso = curso;
+            CursoId = cursoId;
             Turno = turno;
             Semestre = semestre;
             DataNasc = dataNasc;
@@ -48,18 +48,14 @@ namespace SWES.Models
             return estagioAtivo?.Situacao ?? "Sem estágio ativo";
         }
 
-        public void AtualizarDadosAcademicos(int matricula, string curso, string turno, string semestre, DateTime dataNasc)
+        public void AtualizarDadosAcademicos(int matricula, Guid cursoId, string turno, string semestre, DateTime dataNasc)
         {
             Matricula = matricula;
-            Curso = curso;
+            CursoId = cursoId;
             Turno = turno;
             Semestre = semestre;
             DataNasc = dataNasc;
-        }
-
-        internal void AtualizarDadosAcademicos(int? matricula, string? curso, string? turno, string? semestre, DateTime value)
-        {
-            throw new NotImplementedException();
+            Alteracao = DateTime.UtcNow;
         }
     }
 }

@@ -109,6 +109,15 @@ namespace SWES.Services
             var supervisores = new List<SupervisorEstagio>();
             var coordenadores = new List<Coordenador>();
 
+            var cursosBanco = _context.Cursos.Where(c => c.Ativo).ToList();
+            var unidadesBanco = _context.UnidadesConcedentes.Where(u => u.Ativo).ToList();
+
+            if (cursosBanco.Count == 0 || unidadesBanco.Count == 0)
+            {
+                throw new InvalidOperationException(
+                    "Cadastre ao menos um curso e uma unidade concedente antes de gerar dados de teste.");
+            }
+
             for (var i = 0; i < faltantes; i++)
             {
                 var numero = proximoNumero + i;
@@ -143,22 +152,26 @@ namespace SWES.Services
                             telefone,
                             cpf,
                             proximaMatricula++,
-                            Cursos[i % Cursos.Length],
+                            cursosBanco[i % cursosBanco.Count].Id,
                             Turnos[i % Turnos.Length],
                             Semestres[i % Semestres.Length],
                             new DateTime(1995 + (i % 10), 1 + (i % 12), 1 + (i % 27))));
                         break;
 
                     case 1:
-                        professores.Add(new ProfessorOrientador(
-                            user.Id,
-                            nomeCompleto,
-                            email,
-                            telefone,
-                            cpf,
-                            Cursos[i % Cursos.Length],
-                            proximoRegistro++));
-                        break;
+                        {
+                            var professor = new ProfessorOrientador(
+                                user.Id,
+                                nomeCompleto,
+                                email,
+                                telefone,
+                                cpf,
+                                proximoRegistro++);
+
+                            professor.DefinirCursos(new[] { cursosBanco[i % cursosBanco.Count] });
+                            professores.Add(professor);
+                            break;
+                        }
 
                     case 2:
                         supervisores.Add(new SupervisorEstagio(
@@ -167,9 +180,8 @@ namespace SWES.Services
                             email,
                             telefone,
                             cpf,
-                            GerarCnpj(numero),
                             Cargos[i % Cargos.Length],
-                            Empresas[i % Empresas.Length]));
+                            unidadesBanco[i % unidadesBanco.Count].Id));
                         break;
 
                     default:

@@ -14,11 +14,19 @@ namespace SWES.Pages.Usuarios
         [BindProperty]
         public UsuarioCadastroViewModel Usuario { get; set; } = new();
 
+        // Listas usadas nos selects (cursos e unidades/instituições)
+        public OpcoesCadastroViewModel Opcoes { get; set; } = new();
+
         public string? Erro { get; set; }
 
         public CadastroModel(UsuarioService usuarioService)
         {
             _usuarioService = usuarioService;
+        }
+
+        private void CarregarOpcoes()
+        {
+            Opcoes = _usuarioService.ObterOpcoesCadastro();
         }
 
         public IActionResult OnGet(Guid? id, string? tipo)
@@ -33,26 +41,22 @@ namespace SWES.Pages.Usuarios
                 Usuario = usuario;
             }
 
+            CarregarOpcoes();
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-
-Console.WriteLine($"ID RECEBIDO: {Usuario.Id}");
-Console.WriteLine($"TIPO RECEBIDO: {Usuario.Tipo}");            
             // A validação acontece com os valores mascarados. Isso evita que a tela
             // perca as máscaras quando o servidor precisar devolver o formulário.
             CorrigirErroDeConversaoDaMatricula();
 
             // Validação do nome
             ValidarNome();
-Console.WriteLine($"ID: {Usuario.Id}");
-Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
+
             // Cadastro de novo usuário
             if (!Usuario.Id.HasValue)
             {
-                Console.WriteLine("ENTROU NO BLOCO DE CADASTRO");
                 // Senha
                 if (string.IsNullOrWhiteSpace(Usuario.Senha))
                 {
@@ -68,10 +72,10 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
                         "Usuario.ConfirmacaoSenha",
                         "A confirmação de senha é obrigatória.");
                 }
-
-                // Campos específicos de cada perfil
-                ValidarCamposEspecificos();
             }
+
+            // Campos específicos de cada perfil (cadastro e edição)
+            ValidarCamposEspecificos();
 
             // Data de nascimento
             CorrigirErroDeConversaoDataNascimento();
@@ -82,13 +86,19 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
             {
                 Erro = "Verifique os campos destacados.";
                 RestaurarValoresMascaradosNoModelState();
+                CarregarOpcoes();
                 return Page();
             }
 
             // Remove as máscaras somente depois que todas as validações foram concluídas.
             Usuario.Telefone = ApenasNumeros(Usuario.Telefone);
             Usuario.CPF = ApenasNumeros(Usuario.CPF);
-            Usuario.CNPJ = ApenasNumeros(Usuario.CNPJ);
+
+            // Dados pessoais
+            Usuario.CEP = ApenasNumeros(Usuario.CEP);
+            Usuario.Estado = Usuario.Estado.Trim().ToUpper();
+            var tel2 = ApenasNumeros(Usuario.TelefoneSecundario);
+            Usuario.TelefoneSecundario = string.IsNullOrEmpty(tel2) ? null : tel2;
 
             // EDIÇÃO
             if (Usuario.Id.HasValue)
@@ -99,6 +109,7 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
                 {
                     Erro = "Não foi possível atualizar o usuário.";
                     RestaurarValoresMascaradosNoModelState();
+                    CarregarOpcoes();
                     return Page();
                 }
 
@@ -115,6 +126,7 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
                     resultado.Errors.Select(TraduzirErroIdentity));
 
                 RestaurarValoresMascaradosNoModelState();
+                CarregarOpcoes();
                 return Page();
             }
 
@@ -167,7 +179,8 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
         {
             DefinirValorNoModelState("Usuario.Telefone", FormatarTelefone(Usuario.Telefone));
             DefinirValorNoModelState("Usuario.CPF", FormatarCpf(Usuario.CPF));
-            DefinirValorNoModelState("Usuario.CNPJ", FormatarCnpj(Usuario.CNPJ));
+            DefinirValorNoModelState("Usuario.CEP", FormatarCep(Usuario.CEP));
+            DefinirValorNoModelState("Usuario.TelefoneSecundario", FormatarTelefone(Usuario.TelefoneSecundario));
         }
 
         private void DefinirValorNoModelState(string chave, string? valor)
@@ -195,29 +208,17 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
             return $"{numeros[..3]}.{numeros[3..6]}.{numeros[6..9]}-{numeros[9..]}";
         }
 
-        private string FormatarCnpj(string? valor)
+        private string FormatarCep(string? valor)
         {
             var numeros = ApenasNumeros(valor);
-            if (numeros.Length <= 2) return numeros;
-            if (numeros.Length <= 5) return $"{numeros[..2]}.{numeros[2..]}";
-            if (numeros.Length <= 8) return $"{numeros[..2]}.{numeros[2..5]}.{numeros[5..]}";
-            if (numeros.Length <= 12) return $"{numeros[..2]}.{numeros[2..5]}.{numeros[5..8]}/{numeros[8..]}";
-            return $"{numeros[..2]}.{numeros[2..5]}.{numeros[5..8]}/{numeros[8..12]}-{numeros[12..]}";
+            if (numeros.Length <= 5) return numeros;
+            return $"{numeros[..5]}-{numeros[5..]}";
         }
 
-        // ============================================================
         // VALIDAÇÃO DO NOME
-        // ============================================================
 
         private void ValidarNome()
         {
-            foreach (var erro in ModelState)
-{
-    foreach (var mensagem in erro.Value.Errors)
-    {
-        Console.WriteLine($"ERRO FINAL: {erro.Key} - {mensagem.ErrorMessage}");
-    }
-}
             if (string.IsNullOrWhiteSpace(Usuario.Nome))
             {
                 ModelState.AddModelError(
@@ -260,9 +261,7 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
             }
         }
 
-        // ============================================================
         // REMOVE MÁSCARAS
-        // ============================================================
 
         private string ApenasNumeros(string? valor)
         {
@@ -273,9 +272,7 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
                 valor.Where(char.IsDigit).ToArray());
         }
 
-        // ============================================================
         // VALIDAÇÕES ESPECÍFICAS DOS PERFIS
-        // ============================================================
 
         private void ValidarCamposEspecificos()
         {
@@ -289,10 +286,10 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
                         "A matrícula é obrigatória.");
                 }
 
-                if (string.IsNullOrWhiteSpace(Usuario.Curso))
+                if (Usuario.CursoId == null)
                 {
                     ModelState.AddModelError(
-                        "Usuario.Curso",
+                        "Usuario.CursoId",
                         "O curso é obrigatório.");
                 }
 
@@ -327,11 +324,11 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
                         "O registro é obrigatório.");
                 }
 
-                if (Usuario.CursosProfessor == null ||
-                    Usuario.CursosProfessor.Count == 0)
+                if (Usuario.CursosProfessorIds == null ||
+                    Usuario.CursosProfessorIds.Count == 0)
                 {
                     ModelState.AddModelError(
-                        "Usuario.CursosProfessor",
+                        "Usuario.CursosProfessorIds",
                         "Selecione pelo menos um curso.");
                 }
             }
@@ -344,18 +341,11 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
                         "O cargo é obrigatório.");
                 }
 
-                if (string.IsNullOrWhiteSpace(Usuario.Empresa))
+                if (Usuario.UnidadeConcedenteId == null)
                 {
                     ModelState.AddModelError(
-                        "Usuario.Empresa",
-                        "A empresa é obrigatória.");
-                }
-
-                if (string.IsNullOrWhiteSpace(Usuario.CNPJ))
-                {
-                    ModelState.AddModelError(
-                        "Usuario.CNPJ",
-                        "O CNPJ é obrigatório.");
+                        "Usuario.UnidadeConcedenteId",
+                        "A unidade concedente é obrigatória.");
                 }
             }
             else if (Usuario.Tipo == "Coordenador")
@@ -369,9 +359,7 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
             }
         }
 
-        // ============================================================
         // VALIDAÇÃO DA DATA DE NASCIMENTO
-        // ============================================================
 
         private void ValidarDataNascimento()
         {
@@ -396,9 +384,7 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
             }
         }
 
-        // ============================================================
         // TRADUÇÃO DOS ERROS DO ASP.NET IDENTITY
-        // ============================================================
 
         private string TraduzirErroIdentity(IdentityError erro)
         {
@@ -424,6 +410,9 @@ Console.WriteLine($"É cadastro novo? {!Usuario.Id.HasValue}");
 
                 "DuplicateEmail" =>
                     "Já existe um usuário cadastrado com este e-mail.",
+
+                "VinculoInvalido" or "TipoInvalido" =>
+                    erro.Description,
 
                 _ =>
                     "Não foi possível cadastrar o usuário. Verifique os dados informados."

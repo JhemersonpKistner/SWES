@@ -16,6 +16,27 @@ namespace SWES.Models
         [MaxLength(11)]
         public String CPF {get; private set; }
 
+        [MaxLength(20)]
+        public string? RG { get; private set; }
+        [MaxLength(20)]
+        public string? OrgaoExpedidor { get; private set; }
+        [MaxLength(20)]
+        public string? EstadoCivil { get; private set; }
+        [MaxLength(50)]
+        public string? Nacionalidade { get; private set; }
+        [MaxLength(150)]
+        public string? Endereco { get; private set; }
+        [MaxLength(80)]
+        public string? Bairro { get; private set; }
+        [MaxLength(80)]
+        public string? Cidade { get; private set; }
+        [MaxLength(2)]
+        public string? Estado { get; private set; }
+        [MaxLength(8)]
+        public string? CEP { get; private set; }
+        [MaxLength(12)]
+        public string? TelefoneSecundario { get; private set; }
+
         protected Usuario() { }
 
         protected Usuario(string userId, string nome, string email, string telefone, String cpf)
@@ -48,6 +69,30 @@ namespace SWES.Models
         {
             Ativo = true;
             Alteracao = DateTime.UtcNow;
+        }
+
+        public void AtualizarDadosPessoais(
+            string rg,
+            string orgaoExpedidor,
+            string estadoCivil,
+            string nacionalidade,
+            string endereco,
+            string bairro,
+            string cidade,
+            string estado,
+            string cep,
+            string? telefoneSecundario)
+        {
+            RG = rg;
+            OrgaoExpedidor = orgaoExpedidor;
+            EstadoCivil = estadoCivil;
+            Nacionalidade = nacionalidade;
+            Endereco = endereco;
+            Bairro = bairro;
+            Cidade = cidade;
+            Estado = estado;
+            CEP = cep;
+            TelefoneSecundario = telefoneSecundario;
         }
 
     }

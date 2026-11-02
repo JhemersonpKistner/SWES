@@ -141,6 +141,20 @@
 
                 <div class="campo">
 
+                    <label asp-for="Usuario.TelefoneSecundario">
+                        Telefone 2 (opcional)
+                    </label>
+
+                    <input asp-for="Usuario.TelefoneSecundario" id="telefone2" maxlength="15" placeholder="(00) 00000-0000" />
+
+                    <span asp-validation-for="Usuario.TelefoneSecundario" class="text-danger">
+                    </span>
+
+                </div>
+
+
+                <div class="campo">
+
                     <label asp-for="Usuario.CPF">
                         CPF
                     </label>
@@ -191,6 +205,177 @@
             </div>
 
 
+            <!-- DADOS PESSOAIS -->
+
+            <div class="campos-especificos" style="display:block;">
+
+                <div class="titulo-secao">
+
+                    <i class="bi bi-person-vcard"></i>
+
+                    <h3>Dados Pessoais</h3>
+
+                </div>
+
+
+                <div class="form-grid">
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.RG">
+                            RG
+                        </label>
+
+                        <input asp-for="Usuario.RG" maxlength="20" />
+
+                        <span asp-validation-for="Usuario.RG" class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.OrgaoExpedidor">
+                            Órgão expedidor
+                        </label>
+
+                        <input asp-for="Usuario.OrgaoExpedidor" maxlength="20" placeholder="Ex.: SSP/GO" />
+
+                        <span asp-validation-for="Usuario.OrgaoExpedidor" class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.EstadoCivil">
+                            Estado civil
+                        </label>
+
+                        <select asp-for="Usuario.EstadoCivil">
+
+                            <option value="">
+                                Selecione...
+                            </option>
+
+                            @foreach (var estadoCivil in SWES.ViewModels.UsuarioCadastroViewModel.EstadosCivis)
+                            {
+                                <option value="@estadoCivil">
+                                    @estadoCivil
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="Usuario.EstadoCivil" class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.Nacionalidade">
+                            Nacionalidade
+                        </label>
+
+                        <input asp-for="Usuario.Nacionalidade" maxlength="50" placeholder="Ex.: Brasileira" />
+
+                        <span asp-validation-for="Usuario.Nacionalidade" class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.Endereco">
+                            Endereço
+                        </label>
+
+                        <input asp-for="Usuario.Endereco" maxlength="150" placeholder="Rua, número e complemento" />
+
+                        <span asp-validation-for="Usuario.Endereco" class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.Bairro">
+                            Bairro
+                        </label>
+
+                        <input asp-for="Usuario.Bairro" maxlength="80" />
+
+                        <span asp-validation-for="Usuario.Bairro" class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.Cidade">
+                            Cidade
+                        </label>
+
+                        <input asp-for="Usuario.Cidade" maxlength="80" />
+
+                        <span asp-validation-for="Usuario.Cidade" class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.Estado">
+                            Estado (UF)
+                        </label>
+
+                        <select asp-for="Usuario.Estado">
+
+                            <option value="">
+                                Selecione...
+                            </option>
+
+                            @foreach (var uf in SWES.ViewModels.UsuarioCadastroViewModel.Ufs)
+                            {
+                                <option value="@uf">
+                                    @uf
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="Usuario.Estado" class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label asp-for="Usuario.CEP">
+                            CEP
+                        </label>
+
+                        <input asp-for="Usuario.CEP" id="cep" maxlength="9" placeholder="00000-000" />
+
+                        <span asp-validation-for="Usuario.CEP" class="text-danger">
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
             <!-- ALUNO -->
 
             <div id="camposAluno" class="campos-especificos" style="display:none;">
@@ -223,35 +408,16 @@
 
                     <div class="campo">
 
-                        <label asp-for="Usuario.Curso">
+                        <label asp-for="Usuario.CursoId">
                             Curso
                         </label>
 
-                        <select asp-for="Usuario.Curso">
-
-                            <option value="">
-                                Selecione...
-                            </option>
-
-                            <option value="Sistemas de Informação">
-                                Sistemas de Informação
-                            </option>
-
-                            <option value="Administração">
-                                Administração
-                            </option>
-
-                            <option value="Direito">
-                                Direito
-                            </option>
-
-                            <option value="Engenharia Civil">
-                                Engenharia Civil
-                            </option>
-
+                        <select asp-for="Usuario.CursoId"
+                                asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Opcoes.Cursos, "Id", "Nome"))">
+                            <option value="">Selecione...</option>
                         </select>
 
-                        <span asp-validation-for="Usuario.Curso" class="text-danger">
+                        <span asp-validation-for="Usuario.CursoId" class="text-danger">
                         </span>
 
                     </div>
@@ -412,37 +578,19 @@
 
                     <div class="lista-cursos-professor">
 
-                        <label class="opcao-curso-professor">
-                            <input type="checkbox" name="Usuario.CursosProfessor" value="Sistemas de Informação"
-                                   checked="@(Model.Usuario.CursosProfessor.Contains("Sistemas de Informação"))" />
+                        @foreach (var curso in Model.Opcoes.Cursos)
+                        {
+                            <label class="opcao-curso-professor">
+                                <input type="checkbox" name="Usuario.CursosProfessorIds" value="@curso.Id"
+                                       checked="@(Model.Usuario.CursosProfessorIds.Contains(curso.Id))" />
 
-                            <span>Sistemas de Informação</span>
-                        </label>
-
-                        <label class="opcao-curso-professor">
-                            <input type="checkbox" name="Usuario.CursosProfessor" value="Administração"
-                                   checked="@(Model.Usuario.CursosProfessor.Contains("Administração"))" />
-
-                            <span>Administração</span>
-                        </label>
-
-                        <label class="opcao-curso-professor">
-                            <input type="checkbox" name="Usuario.CursosProfessor" value="Direito"
-                                   checked="@(Model.Usuario.CursosProfessor.Contains("Direito"))" />
-
-                            <span>Direito</span>
-                        </label>
-
-                        <label class="opcao-curso-professor">
-                            <input type="checkbox" name="Usuario.CursosProfessor" value="Engenharia Civil"
-                                   checked="@(Model.Usuario.CursosProfessor.Contains("Engenharia Civil"))" />
-
-                            <span>Engenharia Civil</span>
-                        </label>
+                                <span>@curso.Nome</span>
+                            </label>
+                        }
 
                     </div>
 
-                    <span asp-validation-for="Usuario.CursosProfessor" class="text-danger d-block mt-2">
+                    <span asp-validation-for="Usuario.CursosProfessorIds" class="text-danger d-block mt-2">
                     </span>
 
                 </div>
@@ -481,27 +629,16 @@
 
                     <div class="campo">
 
-                        <label asp-for="Usuario.Empresa">
-                            Empresa
+                        <label asp-for="Usuario.UnidadeConcedenteId">
+                            Unidade concedente
                         </label>
 
-                        <input asp-for="Usuario.Empresa" maxlength="100" />
+                        <select asp-for="Usuario.UnidadeConcedenteId"
+                                asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Opcoes.UnidadesConcedentes, "Id", "Nome"))">
+                            <option value="">Selecione...</option>
+                        </select>
 
-                        <span asp-validation-for="Usuario.Empresa" class="text-danger">
-                        </span>
-
-                    </div>
-
-
-                    <div class="campo">
-
-                        <label asp-for="Usuario.CNPJ">
-                            CNPJ
-                        </label>
-
-                        <input asp-for="Usuario.CNPJ" id="cnpj" maxlength="18" placeholder="00.000.000/0000-00" />
-
-                        <span asp-validation-for="Usuario.CNPJ" class="text-danger">
+                        <span asp-validation-for="Usuario.UnidadeConcedenteId" class="text-danger">
                         </span>
 
                     </div>
@@ -604,12 +741,9 @@
             return numeros;
         }
 
-        function formatarCnpj(valor) {
-            let numeros = (valor || "").replace(/\D/g, "").slice(0, 14);
-            numeros = numeros.replace(/^(\d{2})(\d)/, "$1.$2");
-            numeros = numeros.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
-            numeros = numeros.replace(/^(\d{2})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3/$4");
-            numeros = numeros.replace(/(\d{4})(\d)/, "$1-$2");
+        function formatarCep(valor) {
+            let numeros = (valor || "").replace(/\D/g, "").slice(0, 8);
+            numeros = numeros.replace(/^(\d{5})(\d)/, "$1-$2");
             return numeros;
         }
 
@@ -618,12 +752,18 @@
         atualizarCamposEspecificos();
 
         const telefone = document.getElementById("telefone");
+        const telefone2 = document.getElementById("telefone2");
         const cpf = document.getElementById("cpf");
-        const cnpj = document.getElementById("cnpj");
+        const cep = document.getElementById("cep");
 
         if (telefone) {
             telefone.value = formatarTelefone(telefone.value);
             telefone.addEventListener("input", () => telefone.value = formatarTelefone(telefone.value));
+        }
+
+        if (telefone2) {
+            telefone2.value = formatarTelefone(telefone2.value);
+            telefone2.addEventListener("input", () => telefone2.value = formatarTelefone(telefone2.value));
         }
 
         if (cpf) {
@@ -631,9 +771,9 @@
             cpf.addEventListener("input", () => cpf.value = formatarCpf(cpf.value));
         }
 
-        if (cnpj) {
-            cnpj.value = formatarCnpj(cnpj.value);
-            cnpj.addEventListener("input", () => cnpj.value = formatarCnpj(cnpj.value));
+        if (cep) {
+            cep.value = formatarCep(cep.value);
+            cep.addEventListener("input", () => cep.value = formatarCep(cep.value));
         }
 
         const dataNascimento = document.getElementById("Usuario_DataNasc");
