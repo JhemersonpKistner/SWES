@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SWES.Models;
+using System.Collections.Generic;
 
 namespace SWES.Data
 {
@@ -74,6 +76,24 @@ namespace SWES.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Estagio>()
+                .HasOne(e => e.ProfessorOrientador)
+                .WithMany()
+                .HasForeignKey(e => e.ProfessorOrientadorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Estagio>()
+                .HasOne(e => e.SupervisorEstagio)
+                .WithMany()
+                .HasForeignKey(e => e.SupervisorEstagioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Estagio>()
+                .HasOne(e => e.Coordenador)
+                .WithMany()
+                .HasForeignKey(e => e.CoordenadorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Estagio>()
                 .HasOne(e => e.UnidadeConcedente)
                 .WithMany(u => u.Estagios)
                 .HasForeignKey(e => e.UnidadeConcedenteId)
@@ -81,9 +101,30 @@ namespace SWES.Data
 
             builder.Entity<Estagio>()
                 .HasOne(e => e.InstituicaoEnsino)
-                .WithMany(i => i.Estagios)
+                .WithMany(i => i.EstagiosComoInstituicao)
                 .HasForeignKey(e => e.InstituicaoEnsinoId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Estagio>()
+                .HasMany(e => e.Alunos)
+                .WithMany(a => a.Estagios)
+                .UsingEntity<Dictionary<string, object>>(
+                    "EstagioAlunos",
+                    right => right
+                        .HasOne<Aluno>()
+                        .WithMany()
+                        .HasForeignKey("AlunoId")
+                        .OnDelete(DeleteBehavior.Restrict),
+                    left => left
+                        .HasOne<Estagio>()
+                        .WithMany()
+                        .HasForeignKey("EstagioId")
+                        .OnDelete(DeleteBehavior.Restrict),
+                    join =>
+                    {
+                        join.ToTable("EstagioAlunos");
+                        join.HasKey("EstagioId", "AlunoId");
+                    });
         }
     }
 }

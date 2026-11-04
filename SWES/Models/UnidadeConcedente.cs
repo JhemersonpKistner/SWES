@@ -24,6 +24,8 @@ namespace SWES.Models
 
         public ICollection<Estagio> Estagios { get; private set; } = new List<Estagio>();
 
+        public ICollection<Estagio> EstagiosComoInstituicao { get; private set; } = new List<Estagio>();
+
         private UnidadeConcedente() { } // construtor exigido pelo Entity Framework Core
 
         
