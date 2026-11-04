@@ -3064,3 +3064,304 @@ body {
         width: 100%;
     }
 }
+
+
+
+/* =========================================================
+   ESTÁGIOS - PADRÃO VISUAL SWES
+   Complementa as páginas de listagem e cadastro sem alterar
+   os handlers, bindings ou regras de negócio.
+========================================================= */
+.estagios-page {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding-left: clamp(14px, 2.2vw, 30px);
+    padding-right: clamp(14px, 2.2vw, 30px);
+    color: #344054;
+    box-sizing: border-box;
+}
+.estagios-header {
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.estagios-titulo { min-width: 0; }
+.estagios-eyebrow {
+    display: inline-block;
+    margin-bottom: 7px;
+    color: #0050A0;
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: .09em;
+}
+.estagios-header h2,
+.estagios-cadastro-header h2 {
+    margin-bottom: 6px;
+    color: #101828;
+    font-size: clamp(23px, 2.2vw, 29px);
+    font-weight: 750 !important;
+}
+.estagios-header p,
+.estagios-cadastro-header p {
+    color: #667085 !important;
+    font-size: 14px;
+}
+.estagios-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 43px;
+    padding: 10px 17px;
+    border: 1px solid #0050a0;
+    border-radius: 8px;
+    background: #0050a0;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 650;
+    text-decoration: none;
+}
+.estagios-btn-primary:hover {
+    border-color: #003f80;
+    background: #003f80;
+    color: #fff;
+}
+.estagios-card {
+    overflow: hidden;
+    border: 1px solid #eaecf0;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(16, 24, 40, .05) !important;
+}
+.estagios-card-body { padding: 0; }
+.estagios-tabela {
+    min-width: 980px;
+    margin: 0;
+    color: #344054;
+    font-size: 13px;
+}
+.estagios-tabela thead th {
+    padding: 15px 16px;
+    border-bottom: 0;
+    background: #0050a0;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.estagios-tabela tbody td {
+    padding: 15px 16px;
+    border-color: #eef0f3;
+    vertical-align: middle;
+}
+.estagios-tabela tbody tr:hover { background: #f8fbff; }
+.estagios-tabela td strong { color: #101828; }
+.estagios-tabela .small { margin-top: 4px; color: #667085 !important; }
+.estagios-tabela .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+.estagios-acoes { min-width: 90px; }
+.estagios-acao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    border-radius: 8px;
+}
+.estagios-acao.editar {
+    border-color: #258cfb;
+    background: #258cfb;
+    color: #fff;
+}
+.estagios-acao.editar:hover { background: #1478e5; color: #fff; }
+.estagios-acao.inativar {
+    border-color: #f79009;
+    background: #fff7ed;
+    color: #b54708;
+}
+.estagios-acao.inativar:hover { background: #ffedd5; color: #93370d; }
+.estagios-acoes form { margin: 0; }
+.estagios-vazio { padding: 58px 20px !important; }
+.estagios-vazio > i {
+    color: #98a2b3 !important;
+    font-size: 44px !important;
+}
+.estagios-vazio h5 { color: #101828; font-weight: 700; }
+.estagios-vazio p { color: #667085; font-size: 14px; }
+.estagios-cadastro-page { max-width: 1240px; }
+.estagios-cadastro-header { margin-bottom: 25px; }
+.estagios-voltar {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 18px;
+    color: #0050a0;
+    font-size: 13px;
+    font-weight: 650;
+}
+.estagios-voltar:hover { color: #003f80; }
+.estagios-formulario { width: 100%; }
+.secao-estagio {
+    margin-bottom: 20px;
+    padding: clamp(19px, 2.5vw, 28px);
+    border: 1px solid #eaecf0;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(16, 24, 40, .04);
+}
+.secao-estagio-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 22px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eef0f3;
+    color: #101828;
+    font-size: 16px;
+    font-weight: 750;
+}
+.secao-estagio-titulo i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: #eaf3ff;
+    color: #0050a0;
+    font-size: 17px;
+}
+.estagios-form-grid { row-gap: 20px !important; }
+.estagios-campo { min-width: 0; }
+.estagios-label {
+    display: block;
+    margin-bottom: 7px;
+    color: #344054;
+    font-size: 13px;
+    font-weight: 650;
+}
+.estagios-input {
+    width: 100%;
+    min-height: 45px;
+    padding: 10px 13px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #101828;
+    font-family: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+.estagios-input:focus {
+    border-color: #0050A0;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 140, 251, .13);
+}
+textarea.estagios-input { min-height: 100px; resize: vertical; }
+select.estagios-input[multiple] {
+    min-height: 180px;
+    padding: 8px;
+}
+select.estagios-input[multiple] option {
+    padding: 7px 9px;
+    border-radius: 5px;
+}
+.campo-ajuda {
+    margin-top: 7px;
+    color: #667085;
+    font-size: 12px;
+    line-height: 1.55;
+}
+.estagios-formulario .text-danger {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+}
+.estagios-formulario .validation-summary-errors {
+    margin-bottom: 20px;
+    padding: 14px 18px;
+    border: 1px solid #fecdca;
+    border-radius: 9px;
+    background: #fef3f2;
+    color: #b42318;
+    font-size: 13px;
+}
+.estagios-editor {
+    overflow: hidden;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background: #fff;
+}
+.estagios-editor:focus-within {
+    border-color: #0050A0;
+    box-shadow: 0 0 0 3px rgba(37, 140, 251, .13);
+}
+.estagios-editor .ql-toolbar.ql-snow {
+    border: 0;
+    border-bottom: 1px solid #eaecf0;
+    background: #f8fafc;
+}
+.estagios-editor .ql-container.ql-snow {
+    min-height: 220px;
+    border: 0;
+    font-family: inherit;
+    font-size: 14px;
+}
+.estagios-editor .ql-editor { min-height: 220px; color: #344054; line-height: 1.6; }
+.estagios-editor .ql-editor.ql-blank::before { color: #98a2b3; font-style: normal; }
+.estagios-arquivo { padding: 9px 12px; background: #f8fafc; }
+.estagios-formulario a:not(.estagios-voltar) {
+    color: #0050a0;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+.estagios-form-acoes {
+    gap: 10px !important;
+    padding: 4px 0 22px;
+}
+.estagios-btn-secundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 43px;
+    padding: 10px 17px;
+    border: 1px solid #d0d5dd;
+    border-radius: 8px;
+    background: #fff;
+    color: #344054;
+    font-size: 14px;
+    font-weight: 650;
+}
+.estagios-btn-secundario:hover {
+    border-color: #98a2b3;
+    background: #f8fafc;
+    color: #101828;
+}
+.estagios-btn-primary:focus-visible,
+.estagios-btn-secundario:focus-visible,
+.estagios-acao:focus-visible,
+.estagios-voltar:focus-visible {
+    outline: 3px solid rgba(37, 140, 251, .3);
+    outline-offset: 2px;
+}
+@media (max-width: 768px) {
+    .estagios-header { align-items: flex-start !important; flex-direction: column; }
+    .estagios-header .estagios-btn-primary { width: 100%; }
+    .estagios-tabela { min-width: 900px; }
+    .secao-estagio { padding: 19px 16px; }
+}
+@media (max-width: 520px) {
+    .estagios-page { padding-left: 12px; padding-right: 12px; }
+    .estagios-form-acoes { flex-direction: column-reverse; }
+    .estagios-form-acoes > * { width: 100%; }
+    .estagios-cadastro-header h2 { font-size: 23px; }
+    .secao-estagio-titulo { font-size: 15px; }
+    .estagios-editor .ql-toolbar.ql-snow { padding: 8px; }
+}

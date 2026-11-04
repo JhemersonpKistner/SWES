@@ -1,4 +1,4 @@
-@{
+﻿@{
     var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
 }
 <!DOCTYPE html>
@@ -55,11 +55,11 @@
                     <span><i class="bi bi-bank"></i></span>
                     Instituições
                 </a>
-                <a href="#" class="menu-item">
+                <a href="" class="menu-item">
                     <span><i class="bi bi-file-earmark-text"></i></span>
                     Documentos
                 </a>
-                <a href="#" class="menu-item">
+                <a href="/Estagios/Index" class="menu-item @(currentPage?.StartsWith("/Estagios") == true ? "menu-item-ativo" : "")">
                     <span><i class="bi bi-briefcase"></i></span>
                     Estágios
                 </a>
