@@ -43,5 +43,17 @@ namespace SWES.ViewModels
 
         // Dados do coordenador
         public string? Setor { get; set; }
+
+        // Dados pessoais
+        public string? RG { get; set; }
+        public string? OrgaoExpedidor { get; set; }
+        public string? EstadoCivil { get; set; }
+        public string? Nacionalidade { get; set; }
+        public string? Endereco { get; set; }
+        public string? Bairro { get; set; }
+        public string? Cidade { get; set; }
+        public string? Estado { get; set; }
+        public string? CEP { get; set; }
+        public string? TelefoneSecundario { get; set; }
     }
 }

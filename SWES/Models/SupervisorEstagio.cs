@@ -6,13 +6,11 @@ namespace SWES.Models
 {
     public class SupervisorEstagio : Usuario
     {
-        [MaxLength(14)]
-        public string CNPJ {get; private set; }
         [MaxLength(60)]
-
         public string Cargo { get; private set; }
-        [MaxLength(150)]
-        public string Empresa { get; private set; }
+
+        public Guid? UnidadeConcedenteId { get; private set; }
+        public UnidadeConcedente? UnidadeConcedente { get; private set; }
 
         private SupervisorEstagio() { }
 
@@ -22,14 +20,12 @@ namespace SWES.Models
             string email,
             string telefone,
             string cpf,
-            string cnpj,
             string cargo,
-            string empresa)
+            Guid unidadeConcedenteId)
             : base(userId, nome, email, telefone, cpf)
         {
-            CNPJ = cnpj;
             Cargo = cargo;
-            Empresa = empresa;
+            UnidadeConcedenteId = unidadeConcedenteId;
         }
 
         public void AcompanharEstagio(Estagio estagio)
@@ -52,11 +48,11 @@ namespace SWES.Models
             // Gerar parecer do supervisor sobre o estágio
         }
 
-        public void AtualizarDadosProfissionais(string cargo, string empresa, string cnpj)
+        public void AtualizarDadosProfissionais(string cargo, Guid unidadeConcedenteId)
         {
             Cargo = cargo;
-            Empresa = empresa;
-            CNPJ = cnpj;
+            UnidadeConcedenteId = unidadeConcedenteId;
+            Alteracao = DateTime.UtcNow;
         }
     }
 }

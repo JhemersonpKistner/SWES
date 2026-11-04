@@ -6,9 +6,6 @@ namespace SWES.Models
 {
     public class ProfessorOrientador : Usuario
     {
-        [MaxLength(100)]
-        public string Curso { get; private set; }
-
         public int Registro { get; private set; }
 
         public ICollection<Curso> Cursos { get; private set; } = new List<Curso>();
@@ -21,12 +18,10 @@ namespace SWES.Models
             string email,
             string telefone,
             string cpf,
-            string curso,
             int registro)
             : base(userId, nome, email, telefone, cpf)
         {
             Registro = registro;
-            Curso = curso;
         }
 
         public void AdicionarCurso(Curso curso)
@@ -67,9 +62,16 @@ namespace SWES.Models
             Registro = registro;
         }
 
-        public void AtualizarCurso(string curso)
+        public void DefinirCursos(IEnumerable<Curso> cursos)
         {
-            Curso = curso;
+            Cursos.Clear();
+
+            foreach (var curso in cursos)
+            {
+                Cursos.Add(curso);
+            }
+
+            Alteracao = DateTime.UtcNow;
         }
     }
 }

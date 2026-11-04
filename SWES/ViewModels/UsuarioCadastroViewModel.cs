@@ -34,8 +34,50 @@ namespace SWES.ViewModels
         [CustomValidation(typeof(UsuarioCadastroViewModel), nameof(ValidarCPF))]
         public string CPF { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "O RG é obrigatório.")]
+        [RegularExpression(@"^[0-9A-Za-z.\-]{5,20}$", ErrorMessage = "Informe um RG válido (5 a 20 caracteres, só letras, números, ponto ou hífen).")]
+        public string RG { get; set; } = string.Empty;
 
-        
+        [Required(ErrorMessage = "O órgão expedidor é obrigatório.")]
+        [RegularExpression(@"^[A-Za-zÀ-ÿ/\-\s]{2,20}$", ErrorMessage = "Informe um órgão expedidor válido. Ex.: SSP/GO.")]
+        public string OrgaoExpedidor { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "O estado civil é obrigatório.")]
+        [RegularExpression(@"^(Solteiro|Casado|União estável|Separado|Divorciado|Viúvo)$", ErrorMessage = "Selecione um estado civil válido.")]
+        public string EstadoCivil { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "A nacionalidade é obrigatória.")]
+        [StringLength(50, ErrorMessage = "A nacionalidade deve possuir no máximo 50 caracteres.")]
+        public string Nacionalidade { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "O endereço é obrigatório.")]
+        [StringLength(150, ErrorMessage = "O endereço deve possuir no máximo 150 caracteres.")]
+        public string Endereco { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "O bairro é obrigatório.")]
+        [StringLength(80, ErrorMessage = "O bairro deve possuir no máximo 80 caracteres.")]
+        public string Bairro { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "A cidade é obrigatória.")]
+        [StringLength(80, ErrorMessage = "A cidade deve possuir no máximo 80 caracteres.")]
+        public string Cidade { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "O estado é obrigatório.")]
+        [RegularExpression(@"^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$", ErrorMessage = "Selecione uma UF válida.")]
+        public string Estado { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "O CEP é obrigatório.")]
+        [RegularExpression(@"^(\d{8}|\d{5}-\d{3})$", ErrorMessage = "O CEP deve possuir 8 números.")]
+        public string CEP { get; set; } = string.Empty;
+
+        [RegularExpression(@"^(\d{10,11}|\(\d{2}\) \d{4,5}-\d{4})$", ErrorMessage = "O telefone secundário deve possuir 10 ou 11 números.")]
+        public string? TelefoneSecundario { get; set; }
+
+        public static readonly string[] EstadosCivis =
+            { "Solteiro", "Casado", "União estável", "Separado", "Divorciado", "Viúvo" };
+
+        public static readonly string[] Ufs =
+            { "AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO" };
 
         [RegularExpression(@"^\d{1,10}$", ErrorMessage = "A matrícula deve conter somente números e ter no máximo 10 dígitos.")]
         [Range(1, int.MaxValue, ErrorMessage = "A matrícula deve estar entre 1 e 2.147.483.647.")]
@@ -43,6 +85,12 @@ namespace SWES.ViewModels
 
         [StringLength(100, ErrorMessage = "O curso deve possuir no máximo 100 caracteres.")]
         public string? Curso { get; set; }
+
+        public Guid? CursoId { get; set; }
+
+        public List<Guid> CursosProfessorIds { get; set; } = new();
+
+        public Guid? UnidadeConcedenteId { get; set; }
 
         [StringLength(30, ErrorMessage = "O turno deve possuir no máximo 30 caracteres.")]
         public string? Turno { get; set; }

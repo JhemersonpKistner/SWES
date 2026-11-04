@@ -22,8 +22,10 @@ namespace SWES.Models
         [MaxLength(150)]
         public string Email { get; private set; } = string.Empty;
 
+        // Estágios em que a unidade atua como concedente.
         public ICollection<Estagio> Estagios { get; private set; } = new List<Estagio>();
 
+        // Estágios em que a unidade atua como instituição de ensino.
         public ICollection<Estagio> EstagiosComoInstituicao { get; private set; } = new List<Estagio>();
 
         private UnidadeConcedente() { } // construtor exigido pelo Entity Framework Core

@@ -69,6 +69,18 @@ namespace SWES.Models
             string nome,
             string email,
             string telefone,
+            string cpf)
+        {
+            Nome = nome;
+            Email = email;
+            Telefone = telefone;
+            CPF = cpf;
+            Alteracao = DateTime.UtcNow;
+        }
+        public void AtualizarDados(
+            string nome,
+            string email,
+            string telefone,
             string cpf,
             string rg,
             string orgaoExpedidor,
@@ -107,6 +119,31 @@ namespace SWES.Models
         public void Ativar()
         {
             Ativo = true;
+            Alteracao = DateTime.UtcNow;
+        }
+
+        public void AtualizarDadosPessoais(
+            string rg,
+            string orgaoExpedidor,
+            string estadoCivil,
+            string nacionalidade,
+            string endereco,
+            string bairro,
+            string cidade,
+            string estado,
+            string cep,
+            string? telefoneSecundario)
+        {
+            RG = rg;
+            OrgaoExpedidor = orgaoExpedidor;
+            EstadoCivil = estadoCivil;
+            Nacionalidade = nacionalidade;
+            Endereco = endereco;
+            Bairro = bairro;
+            Cidade = cidade;
+            Estado = estado;
+            CEP = cep;
+            TelefoneSecundario = telefoneSecundario;
             Alteracao = DateTime.UtcNow;
         }
     }

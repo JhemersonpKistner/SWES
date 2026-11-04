@@ -15,7 +15,6 @@ namespace SWES.Data
         }
 
         public DbSet<UnidadeConcedente> UnidadesConcedentes { get; set; }
-        public DbSet<InstituicaoEnsino> InstituicoesEnsino { get; set; }
         public DbSet<Documento> Documentos { get; set; }
         public DbSet<Atividade> Atividades { get; set; }
         public DbSet<Notificacao> Notificacoes { get; set; }
@@ -75,6 +74,18 @@ namespace SWES.Data
                 .HasForeignKey(c => c.InstituicaoId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Aluno>()
+                .HasOne(a => a.Curso)
+                .WithMany()
+                .HasForeignKey(a => a.CursoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<SupervisorEstagio>()
+                .HasOne(s => s.UnidadeConcedente)
+                .WithMany()
+                .HasForeignKey(s => s.UnidadeConcedenteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<Estagio>()
                 .HasOne(e => e.ProfessorOrientador)
                 .WithMany()
@@ -101,7 +112,7 @@ namespace SWES.Data
 
             builder.Entity<Estagio>()
                 .HasOne(e => e.InstituicaoEnsino)
-                .WithMany(i => i.EstagiosComoInstituicao)
+                .WithMany(u => u.EstagiosComoInstituicao)
                 .HasForeignKey(e => e.InstituicaoEnsinoId)
                 .OnDelete(DeleteBehavior.Restrict);
 

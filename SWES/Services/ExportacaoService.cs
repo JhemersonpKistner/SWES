@@ -30,7 +30,17 @@ namespace SWES.Services
                 "Cargo",
                 "Empresa",
                 "CNPJ",
-                "Setor"
+                "Setor",
+                "RG",
+                "Órgão Expedidor",
+                "Estado Civil",
+                "Nacionalidade",
+                "Endereço",
+                "Bairro",
+                "Cidade",
+                "Estado",
+                "CEP",
+                "Telefone 2"
             };
 
             for (int i = 0; i < cabecalhos.Length; i++)
@@ -75,6 +85,16 @@ namespace SWES.Services
                 planilha.Cell(linha, 16).Value = usuario.Empresa;
                 planilha.Cell(linha, 17).Value = usuario.CNPJ;
                 planilha.Cell(linha, 18).Value = usuario.Setor;
+                planilha.Cell(linha, 19).Value = usuario.RG;
+                planilha.Cell(linha, 20).Value = usuario.OrgaoExpedidor;
+                planilha.Cell(linha, 21).Value = usuario.EstadoCivil;
+                planilha.Cell(linha, 22).Value = usuario.Nacionalidade;
+                planilha.Cell(linha, 23).Value = usuario.Endereco;
+                planilha.Cell(linha, 24).Value = usuario.Bairro;
+                planilha.Cell(linha, 25).Value = usuario.Cidade;
+                planilha.Cell(linha, 26).Value = usuario.Estado;
+                planilha.Cell(linha, 27).Value = usuario.CEP;
+                planilha.Cell(linha, 28).Value = usuario.TelefoneSecundario;
 
                 linha++;
             }
