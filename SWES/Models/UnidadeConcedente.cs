@@ -27,6 +27,7 @@ namespace SWES.Models
 
         // Estágios em que a unidade atua como instituição de ensino.
         public ICollection<Estagio> EstagiosComoInstituicao { get; private set; } = new List<Estagio>();
+
         private UnidadeConcedente() { } // construtor exigido pelo Entity Framework Core
 
         
