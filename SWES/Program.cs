@@ -24,6 +24,7 @@ namespace SWES
             builder.Services.AddScoped<ExportacaoService>();
             builder.Services.AddScoped<DadosTesteService>();
             builder.Services.AddScoped<CursoService>();
+            builder.Services.AddScoped<EstagioService>();
 
             var app = builder.Build();
 
