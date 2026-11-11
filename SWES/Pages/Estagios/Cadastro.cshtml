@@ -165,6 +165,26 @@
         </section>
 
         <!-- VÍNCULOS -->
+        @{
+            var instituicaoSelecionada = Model.Opcoes.InstituicoesEnsino
+                .FirstOrDefault(i => i.Id == Model.Estagio.InstituicaoEnsinoId);
+                
+            var professorSelecionado = Model.Opcoes.Professores
+                .FirstOrDefault(p => p.Id == Model.Estagio.ProfessorOrientadorId);
+
+            var supervisorSelecionado = Model.Opcoes.Supervisores
+                .FirstOrDefault(s => s.Id == Model.Estagio.SupervisorEstagioId);
+
+            var unidadeSelecionada = Model.Opcoes.UnidadesConcedentes
+                .FirstOrDefault(u => u.Id == Model.Estagio.UnidadeConcedenteId);
+
+            var coordenadorSelecionado = Model.Opcoes.Coordenadores
+                .FirstOrDefault(c => c.Id == Model.Estagio.CoordenadorId);
+
+            var alunosSelecionados = Model.Opcoes.Alunos
+                .Where(a => Model.Estagio.AlunosIds.Contains(a.Id))
+                .ToList();
+        }
 
         <section class="secao-estagio">
             <h5 class="secao-estagio-titulo">
@@ -174,123 +194,393 @@
 
             <div class="row g-3 estagios-form-grid">
 
+                <!-- INSTITUIÇÃO DE ENSINO -->
                 <div class="col-md-6 estagios-campo">
-                    <label asp-for="Estagio.ProfessorOrientadorId" class="form-label estagios-label">
-                        Professor orientador
-                    </label>
+                    <label class="form-label estagios-label">Instituição de ensino</label>
 
-                    <select asp-for="Estagio.ProfessorOrientadorId" class="form-select estagios-input">
-                        <option value="">Selecione o professor</option>
+                    <input type="hidden" asp-for="Estagio.InstituicaoEnsinoId"
+                        id="instituicaoEnsinoId" />
 
-                        @foreach (var professor in Model.Opcoes.Professores)
-                        {
-                            <option value="@professor.Id">
-                                @professor.Nome
-                            </option>
-                        }
-                    </select>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <button type="button" class="btn btn-outline-primary"
+                                data-bs-toggle="modal" data-bs-target="#modalInstituicao">
+                            <i class="bi bi-search"></i>
+                            Selecionar instituição
+                        </button>
 
-                    <span asp-validation-for="Estagio.ProfessorOrientadorId" class="text-danger"></span>
+                        <span id="instituicaoSelecionada" class="text-muted">
+                            @(instituicaoSelecionada?.Nome ?? "Nenhuma instituição selecionada")
+                        </span>
+                    </div>
+
+                    <span asp-validation-for="Estagio.InstituicaoEnsinoId"
+                        class="text-danger"></span>
                 </div>
 
+                <!-- COORDENADOR -->
                 <div class="col-md-6 estagios-campo">
-                    <label asp-for="Estagio.SupervisorEstagioId" class="form-label estagios-label">
-                        Supervisor de estágio
-                    </label>
+                    <label class="form-label estagios-label">Coordenador (opcional)</label>
 
-                    <select asp-for="Estagio.SupervisorEstagioId" class="form-select estagios-input">
-                        <option value="">Selecione o supervisor</option>
+                    <input type="hidden" asp-for="Estagio.CoordenadorId"
+                        id="coordenadorId" />
 
-                        @foreach (var supervisor in Model.Opcoes.Supervisores)
-                        {
-                            <option value="@supervisor.Id">
-                                @supervisor.Nome
-                            </option>
-                        }
-                    </select>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <button type="button" class="btn btn-outline-primary"
+                                id="abrirModalCoordenador"
+                                data-bs-toggle="modal" data-bs-target="#modalCoordenador">
+                            <i class="bi bi-search"></i>
+                            Selecionar coordenador
+                        </button>
 
-                    <span asp-validation-for="Estagio.SupervisorEstagioId" class="text-danger"></span>
+                        <span id="coordenadorSelecionado" class="text-muted">
+                            @(coordenadorSelecionado?.Nome ?? "Nenhum coordenador selecionado")
+                        </span>
+                    </div>
                 </div>
 
+                <!-- PROFESSOR -->
                 <div class="col-md-6 estagios-campo">
-                    <label asp-for="Estagio.UnidadeConcedenteId" class="form-label estagios-label">
-                        Unidade concedente
-                    </label>
+                    <label class="form-label estagios-label">Professor orientador</label>
 
-                    <select asp-for="Estagio.UnidadeConcedenteId" class="form-select estagios-input">
-                        <option value="">Selecione a unidade concedente</option>
+                    <input type="hidden" asp-for="Estagio.ProfessorOrientadorId"
+                        id="professorOrientadorId" />
 
-                        @foreach (var unidade in Model.Opcoes.UnidadesConcedentes)
-                        {
-                            <option value="@unidade.Id">
-                                @unidade.Nome
-                            </option>
-                        }
-                    </select>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <button type="button" class="btn btn-outline-primary"
+                                id="abrirModalProfessor"
+                                data-bs-toggle="modal" data-bs-target="#modalProfessor">
+                            <i class="bi bi-search"></i>
+                            Selecionar professor
+                        </button>
 
-                    <span asp-validation-for="Estagio.UnidadeConcedenteId" class="text-danger"></span>
+                        <span id="professorSelecionado" class="text-muted">
+                            @(professorSelecionado?.Nome ?? "Nenhum professor selecionado")
+                        </span>
+                    </div>
+
+                    <span asp-validation-for="Estagio.ProfessorOrientadorId"
+                        class="text-danger"></span>
                 </div>
 
+                <!-- UNIDADE CONCEDENTE -->
                 <div class="col-md-6 estagios-campo">
-                    <label asp-for="Estagio.InstituicaoEnsinoId" class="form-label estagios-label">
-                        Instituição de ensino
-                    </label>
+                    <label class="form-label estagios-label">Unidade concedente</label>
 
-                    <select asp-for="Estagio.InstituicaoEnsinoId" class="form-select estagios-input">
-                        <option value="">Selecione a instituição</option>
+                    <input type="hidden" asp-for="Estagio.UnidadeConcedenteId"
+                        id="unidadeConcedenteId" />
 
-                        @foreach (var instituicao in Model.Opcoes.InstituicoesEnsino)
-                        {
-                            <option value="@instituicao.Id">
-                                @instituicao.Nome
-                            </option>
-                        }
-                    </select>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <button type="button" class="btn btn-outline-primary"
+                                data-bs-toggle="modal" data-bs-target="#modalUnidade">
+                            <i class="bi bi-search"></i>
+                            Selecionar unidade
+                        </button>
 
-                    <span asp-validation-for="Estagio.InstituicaoEnsinoId" class="text-danger"></span>
+                        <span id="unidadeSelecionada" class="text-muted">
+                            @(unidadeSelecionada?.Nome ?? "Nenhuma unidade selecionada")
+                        </span>
+                    </div>
+
+                    <span asp-validation-for="Estagio.UnidadeConcedenteId"
+                        class="text-danger"></span>
                 </div>
 
+                <!-- SUPERVISOR -->
                 <div class="col-md-6 estagios-campo">
-                    <label asp-for="Estagio.CoordenadorId" class="form-label estagios-label">
-                        Coordenador (opcional)
-                    </label>
+                    <label class="form-label estagios-label">Supervisor de estágio</label>
 
-                    <select asp-for="Estagio.CoordenadorId" class="form-select estagios-input">
-                        <option value="">Nenhum coordenador selecionado</option>
+                    <input type="hidden" asp-for="Estagio.SupervisorEstagioId"
+                        id="supervisorEstagioId" />
 
-                        @foreach (var coordenador in Model.Opcoes.Coordenadores)
-                        {
-                            <option value="@coordenador.Id">
-                                @coordenador.Nome
-                            </option>
-                        }
-                    </select>
-                </div>
+                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                        <button type="button" class="btn btn-outline-primary"
+                                id="abrirModalSupervisor"
+                                data-bs-toggle="modal" data-bs-target="#modalSupervisor">
+                            <i class="bi bi-search"></i>
+                            Selecionar supervisor
+                        </button>
 
+                        <span id="supervisorSelecionado" class="text-muted">
+                            @(supervisorSelecionado?.Nome ?? "Nenhum supervisor selecionado")
+                        </span>
+                    </div>
+
+                    <span asp-validation-for="Estagio.SupervisorEstagioId"
+                        class="text-danger"></span>
+                </div>                     
+            
+                <!-- ALUNOS -->
                 <div class="col-12 estagios-campo">
-                    <label asp-for="Estagio.AlunosIds" class="form-label estagios-label">
-                        Alunos vinculados
-                    </label>
+                    <label class="form-label estagios-label">Alunos vinculados</label>
 
-                    <select asp-for="Estagio.AlunosIds" class="form-select estagios-input" multiple size="7">
-                        @foreach (var aluno in Model.Opcoes.Alunos)
+                    <div id="alunosIdsContainer">
+                        @foreach (var aluno in alunosSelecionados)
                         {
-                            <option value="@aluno.Id">
-                                @aluno.Nome
-                            </option>
+                            <input type="hidden" name="Estagio.AlunosIds" value="@aluno.Id" />
                         }
-                    </select>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-primary"
+                            id="abrirModalAlunos"
+                            data-bs-toggle="modal" data-bs-target="#modalAlunos">
+                        <i class="bi bi-search"></i>
+                        Selecionar alunos
+                    </button>
+
+                    <div id="alunosSelecionados" class="mt-2">
+                        @if (alunosSelecionados.Any())
+                        {
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach (var aluno in alunosSelecionados)
+                                {
+                                    <span class="badge bg-primary">@aluno.Nome</span>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Nenhum aluno selecionado</span>
+                        }
+                    </div>
 
                     <span asp-validation-for="Estagio.AlunosIds" class="text-danger"></span>
-
                     <div class="campo-ajuda mt-1">
-                        Para selecionar vários alunos, mantenha pressionada a tecla
-                        Ctrl (Windows) ou Command (Mac) enquanto clica nos nomes.
+                        Você poderá selecionar vários alunos na janela de busca.
                     </div>
                 </div>
 
             </div>
         </section>
+
+        <!-- MODAL DE PROFESSORES -->
+        <div class="modal fade" id="modalProfessor" tabindex="-1"
+            aria-labelledby="tituloModalProfessor" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModalProfessor">
+                            <i class="bi bi-person-badge"></i>
+                            Buscar professor orientador
+                        </h5>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="pesquisaProfessor"
+                            class="form-control mb-3"
+                            placeholder="Digite o nome do professor..." />
+                        <div id="listaProfessores" class="list-group"></div>
+                        <div id="nenhumProfessorEncontrado"
+                            class="text-muted text-center py-3 d-none">
+                            Nenhum professor encontrado.
+                        </div>
+                        <div id="avisoInstituicaoProfessor"
+                            class="text-muted text-center py-3 d-none">
+                            Selecione primeiro uma instituição de ensino.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE UNIDADES CONCEDENTES -->
+        <div class="modal fade" id="modalUnidade" tabindex="-1"
+            aria-labelledby="tituloModalUnidade" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModalUnidade">
+                            <i class="bi bi-building"></i>
+                            Buscar unidade concedente
+                        </h5>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="pesquisaUnidade"
+                            class="form-control mb-3"
+                            placeholder="Digite o nome da unidade..." />
+
+                        <div id="listaUnidades" class="list-group">
+                            @foreach (var unidade in Model.Opcoes.UnidadesConcedentes)
+                            {
+                                <button type="button"
+                                        class="list-group-item list-group-item-action unidade-opcao"
+                                        data-id="@unidade.Id" data-nome="@unidade.Nome">
+                                    <i class="bi bi-building me-2"></i>
+                                    @unidade.Nome
+                                </button>
+                            }
+                        </div>
+
+                        <div id="nenhumaUnidadeEncontrada"
+                            class="text-muted text-center py-3 d-none">
+                            Nenhuma unidade encontrada.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE SUPERVISORES -->
+        <div class="modal fade" id="modalSupervisor" tabindex="-1"
+            aria-labelledby="tituloModalSupervisor" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModalSupervisor">
+                            <i class="bi bi-person-workspace"></i>
+                            Buscar supervisor de estágio
+                        </h5>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="pesquisaSupervisor"
+                            class="form-control mb-3"
+                            placeholder="Digite o nome do supervisor..." />
+                        <div id="listaSupervisores" class="list-group"></div>
+                        <div id="nenhumSupervisorEncontrado"
+                            class="text-muted text-center py-3 d-none">
+                            Nenhum supervisor encontrado.
+                        </div>
+                        <div id="avisoUnidadeSupervisor"
+                            class="text-muted text-center py-3 d-none">
+                            Selecione primeiro uma unidade concedente.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE COORDENADORES -->
+        <div class="modal fade" id="modalCoordenador" tabindex="-1"
+            aria-labelledby="tituloModalCoordenador" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModalCoordenador">
+                            <i class="bi bi-person-lines-fill"></i>
+                            Buscar coordenador
+                        </h5>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="pesquisaCoordenador"
+                            class="form-control mb-3"
+                            placeholder="Digite o nome do coordenador..." />
+                        <div id="listaCoordenadores" class="list-group"></div>
+                        <div id="nenhumCoordenadorEncontrado"
+                            class="text-muted text-center py-3 d-none">
+                            Nenhum coordenador encontrado.
+                        </div>
+                        <div id="avisoInstituicaoCoordenador"
+                            class="text-muted text-center py-3 d-none">
+                            Selecione primeiro uma instituição de ensino.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE ALUNOS -->
+        <div class="modal fade" id="modalAlunos" tabindex="-1"
+            aria-labelledby="tituloModalAlunos" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModalAlunos">
+                            <i class="bi bi-people"></i>
+                            Buscar alunos
+                        </h5>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="pesquisaAluno"
+                            class="form-control mb-3"
+                            placeholder="Digite o nome do aluno..." />
+
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted">Marque os alunos desejados:</span>
+                            <span id="quantidadeAlunosSelecionados" class="badge bg-primary">
+                                @alunosSelecionados.Count selecionado(s)
+                            </span>
+                        </div>
+
+                        <div id="listaAlunos" class="list-group"></div>
+
+                        <div id="nenhumAlunoEncontrado"
+                            class="text-muted text-center py-3 d-none">
+                            Nenhum aluno encontrado.
+                        </div>
+
+                        <div id="avisoInstituicaoAlunos"
+                            class="text-muted text-center py-3 d-none">
+                            Selecione primeiro uma instituição de ensino.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary"
+                                id="confirmarAlunos" data-bs-dismiss="modal">
+                            Confirmar seleção
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="modalInstituicao" tabindex="-1" aria-labelledby="tituloModalInstituicao"
+             aria-hidden="true">
+
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tituloModalInstituicao">
+                            <i class="bi bi-building"></i>
+                            Buscar instituição de ensino
+                        </h5>
+
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <input type="text" id="pesquisaInstituicao" class="form-control mb-3"
+                               placeholder="Digite o nome da instituição..." />
+
+                        <div class="list-group" id="listaInstituicoes">
+
+                            @foreach (var instituicao in Model.Opcoes.InstituicoesEnsino)
+                            {
+                                <button type="button" class="list-group-item list-group-item-action instituicao-opcao"
+                                        data-id="@instituicao.Id" data-nome="@instituicao.Nome">
+
+                                    <i class="bi bi-building me-2"></i>
+                                    @instituicao.Nome
+                                </button>
+                            }
+
+                        </div>
+
+                        <div id="nenhumaInstituicaoEncontrada" class="text-muted text-center py-3 d-none">
+                            Nenhuma instituição encontrada.
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Fechar
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
         
         <!-- ESPECIFICAÇÕES -->
@@ -509,6 +799,581 @@
                     campoHtml.value = quill.root.innerHTML;
                 }
 
+            });
+
+
+        // ==========================================
+        // FUNÇÕES AUXILIARES DOS MODAIS
+        // ==========================================
+
+        // Obtém o identificador e o nome dos registros retornados pelo servidor.
+        function obterId(item) {
+            return item.id ?? item.Id;
+        }
+
+        function obterNome(item) {
+            return item.nome ?? item.Nome;
+        }
+
+        // Consulta os registros nos handlers do CadastroModel.
+        async function buscarRegistros(handler, parametro, valor) {
+            const url = `?handler=${handler}&${parametro}=${encodeURIComponent(valor)}`;
+
+            const resposta = await fetch(url);
+
+            if (!resposta.ok) {
+                throw new Error(`Erro ao consultar ${handler}.`);
+            }
+
+            return await resposta.json();
+        }
+
+        // ==========================================
+        // INSTITUIÇÕES DE ENSINO
+        // ==========================================
+
+        const pesquisaInstituicao = document.getElementById('pesquisaInstituicao');
+        const opcoesInstituicao = document.querySelectorAll('.instituicao-opcao');
+        const nenhumaInstituicao = document.getElementById('nenhumaInstituicaoEncontrada');
+
+        pesquisaInstituicao.addEventListener('input', function () {
+            const termo = this.value.toLowerCase().trim();
+            let quantidadeVisivel = 0;
+
+            opcoesInstituicao.forEach(function (opcao) {
+                const nome = opcao.dataset.nome.toLowerCase();
+                const corresponde = nome.includes(termo);
+
+                opcao.classList.toggle('d-none', !corresponde);
+
+                if (corresponde) {
+                    quantidadeVisivel++;
+                }
+            });
+
+            nenhumaInstituicao.classList.toggle('d-none', quantidadeVisivel > 0);
+        });
+
+        opcoesInstituicao.forEach(function (opcao) {
+            opcao.addEventListener('click', function () {
+                const instituicaoId = this.dataset.id;
+                const instituicaoNome = this.dataset.nome;
+
+                const instituicaoAnterior =
+                    document.getElementById('instituicaoEnsinoId').value;
+
+                document.getElementById('instituicaoEnsinoId').value = instituicaoId;
+                document.getElementById('instituicaoSelecionada').textContent = instituicaoNome;
+
+                // Só limpa os vínculos se a instituição realmente mudou.
+                if (instituicaoAnterior !== instituicaoId) {
+                    limparProfessor();
+                    limparCoordenador();
+                    limparAlunos();
+                }
+
+                bootstrap.Modal.getOrCreateInstance(
+                    document.getElementById('modalInstituicao')
+                ).hide();
+            });
+        });
+
+        document.getElementById('modalInstituicao')
+            .addEventListener('shown.bs.modal', function () {
+                pesquisaInstituicao.value = '';
+                pesquisaInstituicao.dispatchEvent(new Event('input'));
+                pesquisaInstituicao.focus();
+            });
+
+        // ==========================================
+        // FUNÇÕES PARA LIMPAR SELEÇÕES
+        // ==========================================
+
+        function limparProfessor() {
+            document.getElementById('professorOrientadorId').value = '';
+            document.getElementById('professorSelecionado').textContent =
+                'Nenhum professor selecionado';
+        }
+
+        function limparCoordenador() {
+            document.getElementById('coordenadorId').value = '';
+            document.getElementById('coordenadorSelecionado').textContent =
+                'Nenhum coordenador selecionado';
+        }
+
+        function limparSupervisor() {
+            document.getElementById('supervisorEstagioId').value = '';
+            document.getElementById('supervisorSelecionado').textContent =
+                'Nenhum supervisor selecionado';
+        }
+
+        function limparAlunos() {
+            document.getElementById('alunosIdsContainer').innerHTML = '';
+
+            document.getElementById('alunosSelecionados').innerHTML =
+                '<span class="text-muted">Nenhum aluno selecionado</span>';
+
+            document.getElementById('quantidadeAlunosSelecionados').textContent =
+                '0 selecionado(s)';
+        }
+
+        // ==========================================
+        // FUNÇÃO PARA CRIAR OPÇÕES NOS MODAIS
+        // ==========================================
+
+        function criarOpcaoModal(lista, id, nome, aoSelecionar) {
+            const botao = document.createElement('button');
+
+            botao.type = 'button';
+            botao.className = 'list-group-item list-group-item-action';
+
+            botao.textContent = nome;
+
+            botao.addEventListener('click', function () {
+                aoSelecionar(id, nome);
+            });
+
+            lista.appendChild(botao);
+        }
+
+        // ==========================================
+        // PROFESSORES
+        // ==========================================
+
+        let professoresCarregados = [];
+
+        const listaProfessores = document.getElementById('listaProfessores');
+        const pesquisaProfessor = document.getElementById('pesquisaProfessor');
+        const nenhumProfessor = document.getElementById('nenhumProfessorEncontrado');
+        const avisoProfessor = document.getElementById('avisoInstituicaoProfessor');
+
+        function renderizarProfessores() {
+            const termo = pesquisaProfessor.value.toLowerCase().trim();
+
+            listaProfessores.innerHTML = '';
+
+            const filtrados = professoresCarregados.filter(function (professor) {
+                return obterNome(professor).toLowerCase().includes(termo);
+            });
+
+            filtrados.forEach(function (professor) {
+                criarOpcaoModal(
+                    listaProfessores,
+                    obterId(professor),
+                    obterNome(professor),
+                    function (id, nome) {
+                        document.getElementById('professorOrientadorId').value = id;
+                        document.getElementById('professorSelecionado').textContent = nome;
+
+                        bootstrap.Modal.getOrCreateInstance(
+                            document.getElementById('modalProfessor')
+                        ).hide();
+                    }
+                );
+            });
+
+            nenhumProfessor.classList.toggle('d-none', filtrados.length > 0);
+        }
+
+        pesquisaProfessor.addEventListener('input', renderizarProfessores);
+
+        document.getElementById('modalProfessor')
+            .addEventListener('shown.bs.modal', async function () {
+                const instituicaoId =
+                    document.getElementById('instituicaoEnsinoId').value;
+
+                pesquisaProfessor.value = '';
+                listaProfessores.innerHTML = '';
+
+                if (!instituicaoId) {
+                    avisoProfessor.classList.remove('d-none');
+                    nenhumProfessor.classList.add('d-none');
+                    pesquisaProfessor.disabled = true;
+                    return;
+                }
+
+                avisoProfessor.classList.add('d-none');
+                pesquisaProfessor.disabled = false;
+
+                try {
+                    professoresCarregados = await buscarRegistros(
+                        'Professores',
+                        'instituicaoId',
+                        instituicaoId
+                    );
+
+                    renderizarProfessores();
+                    pesquisaProfessor.focus();
+                } catch (erro) {
+                    console.error(erro);
+                    nenhumProfessor.textContent =
+                        'Não foi possível carregar os professores.';
+                    nenhumProfessor.classList.remove('d-none');
+                }
+            });
+
+        // ==========================================
+        // UNIDADES CONCEDENTES
+        // ==========================================
+
+        const pesquisaUnidade = document.getElementById('pesquisaUnidade');
+        const opcoesUnidade = document.querySelectorAll('.unidade-opcao');
+        const nenhumaUnidade = document.getElementById('nenhumaUnidadeEncontrada');
+
+        pesquisaUnidade.addEventListener('input', function () {
+            const termo = this.value.toLowerCase().trim();
+            let quantidadeVisivel = 0;
+
+            opcoesUnidade.forEach(function (opcao) {
+                const nome = opcao.dataset.nome.toLowerCase();
+                const corresponde = nome.includes(termo);
+
+                opcao.classList.toggle('d-none', !corresponde);
+
+                if (corresponde) {
+                    quantidadeVisivel++;
+                }
+            });
+
+            nenhumaUnidade.classList.toggle('d-none', quantidadeVisivel > 0);
+        });
+
+        opcoesUnidade.forEach(function (opcao) {
+            opcao.addEventListener('click', function () {
+                const unidadeId = this.dataset.id;
+                const unidadeNome = this.dataset.nome;
+
+                const unidadeAnterior =
+                    document.getElementById('unidadeConcedenteId').value;
+
+                document.getElementById('unidadeConcedenteId').value = unidadeId;
+                document.getElementById('unidadeSelecionada').textContent = unidadeNome;
+
+                if (unidadeAnterior !== unidadeId) {
+                    limparSupervisor();
+                }
+
+                bootstrap.Modal.getOrCreateInstance(
+                    document.getElementById('modalUnidade')
+                ).hide();
+            });
+        });
+
+        document.getElementById('modalUnidade')
+            .addEventListener('shown.bs.modal', function () {
+                pesquisaUnidade.value = '';
+                pesquisaUnidade.dispatchEvent(new Event('input'));
+                pesquisaUnidade.focus();
+            });
+
+        // ==========================================
+        // SUPERVISORES
+        // ==========================================
+
+        let supervisoresCarregados = [];
+
+        const listaSupervisores = document.getElementById('listaSupervisores');
+        const pesquisaSupervisor = document.getElementById('pesquisaSupervisor');
+        const nenhumSupervisor = document.getElementById('nenhumSupervisorEncontrado');
+        const avisoSupervisor = document.getElementById('avisoUnidadeSupervisor');
+
+        function renderizarSupervisores() {
+            const termo = pesquisaSupervisor.value.toLowerCase().trim();
+
+            listaSupervisores.innerHTML = '';
+
+            const filtrados = supervisoresCarregados.filter(function (supervisor) {
+                return obterNome(supervisor).toLowerCase().includes(termo);
+            });
+
+            filtrados.forEach(function (supervisor) {
+                criarOpcaoModal(
+                    listaSupervisores,
+                    obterId(supervisor),
+                    obterNome(supervisor),
+                    function (id, nome) {
+                        document.getElementById('supervisorEstagioId').value = id;
+                        document.getElementById('supervisorSelecionado').textContent = nome;
+
+                        bootstrap.Modal.getOrCreateInstance(
+                            document.getElementById('modalSupervisor')
+                        ).hide();
+                    }
+                );
+            });
+
+            nenhumSupervisor.classList.toggle('d-none', filtrados.length > 0);
+        }
+
+        pesquisaSupervisor.addEventListener('input', renderizarSupervisores);
+
+        document.getElementById('modalSupervisor')
+            .addEventListener('shown.bs.modal', async function () {
+                const unidadeId =
+                    document.getElementById('unidadeConcedenteId').value;
+
+                pesquisaSupervisor.value = '';
+                listaSupervisores.innerHTML = '';
+
+                if (!unidadeId) {
+                    avisoSupervisor.classList.remove('d-none');
+                    nenhumSupervisor.classList.add('d-none');
+                    pesquisaSupervisor.disabled = true;
+                    return;
+                }
+
+                avisoSupervisor.classList.add('d-none');
+                pesquisaSupervisor.disabled = false;
+
+                try {
+                    supervisoresCarregados = await buscarRegistros(
+                        'Supervisores',
+                        'unidadeConcedenteId',
+                        unidadeId
+                    );
+
+                    renderizarSupervisores();
+                    pesquisaSupervisor.focus();
+                } catch (erro) {
+                    console.error(erro);
+                    nenhumSupervisor.textContent =
+                        'Não foi possível carregar os supervisores.';
+                    nenhumSupervisor.classList.remove('d-none');
+                }
+            });
+
+        // ==========================================
+        // COORDENADORES
+        // ==========================================
+
+        let coordenadoresCarregados = [];
+
+        const listaCoordenadores = document.getElementById('listaCoordenadores');
+        const pesquisaCoordenador = document.getElementById('pesquisaCoordenador');
+        const nenhumCoordenador = document.getElementById('nenhumCoordenadorEncontrado');
+        const avisoCoordenador = document.getElementById('avisoInstituicaoCoordenador');
+
+        function renderizarCoordenadores() {
+            const termo = pesquisaCoordenador.value.toLowerCase().trim();
+
+            listaCoordenadores.innerHTML = '';
+
+            const filtrados = coordenadoresCarregados.filter(function (coordenador) {
+                return obterNome(coordenador).toLowerCase().includes(termo);
+            });
+
+            filtrados.forEach(function (coordenador) {
+                criarOpcaoModal(
+                    listaCoordenadores,
+                    obterId(coordenador),
+                    obterNome(coordenador),
+                    function (id, nome) {
+                        document.getElementById('coordenadorId').value = id;
+                        document.getElementById('coordenadorSelecionado').textContent = nome;
+
+                        bootstrap.Modal.getOrCreateInstance(
+                            document.getElementById('modalCoordenador')
+                        ).hide();
+                    }
+                );
+            });
+
+            nenhumCoordenador.classList.toggle('d-none', filtrados.length > 0);
+        }
+
+        pesquisaCoordenador.addEventListener('input', renderizarCoordenadores);
+
+        document.getElementById('modalCoordenador')
+            .addEventListener('shown.bs.modal', async function () {
+                const instituicaoId =
+                    document.getElementById('instituicaoEnsinoId').value;
+
+                pesquisaCoordenador.value = '';
+                listaCoordenadores.innerHTML = '';
+
+                if (!instituicaoId) {
+                    avisoCoordenador.classList.remove('d-none');
+                    nenhumCoordenador.classList.add('d-none');
+                    pesquisaCoordenador.disabled = true;
+                    return;
+                }
+
+                avisoCoordenador.classList.add('d-none');
+                pesquisaCoordenador.disabled = false;
+
+                try {
+                    coordenadoresCarregados = await buscarRegistros(
+                        'Coordenadores',
+                        'instituicaoId',
+                        instituicaoId
+                    );
+
+                    renderizarCoordenadores();
+                    pesquisaCoordenador.focus();
+                } catch (erro) {
+                    console.error(erro);
+                    nenhumCoordenador.textContent =
+                        'Não foi possível carregar os coordenadores.';
+                    nenhumCoordenador.classList.remove('d-none');
+                }
+            });
+
+        // ==========================================
+        // ALUNOS
+        // ==========================================
+
+        let alunosCarregados = [];
+        let alunosEmEdicao = new Set();
+
+        const listaAlunos = document.getElementById('listaAlunos');
+        const pesquisaAluno = document.getElementById('pesquisaAluno');
+        const nenhumAluno = document.getElementById('nenhumAlunoEncontrado');
+        const avisoAlunos = document.getElementById('avisoInstituicaoAlunos');
+
+        function obterAlunosSelecionados() {
+            return Array.from(
+                document.querySelectorAll(
+                    '#alunosIdsContainer input[name="Estagio.AlunosIds"]'
+                )
+            ).map(function (campo) {
+                return campo.value;
+            });
+        }
+
+        function renderizarAlunos() {
+            const termo = pesquisaAluno.value.toLowerCase().trim();
+
+            listaAlunos.innerHTML = '';
+
+            const filtrados = alunosCarregados.filter(function (aluno) {
+                return obterNome(aluno).toLowerCase().includes(termo);
+            });
+
+            filtrados.forEach(function (aluno) {
+                const id = String(obterId(aluno));
+                const nome = obterNome(aluno);
+
+                const linha = document.createElement('label');
+                linha.className =
+                    'list-group-item d-flex align-items-center gap-2';
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'form-check-input mt-0';
+                checkbox.value = id;
+                checkbox.checked = alunosEmEdicao.has(id);
+
+                checkbox.addEventListener('change', function () {
+                    if (this.checked) {
+                        alunosEmEdicao.add(id);
+                    } else {
+                        alunosEmEdicao.delete(id);
+                    }
+
+                    document.getElementById(
+                        'quantidadeAlunosSelecionados'
+                    ).textContent = `${alunosEmEdicao.size} selecionado(s)`;
+                });
+
+                const texto = document.createElement('span');
+                texto.textContent = nome;
+
+                linha.appendChild(checkbox);
+                linha.appendChild(texto);
+
+                listaAlunos.appendChild(linha);
+            });
+
+            nenhumAluno.classList.toggle('d-none', filtrados.length > 0);
+        }
+
+        pesquisaAluno.addEventListener('input', renderizarAlunos);
+
+        document.getElementById('modalAlunos')
+            .addEventListener('shown.bs.modal', async function () {
+                const instituicaoId =
+                    document.getElementById('instituicaoEnsinoId').value;
+
+                pesquisaAluno.value = '';
+                listaAlunos.innerHTML = '';
+
+                if (!instituicaoId) {
+                    avisoAlunos.classList.remove('d-none');
+                    nenhumAluno.classList.add('d-none');
+                    pesquisaAluno.disabled = true;
+                    return;
+                }
+
+                avisoAlunos.classList.add('d-none');
+                pesquisaAluno.disabled = false;
+
+                try {
+                    alunosCarregados = await buscarRegistros(
+                        'Alunos',
+                        'instituicaoId',
+                        instituicaoId
+                    );
+
+                    alunosEmEdicao = new Set(obterAlunosSelecionados());
+
+                    renderizarAlunos();
+                    document.getElementById(
+                        'quantidadeAlunosSelecionados'
+                    ).textContent = `${alunosEmEdicao.size} selecionado(s)`;
+
+                    pesquisaAluno.focus();
+                } catch (erro) {
+                    console.error(erro);
+                    nenhumAluno.textContent =
+                        'Não foi possível carregar os alunos.';
+                    nenhumAluno.classList.remove('d-none');
+                }
+            });
+
+        // Confirma a seleção de alunos e atualiza os campos ocultos.
+        document.getElementById('confirmarAlunos')
+            ?.addEventListener('click', function () {
+                const container = document.getElementById('alunosIdsContainer');
+                const exibicao = document.getElementById('alunosSelecionados');
+
+                container.innerHTML = '';
+                exibicao.innerHTML = '';
+
+                const alunosSelecionados = alunosCarregados.filter(function (aluno) {
+                    return alunosEmEdicao.has(String(obterId(aluno)));
+                });
+
+                alunosSelecionados.forEach(function (aluno) {
+                    const campo = document.createElement('input');
+
+                    campo.type = 'hidden';
+                    campo.name = 'Estagio.AlunosIds';
+                    campo.value = obterId(aluno);
+
+                    container.appendChild(campo);
+                });
+
+                if (alunosSelecionados.length > 0) {
+                    const grupo = document.createElement('div');
+                    grupo.className = 'd-flex flex-wrap gap-2';
+
+                    alunosSelecionados.forEach(function (aluno) {
+                        const etiqueta = document.createElement('span');
+                        etiqueta.className = 'badge bg-primary';
+                        etiqueta.textContent = obterNome(aluno);
+
+                        grupo.appendChild(etiqueta);
+                    });
+
+                    exibicao.appendChild(grupo);
+                } else {
+                    exibicao.innerHTML =
+                        '<span class="text-muted">Nenhum aluno selecionado</span>';
+                }
+
+                document.getElementById(
+                    'quantidadeAlunosSelecionados'
+                ).textContent = `${alunosSelecionados.length} selecionado(s)`;
             });
     </script>
 }

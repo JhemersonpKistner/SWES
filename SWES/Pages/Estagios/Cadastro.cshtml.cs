@@ -133,6 +133,51 @@ namespace SWES.Pages.Estagios
             }
         }
 
+        public async Task<IActionResult> OnGetProfessoresAsync(Guid instituicaoId)
+        {
+            if (instituicaoId == Guid.Empty)
+                return BadRequest();
+
+            var professores = await _estagioService
+                .ObterProfessoresPorInstituicaoAsync(instituicaoId);
+
+            return new JsonResult(professores);
+        }
+
+        public async Task<IActionResult> OnGetAlunosAsync(Guid instituicaoId)
+        {
+            if (instituicaoId == Guid.Empty)
+                return BadRequest();
+
+            var alunos = await _estagioService
+                .ObterAlunosPorInstituicaoAsync(instituicaoId);
+
+            return new JsonResult(alunos);
+        }
+
+        public async Task<IActionResult> OnGetCoordenadoresAsync(Guid instituicaoId)
+        {
+            if (instituicaoId == Guid.Empty)
+                return BadRequest();
+
+            var coordenadores = await _estagioService
+                .ObterCoordenadoresPorInstituicaoAsync(instituicaoId);
+
+            return new JsonResult(coordenadores);
+        }
+
+        public async Task<IActionResult> OnGetSupervisoresAsync(Guid unidadeConcedenteId)
+        {
+            if (unidadeConcedenteId == Guid.Empty)
+                return BadRequest();
+
+            var supervisores = await _estagioService
+                .ObterSupervisoresPorUnidadeAsync(unidadeConcedenteId);
+
+            return new JsonResult(supervisores);
+        }
+                  
+
         private async Task CarregarOpcoesAsync()
         {
             Opcoes = await _estagioService.ObterOpcoesAsync();

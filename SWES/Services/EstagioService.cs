@@ -122,6 +122,67 @@ namespace SWES.Services
             };
         }
 
+        public async Task<List<OpcaoEstagioViewModel>>
+            ObterProfessoresPorInstituicaoAsync(Guid instituicaoId)
+        {
+            return await _context.ProfessoresOrientadores
+                .Where(p => p.Ativo &&
+                    (p.InstituicaoEnsinoId == instituicaoId ||
+                     p.InstituicoesEnsino.Any(i => i.Id == instituicaoId)))
+                .OrderBy(p => p.Nome)
+                .Select(p => new OpcaoEstagioViewModel
+                {
+                    Id = p.Id,
+                    Nome = p.Nome
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<OpcaoEstagioViewModel>>
+    ObterAlunosPorInstituicaoAsync(Guid instituicaoId)
+        {
+            return await _context.Alunos
+                .Where(a => a.Ativo &&
+                            a.InstituicaoEnsinoId == instituicaoId)
+                .OrderBy(a => a.Nome)
+                .Select(a => new OpcaoEstagioViewModel
+                {
+                    Id = a.Id,
+                    Nome = a.Nome
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<OpcaoEstagioViewModel>>
+    ObterCoordenadoresPorInstituicaoAsync(Guid instituicaoId)
+        {
+            return await _context.Coordenadores
+                .Where(c => c.Ativo &&
+                            c.InstituicaoEnsinoId == instituicaoId)
+                .OrderBy(c => c.Nome)
+                .Select(c => new OpcaoEstagioViewModel
+                {
+                    Id = c.Id,
+                    Nome = c.Nome
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<OpcaoEstagioViewModel>>
+    ObterSupervisoresPorUnidadeAsync(Guid unidadeConcedenteId)
+        {
+            return await _context.SupervisoresEstagio
+                .Where(s => s.Ativo &&
+                            s.UnidadeConcedenteId == unidadeConcedenteId)
+                .OrderBy(s => s.Nome)
+                .Select(s => new OpcaoEstagioViewModel
+                {
+                    Id = s.Id,
+                    Nome = s.Nome
+                })
+                .ToListAsync();
+        }
+
         // =====================================================
         // CARREGAR OPÇÕES DOS CAMPOS DE SELEÇÃO
         // =====================================================
