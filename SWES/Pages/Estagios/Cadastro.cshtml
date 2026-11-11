@@ -10,7 +10,7 @@
 
 <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet" />
 
-<div class="container-fluid py-4 estagios-page estagios-cadastro-page">
+<div class="estagios-page estagios-cadastro-page">
 
     <div class="mb-4 estagios-cadastro-header">
         <a asp-page="./Index" class="text-decoration-none estagios-voltar">
@@ -18,7 +18,7 @@
         </a>
 
         <span class="estagios-eyebrow">GERENCIAMENTO ACADÊMICO</span>
-        <h2 class="fw-bold mt-2">@ViewData["Title"]</h2>
+        <h1 class="mt-2">@ViewData["Title"]</h1>
 
         <p class="text-muted">
             Preencha as informações do estágio supervisionado.
@@ -202,13 +202,13 @@
                         id="instituicaoEnsinoId" />
 
                     <div class="d-flex gap-2 align-items-center flex-wrap">
-                        <button type="button" class="btn btn-outline-primary"
+                        <button type="button" class="btn btn-outline-primary estagios-btn-selecao"
                                 data-bs-toggle="modal" data-bs-target="#modalInstituicao">
                             <i class="bi bi-search"></i>
                             Selecionar instituição
                         </button>
 
-                        <span id="instituicaoSelecionada" class="text-muted">
+                        <span id="instituicaoSelecionada" class="estagios-selecao-valor">
                             @(instituicaoSelecionada?.Nome ?? "Nenhuma instituição selecionada")
                         </span>
                     </div>
@@ -225,14 +225,14 @@
                         id="coordenadorId" />
 
                     <div class="d-flex gap-2 align-items-center flex-wrap">
-                        <button type="button" class="btn btn-outline-primary"
+                        <button type="button" class="btn btn-outline-primary estagios-btn-selecao"
                                 id="abrirModalCoordenador"
                                 data-bs-toggle="modal" data-bs-target="#modalCoordenador">
                             <i class="bi bi-search"></i>
                             Selecionar coordenador
                         </button>
 
-                        <span id="coordenadorSelecionado" class="text-muted">
+                        <span id="coordenadorSelecionado" class="estagios-selecao-valor">
                             @(coordenadorSelecionado?.Nome ?? "Nenhum coordenador selecionado")
                         </span>
                     </div>
@@ -246,14 +246,14 @@
                         id="professorOrientadorId" />
 
                     <div class="d-flex gap-2 align-items-center flex-wrap">
-                        <button type="button" class="btn btn-outline-primary"
+                        <button type="button" class="btn btn-outline-primary estagios-btn-selecao"
                                 id="abrirModalProfessor"
                                 data-bs-toggle="modal" data-bs-target="#modalProfessor">
                             <i class="bi bi-search"></i>
                             Selecionar professor
                         </button>
 
-                        <span id="professorSelecionado" class="text-muted">
+                        <span id="professorSelecionado" class="estagios-selecao-valor">
                             @(professorSelecionado?.Nome ?? "Nenhum professor selecionado")
                         </span>
                     </div>
@@ -270,13 +270,13 @@
                         id="unidadeConcedenteId" />
 
                     <div class="d-flex gap-2 align-items-center flex-wrap">
-                        <button type="button" class="btn btn-outline-primary"
+                        <button type="button" class="btn btn-outline-primary estagios-btn-selecao"
                                 data-bs-toggle="modal" data-bs-target="#modalUnidade">
                             <i class="bi bi-search"></i>
                             Selecionar unidade
                         </button>
 
-                        <span id="unidadeSelecionada" class="text-muted">
+                        <span id="unidadeSelecionada" class="estagios-selecao-valor">
                             @(unidadeSelecionada?.Nome ?? "Nenhuma unidade selecionada")
                         </span>
                     </div>
@@ -293,14 +293,14 @@
                         id="supervisorEstagioId" />
 
                     <div class="d-flex gap-2 align-items-center flex-wrap">
-                        <button type="button" class="btn btn-outline-primary"
+                        <button type="button" class="btn btn-outline-primary estagios-btn-selecao"
                                 id="abrirModalSupervisor"
                                 data-bs-toggle="modal" data-bs-target="#modalSupervisor">
                             <i class="bi bi-search"></i>
                             Selecionar supervisor
                         </button>
 
-                        <span id="supervisorSelecionado" class="text-muted">
+                        <span id="supervisorSelecionado" class="estagios-selecao-valor">
                             @(supervisorSelecionado?.Nome ?? "Nenhum supervisor selecionado")
                         </span>
                     </div>
@@ -320,7 +320,7 @@
                         }
                     </div>
 
-                    <button type="button" class="btn btn-outline-primary"
+                    <button type="button" class="btn btn-outline-primary estagios-btn-selecao"
                             id="abrirModalAlunos"
                             data-bs-toggle="modal" data-bs-target="#modalAlunos">
                         <i class="bi bi-search"></i>
@@ -405,7 +405,7 @@
                             @foreach (var unidade in Model.Opcoes.UnidadesConcedentes)
                             {
                                 <button type="button"
-                                        class="list-group-item list-group-item-action unidade-opcao"
+                                        class="list-group-item list-group-item-action unidade-opcao estagios-modal-opcao"
                                         data-id="@unidade.Id" data-nome="@unidade.Nome">
                                     <i class="bi bi-building me-2"></i>
                                     @unidade.Nome
@@ -556,7 +556,7 @@
 
                             @foreach (var instituicao in Model.Opcoes.InstituicoesEnsino)
                             {
-                                <button type="button" class="list-group-item list-group-item-action instituicao-opcao"
+                                <button type="button" class="list-group-item list-group-item-action instituicao-opcao estagios-modal-opcao"
                                         data-id="@instituicao.Id" data-nome="@instituicao.Nome">
 
                                     <i class="bi bi-building me-2"></i>
@@ -607,7 +607,7 @@
                     <input type="radio" class="btn-check" name="modoEspecificacoes" id="modoEditor" value="editor"
                            autocomplete="off" checked />
 
-                    <label class="btn btn-outline-primary" for="modoEditor">
+                    <label class="btn btn-outline-primary estagios-btn-selecao" for="modoEditor">
                         <i class="bi bi-pencil-square"></i>
                         Editor visual
                     </label>
@@ -615,7 +615,7 @@
                     <input type="radio" class="btn-check" name="modoEspecificacoes" id="modoHtml" value="html"
                            autocomplete="off" />
 
-                    <label class="btn btn-outline-primary" for="modoHtml">
+                    <label class="btn btn-outline-primary estagios-btn-selecao" for="modoHtml">
                         <i class="bi bi-code-slash"></i>
                         Código HTML
                     </label>

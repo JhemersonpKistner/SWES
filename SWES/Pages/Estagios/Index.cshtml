@@ -5,19 +5,19 @@
     ViewData["Title"] = "Estágios";
 }
 
-<div class="container-fluid py-4 estagios-page">
+<div class="estagios-page">
 
-    <div class="d-flex justify-content-between align-items-center mb-4 estagios-header">
+    <div class="instituicoes-header estagios-header">
         <div>
-            <div class="estagios-titulo"><span class="estagios-eyebrow">GERENCIAMENTO ACADÊMICO</span>
-                <h2 class="fw-bold">Estágios Supervisionados</h2>
-                <p class="text-muted mb-0">
+            <div class="estagios-titulo"><span class="instituicoes-eyebrow"><i class="bi bi-journal-check"></i> GESTÃO ACADÊMICA</span>
+                <h1>Estágios Supervisionados</h1>
+                <p class="mb-0">
                     Gerenciamento dos estágios cadastrados no sistema.
                 </p>
             </div>
         </div>
 
-        <a asp-page="./Cadastro" class="btn btn-primary estagios-btn-primary">
+        <a asp-page="./Cadastro" class="instituicoes-btn instituicoes-btn-primary estagios-btn-primary">
             <i class="bi bi-plus-circle"></i>
             Novo estágio
         </a>
@@ -40,45 +40,51 @@
     }
 
 
-    <form method="get" class="mb-4">
-        <div class="card shadow-sm estagios-card">
-            <div class="card-body">
-                <label asp-for="Pesquisa" class="form-label fw-semibold">
+    <form method="get" class="mb-4 estagios-filtros-form">
+        <section class="instituicoes-card estagios-filtros-card">
+            <div class="instituicoes-card-header">
+                <div><h2>Consultar estágios</h2><p>Pesquise por etapa, professor, aluno, instituição ou situação.</p></div>
+            </div>
+            <div class="estagios-filtros-conteudo">
+                <label asp-for="Pesquisa" class="form-label estagios-label">
                     Pesquisar estágios
                 </label>
 
-                <div class="input-group">
-                    <input asp-for="Pesquisa" class="form-control"
-                           placeholder="Pesquise por etapa, professor, aluno, instituição ou situação..." />
+                <div class="estagios-pesquisa-grupo">
+                    <div class="instituicoes-input-wrapper estagios-pesquisa-input"><i class="bi bi-search"></i><input asp-for="Pesquisa"
+                           placeholder="Pesquise por etapa, professor, aluno, instituição ou situação..." /></div>
 
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="instituicoes-btn instituicoes-btn-primary">
                         <i class="bi bi-search"></i>
                         Pesquisar
                     </button>
 
-                    <a asp-page="./Index" class="btn btn-outline-secondary">
+                    <a asp-page="./Index" class="instituicoes-btn instituicoes-btn-secondary">
                         <i class="bi bi-x-circle"></i>
                         Limpar
                     </a>
                 </div>
 
-                <small class="text-muted">
+                <small class="campo-ajuda">
                     A pesquisa considera os dados dos estágios cadastrados.
                 </small>
             </div>
-        </div>
+        </section>
     </form>
 
 
-    <div class="card shadow-sm estagios-card">
-        <div class="card-body estagios-card-body">
+    <section class="instituicoes-card estagios-listagem-card">
+        <div class="instituicoes-card-header">
+            <div><h2>Estágios cadastrados</h2><p>Consulte as vigências, vínculos e situações dos estágios.</p></div>
+            <span class="instituicoes-contador">@Model.Estagios.Count registro(s)</span>
+        </div>
 
             @if (Model.Estagios.Any())
             {
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle estagios-tabela">
+                <div class="instituicoes-tabela-wrapper">
+                    <table class="instituicoes-tabela estagios-tabela">
 
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th>Etapa</th>
                                 <th>Vigência</th>
@@ -145,7 +151,7 @@
                                         }
                                     </td>
 
-                                    <td class="text-center">
+                                    <td class="text-center estagios-acoes-coluna">
                                         <div class="d-flex justify-content-center gap-2 estagios-acoes">
 
                                             <a asp-page="./Cadastro" asp-route-id="@estagio.Id"
@@ -176,8 +182,8 @@
             
             else
             {
-                <div class="text-center py-5 estagios-vazio">
-                    <i class="bi bi-folder2-open fs-1 text-muted"></i>
+                <div class="instituicoes-vazio estagios-vazio">
+                    <div class="instituicoes-vazio-icone"><i class="bi bi-folder2-open"></i></div>
 
                     @if (!string.IsNullOrWhiteSpace(Model.Pesquisa))
                     {
@@ -188,7 +194,7 @@
                             "@Model.Pesquisa".
                         </p>
 
-                        <a asp-page="./Index" class="btn btn-outline-primary">
+                        <a asp-page="./Index" class="instituicoes-btn instituicoes-btn-secondary">
                             Limpar pesquisa
                         </a>
                     }
@@ -200,13 +206,12 @@
                             Cadastre um estágio para começar a utilizar esta funcionalidade.
                         </p>
 
-                        <a asp-page="./Cadastro" class="btn btn-primary">
+                        <a asp-page="./Cadastro" class="instituicoes-btn instituicoes-btn-primary">
                             Cadastrar primeiro estágio
                         </a>
                     }
                 </div>
             }
 
-        </div>
-    </div>
+    </section>
 </div>
