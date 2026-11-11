@@ -254,6 +254,21 @@ namespace SWES.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("ProfessorInstituicoesEnsino", b =>
+                {
+                    b.Property<Guid>("ProfessorOrientadorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("InstituicaoEnsinoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProfessorOrientadorId", "InstituicaoEnsinoId");
+
+                    b.HasIndex("InstituicaoEnsinoId");
+
+                    b.ToTable("ProfessorInstituicoesEnsino", (string)null);
+                });
+
             modelBuilder.Entity("SWES.Models.Aluno", b =>
                 {
                     b.Property<Guid>("Id")
@@ -315,6 +330,9 @@ namespace SWES.Data.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<Guid?>("InstituicaoEnsinoId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Matricula")
                         .HasColumnType("int");
 
@@ -364,6 +382,8 @@ namespace SWES.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CursoId");
+
+                    b.HasIndex("InstituicaoEnsinoId");
 
                     b.HasIndex("UserId");
 
@@ -487,6 +507,9 @@ namespace SWES.Data.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<Guid?>("InstituicaoEnsinoId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Nacionalidade")
                         .IsRequired()
                         .HasMaxLength(60)
@@ -525,6 +548,8 @@ namespace SWES.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InstituicaoEnsinoId");
 
                     b.HasIndex("UserId");
 
@@ -786,6 +811,9 @@ namespace SWES.Data.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<Guid?>("InstituicaoEnsinoId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Nacionalidade")
                         .IsRequired()
                         .HasMaxLength(60)
@@ -823,6 +851,8 @@ namespace SWES.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InstituicaoEnsinoId");
 
                     b.HasIndex("UserId");
 
@@ -889,6 +919,9 @@ namespace SWES.Data.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<Guid?>("InstituicaoEnsinoId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Nacionalidade")
                         .IsRequired()
                         .HasMaxLength(60)
@@ -926,6 +959,8 @@ namespace SWES.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("InstituicaoEnsinoId");
 
                     b.HasIndex("UnidadeConcedenteId");
 
@@ -1063,11 +1098,31 @@ namespace SWES.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ProfessorInstituicoesEnsino", b =>
+                {
+                    b.HasOne("SWES.Models.UnidadeConcedente", null)
+                        .WithMany()
+                        .HasForeignKey("InstituicaoEnsinoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SWES.Models.ProfessorOrientador", null)
+                        .WithMany()
+                        .HasForeignKey("ProfessorOrientadorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("SWES.Models.Aluno", b =>
                 {
                     b.HasOne("SWES.Models.Curso", "Curso")
                         .WithMany()
                         .HasForeignKey("CursoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("SWES.Models.UnidadeConcedente", "InstituicaoEnsino")
+                        .WithMany()
+                        .HasForeignKey("InstituicaoEnsinoId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
@@ -1077,6 +1132,8 @@ namespace SWES.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Curso");
+
+                    b.Navigation("InstituicaoEnsino");
                 });
 
             modelBuilder.Entity("SWES.Models.Atividade", b =>
@@ -1111,11 +1168,18 @@ namespace SWES.Data.Migrations
 
             modelBuilder.Entity("SWES.Models.Coordenador", b =>
                 {
+                    b.HasOne("SWES.Models.UnidadeConcedente", "InstituicaoEnsino")
+                        .WithMany()
+                        .HasForeignKey("InstituicaoEnsinoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("InstituicaoEnsino");
                 });
 
             modelBuilder.Entity("SWES.Models.Curso", b =>
@@ -1195,15 +1259,27 @@ namespace SWES.Data.Migrations
 
             modelBuilder.Entity("SWES.Models.ProfessorOrientador", b =>
                 {
+                    b.HasOne("SWES.Models.UnidadeConcedente", "InstituicaoEnsino")
+                        .WithMany()
+                        .HasForeignKey("InstituicaoEnsinoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("InstituicaoEnsino");
                 });
 
             modelBuilder.Entity("SWES.Models.SupervisorEstagio", b =>
                 {
+                    b.HasOne("SWES.Models.UnidadeConcedente", "InstituicaoEnsino")
+                        .WithMany()
+                        .HasForeignKey("InstituicaoEnsinoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("SWES.Models.UnidadeConcedente", "UnidadeConcedente")
                         .WithMany()
                         .HasForeignKey("UnidadeConcedenteId")
@@ -1214,6 +1290,8 @@ namespace SWES.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("InstituicaoEnsino");
 
                     b.Navigation("UnidadeConcedente");
                 });

@@ -331,6 +331,14 @@ namespace SWES.Pages.Usuarios
                         "Usuario.CursosProfessorIds",
                         "Selecione pelo menos um curso.");
                 }
+
+                if (Usuario.InstituicoesProfessorIds == null ||
+                    Usuario.InstituicoesProfessorIds.Count == 0)
+                {
+                    ModelState.AddModelError(
+                        "Usuario.InstituicoesProfessorIds",
+                        "Selecione pelo menos uma instituição de ensino.");
+                }
             }
             else if (Usuario.Tipo == "Supervisor")
             {
@@ -411,7 +419,7 @@ namespace SWES.Pages.Usuarios
                 "DuplicateEmail" =>
                     "Já existe um usuário cadastrado com este e-mail.",
 
-                "VinculoInvalido" or "TipoInvalido" =>
+                "VinculoInvalido" or "TipoInvalido" or "InstituicaoInvalida" =>
                     erro.Description,
 
                 _ =>

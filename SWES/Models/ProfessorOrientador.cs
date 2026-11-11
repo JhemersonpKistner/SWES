@@ -10,6 +10,9 @@ namespace SWES.Models
 
         public ICollection<Curso> Cursos { get; private set; } = new List<Curso>();
 
+        public ICollection<UnidadeConcedente> InstituicoesEnsino { get; private set; }
+            = new List<UnidadeConcedente>();
+            
         private ProfessorOrientador() { }
 
         public ProfessorOrientador(

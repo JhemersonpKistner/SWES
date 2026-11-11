@@ -329,6 +329,7 @@ namespace SWES.Services
                     Telefone = aluno.Telefone,
                     CPF = aluno.CPF,
                     Tipo = "Aluno",
+                    InstituicaoEnsinoId = aluno.InstituicaoEnsinoId,
                     Matricula = aluno.Matricula,
                     CursoId = aluno.CursoId,
                     Turno = aluno.Turno,
@@ -341,6 +342,7 @@ namespace SWES.Services
             {
                 var professor = _context.ProfessoresOrientadores
                     .Include(p => p.Cursos)
+                    .Include(p => p.InstituicoesEnsino)
                     .FirstOrDefault(p => p.Id == id);
 
                 if (professor == null)
@@ -356,9 +358,13 @@ namespace SWES.Services
                     Telefone = professor.Telefone,
                     CPF = professor.CPF,
                     Tipo = "Professor",
+                    InstituicaoEnsinoId = professor.InstituicaoEnsinoId,
                     Registro = professor.Registro,
                     CursosProfessorIds = professor.Cursos
                         .Select(c => c.Id)
+                        .ToList(),
+                    InstituicoesProfessorIds = professor.InstituicoesEnsino
+                        .Select(i => i.Id)
                         .ToList()
                 }, professor);
             }
@@ -381,6 +387,7 @@ namespace SWES.Services
                     Telefone = supervisor.Telefone,
                     CPF = supervisor.CPF,
                     Tipo = "Supervisor",
+                    InstituicaoEnsinoId = supervisor.InstituicaoEnsinoId,
                     Cargo = supervisor.Cargo,
                     UnidadeConcedenteId = supervisor.UnidadeConcedenteId
                 }, supervisor);
@@ -404,6 +411,7 @@ namespace SWES.Services
                     Telefone = coordenador.Telefone,
                     CPF = coordenador.CPF,
                     Tipo = "Coordenador",
+                    InstituicaoEnsinoId = coordenador.InstituicaoEnsinoId,
                     Setor = coordenador.Setor
                 }, coordenador);
             }
@@ -417,7 +425,17 @@ namespace SWES.Services
         {
             if (!model.Id.HasValue) return false;
 
+            if (model.InstituicaoEnsinoId == null ||
+                model.InstituicaoEnsinoId == Guid.Empty ||
+                !await _context.UnidadesConcedentes.AnyAsync(u =>
+                    u.Id == model.InstituicaoEnsinoId.Value &&
+                    u.InstituicaoEnsino))
+            {
+                return false;
+            }
+
             if (model.Tipo == "Aluno")
+
             {
                 var aluno = _context.Alunos
                     .FirstOrDefault(a => a.Id == model.Id.Value);
@@ -425,7 +443,9 @@ namespace SWES.Services
                 if (aluno == null) return false;
 
                 if (model.CursoId == null ||
-                    !await _context.Cursos.AnyAsync(c => c.Id == model.CursoId.Value))
+                    !await _context.Cursos.AnyAsync(c =>
+                        c.Id == model.CursoId.Value &&
+                        c.InstituicaoId == model.InstituicaoEnsinoId!.Value))
                 {
                     return false;
                 }
@@ -435,6 +455,8 @@ namespace SWES.Services
                     model.Email,
                     model.Telefone,
                     model.CPF);
+
+                aluno.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
 
                 AplicarDadosPessoais(aluno, model);
 
@@ -449,6 +471,7 @@ namespace SWES.Services
             {
                 var professor = _context.ProfessoresOrientadores
                     .Include(p => p.Cursos)
+                    .Include(p => p.InstituicoesEnsino)
                     .FirstOrDefault(p => p.Id == model.Id.Value);
 
                 if (professor == null) return false;
@@ -457,17 +480,53 @@ namespace SWES.Services
 
                 if (cursos == null) return false;
 
+                var idsInstituicoes = (model.InstituicoesProfessorIds ?? new List<Guid>())
+                    .Distinct()
+                    .ToList();
+
+                if (idsInstituicoes.Count == 0 ||
+                    !idsInstituicoes.Contains(model.InstituicaoEnsinoId!.Value))
+                {
+                    return false;
+                }
+
+                var instituicoesProfessor = await _context.UnidadesConcedentes
+                    .Where(u =>
+                        idsInstituicoes.Contains(u.Id) &&
+                        u.InstituicaoEnsino)
+                    .ToListAsync();
+
+                if (instituicoesProfessor.Count != idsInstituicoes.Count)
+                {
+                    return false;
+                }
+
+                if (cursos.Any(c =>
+                    !idsInstituicoes.Contains(c.InstituicaoId)))
+                {
+                    return false;
+                }
+
                 professor.AtualizarDados(
                     model.Nome,
                     model.Email,
                     model.Telefone,
                     model.CPF);
 
+                professor.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
+
                 AplicarDadosPessoais(professor, model);
 
                 professor.AtualizarRegistro((int)model.Registro!);
 
                 professor.DefinirCursos(cursos);
+
+                professor.InstituicoesEnsino.Clear();
+
+                foreach (var instituicao in instituicoesProfessor)
+                {
+                    professor.InstituicoesEnsino.Add(instituicao);
+                }
             }
             else if (model.Tipo == "Supervisor")
             {
@@ -488,6 +547,8 @@ namespace SWES.Services
                     model.Telefone,
                     model.CPF);
 
+                supervisor.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
+
                 AplicarDadosPessoais(supervisor, model);
 
                 supervisor.AtualizarDadosProfissionais(
@@ -506,6 +567,8 @@ namespace SWES.Services
                     model.Email,
                     model.Telefone,
                     model.CPF);
+
+                coordenador.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
 
                 AplicarDadosPessoais(coordenador, model);
 
@@ -634,12 +697,29 @@ namespace SWES.Services
             // para não deixar usuário "órfão" se algo estiver errado.
             List<Curso>? cursosProfessor = null;
 
+            List<UnidadeConcedente>? instituicoesProfessor = null;
+
+            if (model.InstituicaoEnsinoId == null ||
+                model.InstituicaoEnsinoId == Guid.Empty ||
+                !await _context.UnidadesConcedentes.AnyAsync(u =>
+                    u.Id == model.InstituicaoEnsinoId.Value &&
+                    u.InstituicaoEnsino))
+            {
+                return Falha(
+                    "InstituicaoInvalida",
+                    "Selecione uma instituição de ensino válida.");
+            }
+
             if (model.Tipo == "Aluno")
             {
                 if (model.CursoId == null ||
-                    !await _context.Cursos.AnyAsync(c => c.Id == model.CursoId.Value))
+                    !await _context.Cursos.AnyAsync(c =>
+                        c.Id == model.CursoId.Value &&
+                        c.InstituicaoId == model.InstituicaoEnsinoId!.Value))
                 {
-                    return Falha("VinculoInvalido", "Selecione um curso válido.");
+                    return Falha(
+                        "VinculoInvalido",
+                        "Selecione um curso pertencente à instituição de ensino informada.");
                 }
             }
             else if (model.Tipo == "Professor")
@@ -649,7 +729,42 @@ namespace SWES.Services
                 if (cursosProfessor == null)
                 {
                     return Falha("VinculoInvalido", "Selecione pelo menos um curso válido.");
+
                 }
+
+                var idsInstituicoes = model.InstituicoesProfessorIds
+                    .Distinct()
+                    .ToList();
+
+                if (idsInstituicoes.Count == 0 ||
+                    !idsInstituicoes.Contains(model.InstituicaoEnsinoId!.Value))
+                {
+                    return Falha(
+                        "InstituicaoInvalida",
+                        "Selecione as instituições do professor, incluindo a instituição principal.");
+                }
+
+                instituicoesProfessor = await _context.UnidadesConcedentes
+                    .Where(u =>
+                        idsInstituicoes.Contains(u.Id) &&
+                        u.InstituicaoEnsino)
+                    .ToListAsync();
+
+                if (instituicoesProfessor.Count != idsInstituicoes.Count)
+                {
+                    return Falha(
+                        "InstituicaoInvalida",
+                        "Uma ou mais instituições selecionadas são inválidas.");
+                }
+
+                if (cursosProfessor.Any(c =>
+                    !idsInstituicoes.Contains(c.InstituicaoId)))
+                {
+                    return Falha(
+                        "VinculoInvalido",
+                        "Todos os cursos do professor devem pertencer às instituições de ensino selecionadas.");
+                }
+
             }
             else if (model.Tipo == "Supervisor")
             {
@@ -694,6 +809,8 @@ namespace SWES.Services
                     model.DataNasc!.Value
                 );
 
+                aluno.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
+
                 AplicarDadosPessoais(aluno, model);
                 _context.Alunos.Add(aluno);
             }
@@ -707,6 +824,13 @@ namespace SWES.Services
                     model.CPF,
                     (int)model.Registro!
                 );
+
+                professor.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
+
+                foreach (var instituicao in instituicoesProfessor!)
+                {
+                    professor.InstituicoesEnsino.Add(instituicao);
+                }
 
                 professor.DefinirCursos(cursosProfessor!);
                 AplicarDadosPessoais(professor, model);
@@ -724,6 +848,8 @@ namespace SWES.Services
                     model.UnidadeConcedenteId!.Value
                 );
 
+                supervisor.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
+
                 AplicarDadosPessoais(supervisor, model);
                 _context.SupervisoresEstagio.Add(supervisor);
             }
@@ -737,6 +863,8 @@ namespace SWES.Services
                     model.CPF,
                     model.Setor!
                 );
+
+                coordenador.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
 
                 AplicarDadosPessoais(coordenador, model);
                 _context.Coordenadores.Add(coordenador);

@@ -145,7 +145,8 @@
                         Telefone 2 (opcional)
                     </label>
 
-                    <input asp-for="Usuario.TelefoneSecundario" id="telefone2" maxlength="15" placeholder="(00) 00000-0000" />
+                    <input asp-for="Usuario.TelefoneSecundario" id="telefone2" maxlength="15"
+                           placeholder="(00) 00000-0000" />
 
                     <span asp-validation-for="Usuario.TelefoneSecundario" class="text-danger">
                     </span>
@@ -202,6 +203,32 @@
 
                 </div>
 
+                <div class="campo">
+
+                    <label asp-for="Usuario.InstituicaoEnsinoId">
+                        Instituição de ensino
+                    </label>
+
+                    <select asp-for="Usuario.InstituicaoEnsinoId" id="instituicaoEnsino">
+
+                        <option value="">Selecione...</option>
+
+                        @foreach (var unidade in Model.Opcoes.UnidadesConcedentes)
+                        {
+                            if (unidade.Nome.EndsWith("(Instituição de ensino)"))
+                            {
+                                <option value="@unidade.Id">
+                                    @unidade.Nome
+                                </option>
+                            }
+                        }
+
+                    </select>
+
+                    <span asp-validation-for="Usuario.InstituicaoEnsinoId" class="text-danger">
+                    </span>
+
+                </div>
             </div>
 
 
@@ -569,6 +596,35 @@
 
                 </div>
 
+                <div class="campo campo-cursos-professor">
+
+                    <label class="label-cursos-professor">
+                        Instituições de ensino vinculadas ao professor
+                    </label>
+
+                    <div class="lista-cursos-professor">
+
+                        @foreach (var unidade in Model.Opcoes.UnidadesConcedentes)
+                        {
+                            if (unidade.Nome.EndsWith("(Instituição de ensino)"))
+                            {
+                                <label class="opcao-curso-professor">
+
+                                    <input type="checkbox" name="Usuario.InstituicoesProfessorIds" value="@unidade.Id"
+                                           checked="@(Model.Usuario.InstituicoesProfessorIds.Contains(unidade.Id))" />
+
+                                    <span>@unidade.Nome</span>
+
+                                </label>
+                            }
+                        }
+
+                    </div>
+
+                    <span asp-validation-for="Usuario.InstituicoesProfessorIds" class="text-danger d-block mt-2">
+                    </span>
+
+                </div>
 
                 <div class="campo campo-cursos-professor">
 
@@ -746,6 +802,39 @@
             numeros = numeros.replace(/^(\d{5})(\d)/, "$1-$2");
             return numeros;
         }
+
+        function sincronizarInstituicaoProfessor() {
+            const tipo = document.getElementById("tipoUsuario").value;
+            const instituicao = document.getElementById("instituicaoEnsino");
+
+            if (tipo !== "Professor" || !instituicao.value) {
+                return;
+            }
+
+            const checkbox = document.querySelector(
+                `input[name="Usuario.InstituicoesProfessorIds"][value="${instituicao.value}"]`
+            );
+
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        }
+
+        document.getElementById("instituicaoEnsino")
+            .addEventListener("change", sincronizarInstituicaoProfessor);
+
+        document.getElementById("tipoUsuario")
+            .addEventListener("change", sincronizarInstituicaoProfessor);
+
+        sincronizarInstituicaoProfessor();
+
+        document.querySelectorAll(
+            'input[name="Usuario.InstituicoesProfessorIds"]'
+        ).forEach(checkbox => {
+            checkbox.addEventListener("change", function () {
+                sincronizarInstituicaoProfessor();
+            });
+        });
 
         const tipoUsuario = document.getElementById("tipoUsuario");
         tipoUsuario.addEventListener("change", atualizarCamposEspecificos);
