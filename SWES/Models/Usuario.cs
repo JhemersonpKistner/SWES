@@ -6,10 +6,24 @@ namespace SWES.Models
     {
         public string UserId { get; private set; } = string.Empty;
 
+        public Guid? InstituicaoEnsinoId { get; private set; }
+
+        public UnidadeConcedente? InstituicaoEnsino { get; private set; }
+
+        public void DefinirInstituicaoEnsino(Guid instituicaoEnsinoId)
+        {
+            if (instituicaoEnsinoId == Guid.Empty)
+                throw new ArgumentException("Informe uma instituição válida.");
+
+            InstituicaoEnsinoId = instituicaoEnsinoId;
+            Alteracao = DateTime.UtcNow;
+        }
+
         [MaxLength(60)]
         public string Nome { get; private set; } = string.Empty;
 
         [MaxLength(150)]
+        
         public string Email { get; private set; } = string.Empty;
 
         [MaxLength(12)]

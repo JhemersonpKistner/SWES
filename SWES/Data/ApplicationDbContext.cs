@@ -46,10 +46,22 @@ namespace SWES.Data
                 .HasForeignKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Aluno>()
+                .HasOne(a => a.InstituicaoEnsino)
+                .WithMany()
+                .HasForeignKey(a => a.InstituicaoEnsinoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<ProfessorOrientador>()
                 .HasOne<IdentityUser>()
                 .WithMany()
                 .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<ProfessorOrientador>()
+                .HasOne(p => p.InstituicaoEnsino)
+                .WithMany()
+                .HasForeignKey(p => p.InstituicaoEnsinoId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<SupervisorEstagio>()
@@ -58,15 +70,48 @@ namespace SWES.Data
                 .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<SupervisorEstagio>()
+                .HasOne(s => s.InstituicaoEnsino)
+                .WithMany()
+                .HasForeignKey(s => s.InstituicaoEnsinoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<Coordenador>()
                 .HasOne<IdentityUser>()
                 .WithMany()
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            builder.Entity<Coordenador>()
+                .HasOne(c => c.InstituicaoEnsino)
+                .WithMany()
+                .HasForeignKey(c => c.InstituicaoEnsinoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<ProfessorOrientador>()
                 .HasMany(p => p.Cursos)
                 .WithMany(c => c.Professores);
+
+            builder.Entity<ProfessorOrientador>()
+                .HasMany(p => p.InstituicoesEnsino)
+                .WithMany()
+                .UsingEntity<Dictionary<string, object>>(
+                    "ProfessorInstituicoesEnsino",
+                    right => right
+                        .HasOne<UnidadeConcedente>()
+                        .WithMany()
+                        .HasForeignKey("InstituicaoEnsinoId")
+                        .OnDelete(DeleteBehavior.Restrict),
+                    left => left
+                        .HasOne<ProfessorOrientador>()
+                        .WithMany()
+                        .HasForeignKey("ProfessorOrientadorId")
+                        .OnDelete(DeleteBehavior.Restrict),
+                    join =>
+                    {
+                        join.ToTable("ProfessorInstituicoesEnsino");
+                        join.HasKey("ProfessorOrientadorId", "InstituicaoEnsinoId");
+                    });
 
             builder.Entity<Curso>()
                 .HasOne(c => c.Instituicao)

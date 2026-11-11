@@ -92,6 +92,11 @@ namespace SWES.ViewModels
 
         public Guid? UnidadeConcedenteId { get; set; }
 
+        [Required(ErrorMessage = "Selecione uma instituição de ensino.")]
+        public Guid? InstituicaoEnsinoId { get; set; }
+
+        public List<Guid> InstituicoesProfessorIds { get; set; } = new();
+
         [StringLength(30, ErrorMessage = "O turno deve possuir no máximo 30 caracteres.")]
         public string? Turno { get; set; }
 
