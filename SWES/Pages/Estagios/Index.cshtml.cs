@@ -16,6 +16,9 @@ namespace SWES.Pages.Estagios
 
         public List<EstagioViewModel> Estagios { get; set; } = new();
 
+        [BindProperty(SupportsGet = true)]
+        public string? Pesquisa { get; set; }
+
         [TempData]
         public string? Mensagem { get; set; }
 
@@ -24,7 +27,7 @@ namespace SWES.Pages.Estagios
 
         public async Task OnGetAsync()
         {
-            Estagios = await _estagioService.ListarEstagiosAsync();
+            Estagios = await _estagioService.ListarEstagiosAsync(Pesquisa);
         }
 
         public async Task<IActionResult> OnPostExcluirAsync(int id)

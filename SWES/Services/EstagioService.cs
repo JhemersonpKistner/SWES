@@ -18,14 +18,37 @@ namespace SWES.Services
         // LISTAR ESTÁGIOS
         // =====================================================
 
-        public async Task<List<EstagioViewModel>> ListarEstagiosAsync()
+
+        public async Task<List<EstagioViewModel>> ListarEstagiosAsync(string? pesquisa = null)
         {
-            var estagios = await _context.Estagios
+            IQueryable<Estagio> consulta = _context.Estagios
                 .Include(e => e.ProfessorOrientador)
                 .Include(e => e.SupervisorEstagio)
                 .Include(e => e.UnidadeConcedente)
                 .Include(e => e.InstituicaoEnsino)
-                .Include(e => e.Alunos)
+                .Include(e => e.Alunos);
+
+            if (!string.IsNullOrWhiteSpace(pesquisa))
+            {
+                var termo = pesquisa.Trim();
+
+                consulta = consulta.Where(e =>
+                    e.Etapa.Contains(termo) ||
+                    e.Tipo.Contains(termo) ||
+                    e.Situacao.Contains(termo) ||
+                    (e.ProfessorOrientador != null &&
+                        e.ProfessorOrientador.Nome.Contains(termo)) ||
+                    (e.SupervisorEstagio != null &&
+                        e.SupervisorEstagio.Nome.Contains(termo)) ||
+                    (e.UnidadeConcedente != null &&
+                        e.UnidadeConcedente.RazaoSocial.Contains(termo)) ||
+                    (e.InstituicaoEnsino != null &&
+                        e.InstituicaoEnsino.RazaoSocial.Contains(termo)) ||
+                    e.Alunos.Any(a => a.Nome.Contains(termo))
+                );
+            }
+
+            var estagios = await consulta
                 .OrderByDescending(e => e.DataInicio)
                 .ToListAsync();
 
