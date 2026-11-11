@@ -182,16 +182,32 @@ namespace SWES.Services
             string? nomeArquivoEdital)
         {
             var professor = await _context.ProfessoresOrientadores
-                .FirstOrDefaultAsync(p => p.Id == model.ProfessorOrientadorId);
+                .FirstOrDefaultAsync(p =>
+                    p.Id == model.ProfessorOrientadorId &&
+                    p.Ativo &&
+                    (
+                        p.InstituicaoEnsinoId == model.InstituicaoEnsinoId ||
+                        p.InstituicoesEnsino.Any(i =>
+                            i.Id == model.InstituicaoEnsinoId)
+                    ));
 
             var supervisor = await _context.SupervisoresEstagio
-                .FirstOrDefaultAsync(s => s.Id == model.SupervisorEstagioId);
+                .FirstOrDefaultAsync(s =>
+                    s.Id == model.SupervisorEstagioId &&
+                    s.Ativo &&
+                    s.UnidadeConcedenteId == model.UnidadeConcedenteId);
 
             var unidade = await _context.UnidadesConcedentes
-                .FirstOrDefaultAsync(u => u.Id == model.UnidadeConcedenteId);
+                .FirstOrDefaultAsync(u =>
+                    u.Id == model.UnidadeConcedenteId &&
+                    u.Ativo &&
+                    !u.InstituicaoEnsino);
 
             var instituicao = await _context.UnidadesConcedentes
-                .FirstOrDefaultAsync(u => u.Id == model.InstituicaoEnsinoId);
+                .FirstOrDefaultAsync(u =>
+                    u.Id == model.InstituicaoEnsinoId &&
+                    u.Ativo &&
+                    u.InstituicaoEnsino);
 
             if (professor == null || supervisor == null ||
                 unidade == null || instituicao == null)
@@ -201,13 +217,16 @@ namespace SWES.Services
             }
 
             var alunos = await _context.Alunos
-                .Where(a => model.AlunosIds.Contains(a.Id))
+                .Where(a =>
+                    model.AlunosIds.Contains(a.Id) &&
+                        a.Ativo &&
+                        a.InstituicaoEnsinoId == model.InstituicaoEnsinoId)
                 .ToListAsync();
 
             if (alunos.Count != model.AlunosIds.Distinct().Count())
             {
                 throw new InvalidOperationException(
-                    "Um ou mais alunos selecionados não foram encontrados.");
+                    "Um ou mais alunos selecionados não foram encontrados, estão inativos ou não pertencem à instituição de ensino selecionada.");
             }
 
             var estagio = new Estagio(
@@ -224,7 +243,10 @@ namespace SWES.Services
 
             var coordenador = model.CoordenadorId.HasValue
                 ? await _context.Coordenadores.FirstOrDefaultAsync(
-                    c => c.Id == model.CoordenadorId.Value)
+                    c =>
+                    c.Id == model.CoordenadorId.Value &&
+                    c.Ativo &&
+                    c.InstituicaoEnsinoId == model.InstituicaoEnsinoId)
                 : null;
 
             if (model.CoordenadorId.HasValue && coordenador == null)
@@ -283,16 +305,32 @@ namespace SWES.Services
                 throw new InvalidOperationException("Estágio não encontrado.");
 
             var professor = await _context.ProfessoresOrientadores
-                .FirstOrDefaultAsync(p => p.Id == model.ProfessorOrientadorId);
+                .FirstOrDefaultAsync(p =>
+                    p.Id == model.ProfessorOrientadorId &&
+                    p.Ativo &&
+                    (
+                         p.InstituicaoEnsinoId == model.InstituicaoEnsinoId ||
+                        p.InstituicoesEnsino.Any(i =>
+                            i.Id == model.InstituicaoEnsinoId)
+                    ));
 
             var supervisor = await _context.SupervisoresEstagio
-                .FirstOrDefaultAsync(s => s.Id == model.SupervisorEstagioId);
+                .FirstOrDefaultAsync(s =>
+                    s.Id == model.SupervisorEstagioId &&
+                    s.Ativo &&
+                    s.UnidadeConcedenteId == model.UnidadeConcedenteId);
 
             var unidade = await _context.UnidadesConcedentes
-                .FirstOrDefaultAsync(u => u.Id == model.UnidadeConcedenteId);
+                .FirstOrDefaultAsync(u =>
+                    u.Id == model.UnidadeConcedenteId &&
+                    u.Ativo &&
+                    !u.InstituicaoEnsino);
 
             var instituicao = await _context.UnidadesConcedentes
-                .FirstOrDefaultAsync(u => u.Id == model.InstituicaoEnsinoId);
+                .FirstOrDefaultAsync(u =>
+                    u.Id == model.InstituicaoEnsinoId &&
+                    u.Ativo &&
+                    u.InstituicaoEnsino);
 
             if (professor == null || supervisor == null ||
                 unidade == null || instituicao == null)
@@ -302,18 +340,24 @@ namespace SWES.Services
             }
 
             var alunos = await _context.Alunos
-                .Where(a => model.AlunosIds.Contains(a.Id))
+                .Where(a =>
+                    model.AlunosIds.Contains(a.Id) &&
+                    a.Ativo &&
+                    a.InstituicaoEnsinoId == model.InstituicaoEnsinoId)
                 .ToListAsync();
 
             if (alunos.Count != model.AlunosIds.Distinct().Count())
             {
                 throw new InvalidOperationException(
-                    "Um ou mais alunos selecionados não foram encontrados.");
+                    "Um ou mais alunos selecionados não foram encontrados, estão inativos ou não pertencem à instituição de ensino selecionada.");
             }
 
             var coordenador = model.CoordenadorId.HasValue
                 ? await _context.Coordenadores.FirstOrDefaultAsync(
-                    c => c.Id == model.CoordenadorId.Value)
+                    c =>
+                    c.Id == model.CoordenadorId.Value &&
+                    c.Ativo &&
+                    c.InstituicaoEnsinoId == model.InstituicaoEnsinoId)
                 : null;
 
             if (model.CoordenadorId.HasValue && coordenador == null)
