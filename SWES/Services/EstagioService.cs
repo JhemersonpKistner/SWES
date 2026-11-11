@@ -232,11 +232,28 @@ namespace SWES.Services
                     u.Ativo &&
                     u.InstituicaoEnsino);
 
-            if (professor == null || supervisor == null ||
-                unidade == null || instituicao == null)
+            if (professor == null)
             {
                 throw new InvalidOperationException(
-                    "Um ou mais vínculos selecionados não foram encontrados.");
+                    $"Professor não encontrado ou não vinculado à instituição selecionada. ID recebido: {model.ProfessorOrientadorId}");
+            }
+
+            if (supervisor == null)
+            {
+                throw new InvalidOperationException(
+                    $"Supervisor não encontrado ou não vinculado à unidade concedente selecionada. ID recebido: {model.SupervisorEstagioId}");
+            }
+
+            if (unidade == null)
+            {
+                throw new InvalidOperationException(
+                    $"Unidade concedente não encontrada ou inativa. ID recebido: {model.UnidadeConcedenteId}");
+            }
+
+            if (instituicao == null)
+            {
+                throw new InvalidOperationException(
+                    $"Instituição de ensino não encontrada ou inativa. ID recebido: {model.InstituicaoEnsinoId}");
             }
 
             var alunos = await _context.Alunos
@@ -355,11 +372,28 @@ namespace SWES.Services
                     u.Ativo &&
                     u.InstituicaoEnsino);
 
-            if (professor == null || supervisor == null ||
-                unidade == null || instituicao == null)
+            if (professor == null)
             {
                 throw new InvalidOperationException(
-                    "Um ou mais vínculos selecionados não foram encontrados.");
+                    $"Professor não encontrado ou não vinculado à instituição selecionada. ID recebido: {model.ProfessorOrientadorId}");
+            }
+
+            if (supervisor == null)
+            {
+                throw new InvalidOperationException(
+                    $"Supervisor não encontrado ou não vinculado à unidade concedente selecionada. ID recebido: {model.SupervisorEstagioId}");
+            }
+
+            if (unidade == null)
+            {
+                throw new InvalidOperationException(
+                    $"Unidade concedente não encontrada ou inativa. ID recebido: {model.UnidadeConcedenteId}");
+            }
+
+            if (instituicao == null)
+            {
+                throw new InvalidOperationException(
+                    $"Instituição de ensino não encontrada ou inativa. ID recebido: {model.InstituicaoEnsinoId}");
             }
 
             var alunos = await _context.Alunos

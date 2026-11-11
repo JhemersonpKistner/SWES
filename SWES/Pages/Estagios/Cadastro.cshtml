@@ -8,8 +8,7 @@
         : "Cadastrar estágio";
 }
 
-<link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css"
-      rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet" />
 
 <div class="container-fluid py-4 estagios-page estagios-cadastro-page">
 
@@ -30,8 +29,7 @@
 
         <input type="hidden" asp-for="Estagio.Id" />
 
-        <div asp-validation-summary="ModelOnly"
-             class="alert alert-danger"></div>
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
         <!-- INFORMAÇÕES GERAIS -->
 
@@ -48,8 +46,7 @@
                         Etapa do estágio
                     </label>
 
-                    <select asp-for="Estagio.Etapa"
-                            class="form-select estagios-input">
+                    <select asp-for="Estagio.Etapa" class="form-select estagios-input">
                         <option value="">Selecione</option>
 
                         @foreach (var etapa in EstagioCadastroViewModel.EtapasDisponiveis)
@@ -58,8 +55,7 @@
                         }
                     </select>
 
-                    <span asp-validation-for="Estagio.Etapa"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.Etapa" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-4 estagios-campo">
@@ -67,12 +63,10 @@
                         Tipo
                     </label>
 
-                    <input asp-for="Estagio.Tipo"
-                           class="form-control estagios-input"
+                    <input asp-for="Estagio.Tipo" class="form-control estagios-input"
                            placeholder="Ex.: Supervisionado" />
 
-                    <span asp-validation-for="Estagio.Tipo"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.Tipo" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-4 estagios-campo">
@@ -80,16 +74,14 @@
                         Situação
                     </label>
 
-                    <select asp-for="Estagio.Situacao"
-                            class="form-select estagios-input">
+                    <select asp-for="Estagio.Situacao" class="form-select estagios-input">
                         @foreach (var situacao in EstagioCadastroViewModel.SituacoesDisponiveis)
                         {
                             <option value="@situacao">@situacao</option>
                         }
                     </select>
 
-                    <span asp-validation-for="Estagio.Situacao"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.Situacao" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-4 estagios-campo">
@@ -97,13 +89,10 @@
                         Data de início
                     </label>
 
-                    <input asp-for="Estagio.DataInicio"
-                           type="date"
-                           asp-format="{0:yyyy-MM-dd}"
+                    <input asp-for="Estagio.DataInicio" type="date" asp-format="{0:yyyy-MM-dd}"
                            class="form-control estagios-input" />
 
-                    <span asp-validation-for="Estagio.DataInicio"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.DataInicio" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-4 estagios-campo">
@@ -111,13 +100,10 @@
                         Data de término
                     </label>
 
-                    <input asp-for="Estagio.DataFim"
-                           type="date"
-                           asp-format="{0:yyyy-MM-dd}"
+                    <input asp-for="Estagio.DataFim" type="date" asp-format="{0:yyyy-MM-dd}"
                            class="form-control estagios-input" />
 
-                    <span asp-validation-for="Estagio.DataFim"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.DataFim" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-4 estagios-campo">
@@ -125,12 +111,10 @@
                         Horário
                     </label>
 
-                    <input asp-for="Estagio.Horario"
-                           class="form-control estagios-input"
+                    <input asp-for="Estagio.Horario" class="form-control estagios-input"
                            placeholder="Ex.: Segunda a sexta, das 13h às 17h" />
 
-                    <span asp-validation-for="Estagio.Horario"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.Horario" class="text-danger"></span>
                 </div>
 
                 <div class="col-12 estagios-campo">
@@ -138,13 +122,10 @@
                         Observações
                     </label>
 
-                    <textarea asp-for="Estagio.Observacao"
-                              class="form-control estagios-input"
-                              rows="3"
+                    <textarea asp-for="Estagio.Observacao" class="form-control estagios-input" rows="3"
                               maxlength="500"></textarea>
 
-                    <span asp-validation-for="Estagio.Observacao"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.Observacao" class="text-danger"></span>
                 </div>
 
             </div>
@@ -161,29 +142,23 @@
             <div class="row g-3 estagios-form-grid">
 
                 <div class="col-md-6 estagios-campo">
-                    <label asp-for="Estagio.ApoliceSeguro"
-                           class="form-label estagios-label">
+                    <label asp-for="Estagio.ApoliceSeguro" class="form-label estagios-label">
                         Número da apólice
                     </label>
 
-                    <input asp-for="Estagio.ApoliceSeguro"
-                           class="form-control estagios-input" />
+                    <input asp-for="Estagio.ApoliceSeguro" class="form-control estagios-input" />
 
-                    <span asp-validation-for="Estagio.ApoliceSeguro"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.ApoliceSeguro" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 estagios-campo">
-                    <label asp-for="Estagio.Seguradora"
-                           class="form-label estagios-label">
+                    <label asp-for="Estagio.Seguradora" class="form-label estagios-label">
                         Seguradora
                     </label>
 
-                    <input asp-for="Estagio.Seguradora"
-                           class="form-control estagios-input" />
+                    <input asp-for="Estagio.Seguradora" class="form-control estagios-input" />
 
-                    <span asp-validation-for="Estagio.Seguradora"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.Seguradora" class="text-danger"></span>
                 </div>
 
             </div>
@@ -200,13 +175,11 @@
             <div class="row g-3 estagios-form-grid">
 
                 <div class="col-md-6 estagios-campo">
-                    <label asp-for="Estagio.ProfessorOrientadorId"
-                           class="form-label estagios-label">
+                    <label asp-for="Estagio.ProfessorOrientadorId" class="form-label estagios-label">
                         Professor orientador
                     </label>
 
-                    <select asp-for="Estagio.ProfessorOrientadorId"
-                            class="form-select estagios-input">
+                    <select asp-for="Estagio.ProfessorOrientadorId" class="form-select estagios-input">
                         <option value="">Selecione o professor</option>
 
                         @foreach (var professor in Model.Opcoes.Professores)
@@ -217,18 +190,15 @@
                         }
                     </select>
 
-                    <span asp-validation-for="Estagio.ProfessorOrientadorId"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.ProfessorOrientadorId" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 estagios-campo">
-                    <label asp-for="Estagio.SupervisorEstagioId"
-                           class="form-label estagios-label">
+                    <label asp-for="Estagio.SupervisorEstagioId" class="form-label estagios-label">
                         Supervisor de estágio
                     </label>
 
-                    <select asp-for="Estagio.SupervisorEstagioId"
-                            class="form-select estagios-input">
+                    <select asp-for="Estagio.SupervisorEstagioId" class="form-select estagios-input">
                         <option value="">Selecione o supervisor</option>
 
                         @foreach (var supervisor in Model.Opcoes.Supervisores)
@@ -239,18 +209,15 @@
                         }
                     </select>
 
-                    <span asp-validation-for="Estagio.SupervisorEstagioId"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.SupervisorEstagioId" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 estagios-campo">
-                    <label asp-for="Estagio.UnidadeConcedenteId"
-                           class="form-label estagios-label">
+                    <label asp-for="Estagio.UnidadeConcedenteId" class="form-label estagios-label">
                         Unidade concedente
                     </label>
 
-                    <select asp-for="Estagio.UnidadeConcedenteId"
-                            class="form-select estagios-input">
+                    <select asp-for="Estagio.UnidadeConcedenteId" class="form-select estagios-input">
                         <option value="">Selecione a unidade concedente</option>
 
                         @foreach (var unidade in Model.Opcoes.UnidadesConcedentes)
@@ -261,18 +228,15 @@
                         }
                     </select>
 
-                    <span asp-validation-for="Estagio.UnidadeConcedenteId"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.UnidadeConcedenteId" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 estagios-campo">
-                    <label asp-for="Estagio.InstituicaoEnsinoId"
-                           class="form-label estagios-label">
+                    <label asp-for="Estagio.InstituicaoEnsinoId" class="form-label estagios-label">
                         Instituição de ensino
                     </label>
 
-                    <select asp-for="Estagio.InstituicaoEnsinoId"
-                            class="form-select estagios-input">
+                    <select asp-for="Estagio.InstituicaoEnsinoId" class="form-select estagios-input">
                         <option value="">Selecione a instituição</option>
 
                         @foreach (var instituicao in Model.Opcoes.InstituicoesEnsino)
@@ -283,18 +247,15 @@
                         }
                     </select>
 
-                    <span asp-validation-for="Estagio.InstituicaoEnsinoId"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.InstituicaoEnsinoId" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-6 estagios-campo">
-                    <label asp-for="Estagio.CoordenadorId"
-                           class="form-label estagios-label">
+                    <label asp-for="Estagio.CoordenadorId" class="form-label estagios-label">
                         Coordenador (opcional)
                     </label>
 
-                    <select asp-for="Estagio.CoordenadorId"
-                            class="form-select estagios-input">
+                    <select asp-for="Estagio.CoordenadorId" class="form-select estagios-input">
                         <option value="">Nenhum coordenador selecionado</option>
 
                         @foreach (var coordenador in Model.Opcoes.Coordenadores)
@@ -307,15 +268,11 @@
                 </div>
 
                 <div class="col-12 estagios-campo">
-                    <label asp-for="Estagio.AlunosIds"
-                           class="form-label estagios-label">
+                    <label asp-for="Estagio.AlunosIds" class="form-label estagios-label">
                         Alunos vinculados
                     </label>
 
-                    <select asp-for="Estagio.AlunosIds"
-                            class="form-select estagios-input"
-                            multiple
-                            size="7">
+                    <select asp-for="Estagio.AlunosIds" class="form-select estagios-input" multiple size="7">
                         @foreach (var aluno in Model.Opcoes.Alunos)
                         {
                             <option value="@aluno.Id">
@@ -324,8 +281,7 @@
                         }
                     </select>
 
-                    <span asp-validation-for="Estagio.AlunosIds"
-                          class="text-danger"></span>
+                    <span asp-validation-for="Estagio.AlunosIds" class="text-danger"></span>
 
                     <div class="campo-ajuda mt-1">
                         Para selecionar vários alunos, mantenha pressionada a tecla
@@ -336,6 +292,7 @@
             </div>
         </section>
 
+        
         <!-- ESPECIFICAÇÕES -->
 
         <section class="secao-estagio">
@@ -346,27 +303,70 @@
 
             <p class="campo-ajuda">
                 Descreva as atividades, objetivos e demais informações do estágio.
-                Utilize as ferramentas de formatação do editor.
+                Escolha a forma de edição desejada.
             </p>
 
-            <div id="editorEspecificacoes" class="estagios-editor"></div>
+            <!-- Seleção do modo de edição -->
+            <div class="mb-3">
+                <label class="form-label estagios-label">
+                    Forma de edição
+                </label>
 
-            <textarea asp-for="Estagio.EspecificacoesHtml"
-                      id="especificacoesHtml"
-                      hidden></textarea>
+                <div class="btn-group" role="group" aria-label="Forma de edição das especificações">
 
-            <label asp-for="Estagio.ArquivoEspecificacoes"
-                   class="form-label mt-3">
+                    <input type="radio" class="btn-check" name="modoEspecificacoes" id="modoEditor" value="editor"
+                           autocomplete="off" checked />
+
+                    <label class="btn btn-outline-primary" for="modoEditor">
+                        <i class="bi bi-pencil-square"></i>
+                        Editor visual
+                    </label>
+
+                    <input type="radio" class="btn-check" name="modoEspecificacoes" id="modoHtml" value="html"
+                           autocomplete="off" />
+
+                    <label class="btn btn-outline-primary" for="modoHtml">
+                        <i class="bi bi-code-slash"></i>
+                        Código HTML
+                    </label>
+                </div>
+            </div>
+
+            <!-- Editor visual -->
+            <div id="areaEditorVisual">
+                <div id="editorEspecificacoes" class="estagios-editor">
+                </div>
+
+                <div class="campo-ajuda mt-2">
+                    Utilize a barra de ferramentas para formatar o texto,
+                    inserir títulos, listas, links e outros elementos.
+                </div>
+            </div>
+
+            <!-- Editor de código HTML -->
+            <div id="areaEditorHtml" class="d-none">
+                <label for="especificacoesHtml" class="form-label estagios-label">
+                    Código HTML das especificações
+                </label>
+
+                <textarea asp-for="Estagio.EspecificacoesHtml" id="especificacoesHtml"
+                          class="form-control font-monospace" rows="14" spellcheck="false" placeholder="<h1>Especificações do estágio</h1>
+                <p>Descreva aqui as informações do estágio...</p>"></textarea>
+
+                <div class="campo-ajuda mt-2">
+                    Digite ou cole o código HTML que será utilizado
+                    para compor as especificações do estágio.
+                </div>
+            </div>
+
+            <label asp-for="Estagio.ArquivoEspecificacoes" class="form-label mt-3">
                 Ou anexar arquivo com as especificações
             </label>
 
-            <input asp-for="Estagio.ArquivoEspecificacoes"
-                   type="file"
-                   class="form-control estagios-input estagios-arquivo"
-                   accept=".pdf,.doc,.docx,.txt" />
+            <input asp-for="Estagio.ArquivoEspecificacoes" type="file"
+                   class="form-control estagios-input estagios-arquivo" accept=".pdf,.doc,.docx,.txt" />
 
-            <span asp-validation-for="Estagio.ArquivoEspecificacoes"
-                  class="text-danger"></span>
+            <span asp-validation-for="Estagio.ArquivoEspecificacoes" class="text-danger"></span>
 
             <div class="campo-ajuda mt-1">
                 Formatos permitidos: PDF, DOC, DOCX e TXT. Limite de 10 MB.
@@ -376,14 +376,13 @@
             {
                 <div class="mt-2">
                     Arquivo atual:
-                    <a href="@Model.Estagio.EspecificacoesArquivoAtual"
-                       target="_blank"
-                       rel="noopener">
+                    <a href="@Model.Estagio.EspecificacoesArquivoAtual" target="_blank" rel="noopener">
                         @Model.Estagio.NomeArquivoEspecificacoesAtual
                     </a>
                 </div>
             }
         </section>
+
 
         <!-- EDITAL -->
 
@@ -393,18 +392,14 @@
                 Edital
             </h5>
 
-            <label asp-for="Estagio.ArquivoEdital"
-                   class="form-label estagios-label">
+            <label asp-for="Estagio.ArquivoEdital" class="form-label estagios-label">
                 Anexar edital
             </label>
 
-            <input asp-for="Estagio.ArquivoEdital"
-                   type="file"
-                   class="form-control estagios-input estagios-arquivo"
+            <input asp-for="Estagio.ArquivoEdital" type="file" class="form-control estagios-input estagios-arquivo"
                    accept=".pdf,.doc,.docx,.txt" />
 
-            <span asp-validation-for="Estagio.ArquivoEdital"
-                  class="text-danger"></span>
+            <span asp-validation-for="Estagio.ArquivoEdital" class="text-danger"></span>
 
             <div class="campo-ajuda mt-1">
                 Formatos permitidos: PDF, DOC, DOCX e TXT. Limite de 10 MB.
@@ -414,9 +409,7 @@
             {
                 <div class="mt-2">
                     Edital atual:
-                    <a href="@Model.Estagio.EditalArquivoAtual"
-                       target="_blank"
-                       rel="noopener">
+                    <a href="@Model.Estagio.EditalArquivoAtual" target="_blank" rel="noopener">
                         @Model.Estagio.NomeArquivoEditalAtual
                     </a>
                 </div>
@@ -427,8 +420,7 @@
 
         <div class="d-flex justify-content-end gap-2 mb-5 estagios-form-acoes">
 
-            <a asp-page="./Index"
-               class="btn btn-outline-secondary estagios-btn-secundario">
+            <a asp-page="./Index" class="btn btn-outline-secondary estagios-btn-secundario">
                 Cancelar
             </a>
 
@@ -445,12 +437,14 @@
     </form>
 </div>
 
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
     <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
 
     <script>
+        // Inicializa o editor visual Quill
         const quill = new Quill('#editorEspecificacoes', {
             theme: 'snow',
             placeholder: 'Escreva aqui as especificações do estágio...',
@@ -466,14 +460,57 @@
             }
         });
 
+        // Elementos da tela
         const campoHtml = document.getElementById('especificacoesHtml');
 
+        const areaEditorVisual = document.getElementById('areaEditorVisual');
+        const areaEditorHtml = document.getElementById('areaEditorHtml');
+
+        const modoEditor = document.getElementById('modoEditor');
+        const modoHtml = document.getElementById('modoHtml');
+
+        // Recupera o conteúdo já salvo no banco
         if (campoHtml.value) {
             quill.clipboard.dangerouslyPasteHTML(campoHtml.value);
         }
 
-        document.querySelector('form').addEventListener('submit', function () {
-            campoHtml.value = quill.root.innerHTML;
+        // Alterna para o modo HTML
+        modoHtml.addEventListener('change', function () {
+            if (this.checked) {
+
+                // Transfere o conteúdo visual para o campo HTML
+                campoHtml.value = quill.root.innerHTML;
+
+                areaEditorVisual.classList.add('d-none');
+                areaEditorHtml.classList.remove('d-none');
+            }
         });
+
+        // Alterna para o editor visual
+        modoEditor.addEventListener('change', function () {
+            if (this.checked) {
+
+                // Transfere o código HTML para o editor visual
+                quill.setText('');
+
+                quill.clipboard.dangerouslyPasteHTML(campoHtml.value);
+
+                areaEditorHtml.classList.add('d-none');
+                areaEditorVisual.classList.remove('d-none');
+            }
+        });
+
+        // Antes de enviar o formulário, garante que o conteúdo
+        // do modo selecionado seja enviado ao servidor
+        document.querySelector('.estagios-formulario')
+            .addEventListener('submit', function () {
+
+                if (modoEditor.checked) {
+                    campoHtml.value = quill.root.innerHTML;
+                }
+
+            });
     </script>
+}
+
 }
