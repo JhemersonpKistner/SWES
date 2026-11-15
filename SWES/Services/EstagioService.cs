@@ -14,6 +14,21 @@ namespace SWES.Services
             _context = context;
         }
 
+        private static void AnexarDocumentos(Estagio estagio, List<DocumentoSalvo>? documentos)
+        {
+            if (documentos == null)
+                return;
+
+            foreach (var documento in documentos)
+            {
+                estagio.Documentos.Add(new Documento(
+                    documento.NomeExplicativo,
+                    documento.NomeOriginal,
+                    documento.CaminhoRelativo,
+                    documento.Tamanho));
+            }
+        }
+
         // =====================================================
         // LISTAR ESTÁGIOS
         // =====================================================
@@ -85,6 +100,7 @@ namespace SWES.Services
         {
             var estagio = await _context.Estagios
                 .Include(e => e.Alunos)
+                .Include(e => e.Documentos)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (estagio == null)
@@ -118,7 +134,20 @@ namespace SWES.Services
                 EspecificacoesArquivoAtual = estagio.EspecificacoesArquivo,
                 NomeArquivoEspecificacoesAtual = estagio.NomeArquivoEspecificacoes,
                 EditalArquivoAtual = estagio.EditalArquivo,
-                NomeArquivoEditalAtual = estagio.NomeArquivoEdital
+                NomeArquivoEditalAtual = estagio.NomeArquivoEdital,
+
+                DocumentosAtuais = estagio.Documentos
+                    .Where(d => !string.IsNullOrWhiteSpace(d.CaminhoArquivo))
+                    .OrderBy(d => d.DataCriacao)
+                    .Select(d => new DocumentoEstagioViewModel
+                    {
+                        Id = d.Id,
+                        NomeExplicativo = d.NomeExplicativo,
+                        NomeArquivoOriginal = d.NomeArquivoOriginal,
+                        TamanhoBytes = d.TamanhoBytes,
+                        DataEnvio = d.DataEnvio
+                    })
+                    .ToList()
             };
         }
 
@@ -263,7 +292,8 @@ namespace SWES.Services
             string? especificacoesArquivo,
             string? nomeArquivoEspecificacoes,
             string? editalArquivo,
-            string? nomeArquivoEdital)
+            string? nomeArquivoEdital,
+            List<DocumentoSalvo>? documentos = null)
         {
             var professor = await _context.ProfessoresOrientadores
                 .FirstOrDefaultAsync(p =>
@@ -382,6 +412,8 @@ namespace SWES.Services
                 estagio.AdicionarAluno(aluno);
             }
 
+            AnexarDocumentos(estagio, documentos);
+
             _context.Estagios.Add(estagio);
 
             await _context.SaveChangesAsync();
@@ -396,7 +428,8 @@ namespace SWES.Services
             string? especificacoesArquivo,
             string? nomeArquivoEspecificacoes,
             string? editalArquivo,
-            string? nomeArquivoEdital)
+            string? nomeArquivoEdital,
+            List<DocumentoSalvo>? documentos = null)
         {
             var estagio = await _context.Estagios
                 .Include(e => e.Alunos)
@@ -527,6 +560,8 @@ namespace SWES.Services
                 editalArquivo ?? model.EditalArquivoAtual,
                 nomeArquivoEdital ?? model.NomeArquivoEditalAtual
             );
+
+            AnexarDocumentos(estagio, documentos);
 
             await _context.SaveChangesAsync();
         }
