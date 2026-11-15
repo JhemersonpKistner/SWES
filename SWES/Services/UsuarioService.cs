@@ -425,11 +425,12 @@ namespace SWES.Services
         {
             if (!model.Id.HasValue) return false;
 
-            if (model.InstituicaoEnsinoId == null ||
+            if (model.Tipo != "Supervisor" &&
+            (model.InstituicaoEnsinoId == null ||
                 model.InstituicaoEnsinoId == Guid.Empty ||
                 !await _context.UnidadesConcedentes.AnyAsync(u =>
                     u.Id == model.InstituicaoEnsinoId.Value &&
-                    u.InstituicaoEnsino))
+                    u.InstituicaoEnsino)))
             {
                 return false;
             }
@@ -546,8 +547,6 @@ namespace SWES.Services
                     model.Email,
                     model.Telefone,
                     model.CPF);
-
-                supervisor.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
 
                 AplicarDadosPessoais(supervisor, model);
 
@@ -699,11 +698,12 @@ namespace SWES.Services
 
             List<UnidadeConcedente>? instituicoesProfessor = null;
 
-            if (model.InstituicaoEnsinoId == null ||
+            if (model.Tipo != "Supervisor" &&
+                (model.InstituicaoEnsinoId == null ||
                 model.InstituicaoEnsinoId == Guid.Empty ||
                 !await _context.UnidadesConcedentes.AnyAsync(u =>
                     u.Id == model.InstituicaoEnsinoId.Value &&
-                    u.InstituicaoEnsino))
+                    u.InstituicaoEnsino)))
             {
                 return Falha(
                     "InstituicaoInvalida",
@@ -847,8 +847,6 @@ namespace SWES.Services
                     model.Cargo!,
                     model.UnidadeConcedenteId!.Value
                 );
-
-                supervisor.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
 
                 AplicarDadosPessoais(supervisor, model);
                 _context.SupervisoresEstagio.Add(supervisor);

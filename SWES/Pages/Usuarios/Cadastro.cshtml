@@ -203,7 +203,7 @@
 
                 </div>
 
-                <div class="campo">
+                <div class="campo" id="campoInstituicaoEnsino">
 
                     <label asp-for="Usuario.InstituicaoEnsinoId">
                         Instituição de ensino
@@ -683,7 +683,7 @@
                     </div>
 
 
-                    <div class="campo">
+                    <div class="campo"
 
                         <label asp-for="Usuario.UnidadeConcedenteId">
                             Unidade concedente
@@ -771,6 +771,8 @@
         function atualizarCamposEspecificos() {
             const tipo = document.getElementById("tipoUsuario").value;
 
+            document.getElementById("campoInstituicaoEnsino").style.display =
+                tipo === "Supervisor" ? "none" : "block";
             document.getElementById("camposAluno").style.display = tipo === "Aluno" ? "block" : "none";
             document.getElementById("camposProfessor").style.display = tipo === "Professor" ? "block" : "none";
             document.getElementById("camposSupervisor").style.display = tipo === "Supervisor" ? "block" : "none";
