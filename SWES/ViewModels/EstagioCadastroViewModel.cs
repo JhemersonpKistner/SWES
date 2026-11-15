@@ -68,6 +68,9 @@ namespace SWES.ViewModels
         public string? EditalArquivoAtual { get; set; }
 
         public string? NomeArquivoEditalAtual { get; set; }
+        public List<DocumentoNovoViewModel> NovosDocumentos { get; set; } = new();
+
+        public List<DocumentoEstagioViewModel> DocumentosAtuais { get; set; } = new();
 
         public string Situacao { get; set; } = "Em andamento";
 
