@@ -602,6 +602,10 @@ namespace SWES.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CaminhoArquivo")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<DateTime?>("DataAtualizacao")
                         .HasColumnType("datetime2");
 
@@ -613,6 +617,14 @@ namespace SWES.Data.Migrations
 
                     b.Property<int>("EstagioId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Nome")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("NomeArquivo")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -627,6 +639,39 @@ namespace SWES.Data.Migrations
                     b.HasIndex("EstagioId");
 
                     b.ToTable("Documentos");
+                });
+
+            modelBuilder.Entity("SWES.Models.DocumentoPreenchido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DadosJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("EstagioId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EstagioId");
+
+                    b.ToTable("DocumentosPreenchidos");
                 });
 
             modelBuilder.Entity("SWES.Models.Estagio", b =>
@@ -691,6 +736,11 @@ namespace SWES.Data.Migrations
                     b.Property<Guid>("ProfessorOrientadorId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Protocolo")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
                     b.Property<string>("Seguradora")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -719,6 +769,9 @@ namespace SWES.Data.Migrations
                     b.HasIndex("InstituicaoEnsinoId");
 
                     b.HasIndex("ProfessorOrientadorId");
+
+                    b.HasIndex("Protocolo")
+                        .IsUnique();
 
                     b.HasIndex("SupervisorEstagioId");
 
@@ -1198,8 +1251,18 @@ namespace SWES.Data.Migrations
                     b.HasOne("SWES.Models.Estagio", "Estagio")
                         .WithMany("Documentos")
                         .HasForeignKey("EstagioId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Estagio");
+                });
+
+            modelBuilder.Entity("SWES.Models.DocumentoPreenchido", b =>
+                {
+                    b.HasOne("SWES.Models.Estagio", "Estagio")
+                        .WithMany()
+                        .HasForeignKey("EstagioId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Estagio");
                 });

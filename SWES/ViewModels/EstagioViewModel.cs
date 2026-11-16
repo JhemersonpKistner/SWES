@@ -3,7 +3,9 @@ namespace SWES.ViewModels
     public class EstagioViewModel
     {
         public int Id { get; set; }
-
+        
+        public string Protocolo { get; set; } = string.Empty;
+        
         public string Etapa { get; set; } = string.Empty;
 
         public string Tipo { get; set; } = string.Empty;

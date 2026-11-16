@@ -7,6 +7,8 @@ namespace SWES.ViewModels
     {
         public int? Id { get; set; }
 
+        public string Protocolo { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Selecione o tipo de estágio.")]
         public string Etapa { get; set; } = "Estágio I";
 
@@ -60,6 +62,8 @@ namespace SWES.ViewModels
         public IFormFile? ArquivoEspecificacoes { get; set; }
 
         public IFormFile? ArquivoEdital { get; set; }
+
+        public List<DocumentoAnexoViewModel> Documentos { get; set; } = new();
 
         public string? EspecificacoesArquivoAtual { get; set; }
 

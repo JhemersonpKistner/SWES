@@ -16,6 +16,9 @@ namespace SWES.Data
 
         public DbSet<UnidadeConcedente> UnidadesConcedentes { get; set; }
         public DbSet<Documento> Documentos { get; set; }
+
+        public DbSet<DocumentoPreenchido> DocumentosPreenchidos { get; set; }
+
         public DbSet<Atividade> Atividades { get; set; }
         public DbSet<Notificacao> Notificacoes { get; set; }
         public DbSet<Estagio> Estagios { get; set; }
@@ -160,6 +163,37 @@ namespace SWES.Data
                 .WithMany(u => u.EstagiosComoInstituicao)
                 .HasForeignKey(e => e.InstituicaoEnsinoId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Estagio>()
+                .HasIndex(e => e.Protocolo)
+                .IsUnique();
+
+            builder.Entity<DocumentoPreenchido>()
+                .HasOne(d => d.Estagio)
+                .WithMany()
+                .HasForeignKey(d => d.EstagioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+
+            builder.Entity<Documento>()
+                .HasOne(d => d.Estagio)
+                .WithMany(e => e.Documentos)
+                .HasForeignKey(d => d.EstagioId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Documento>()
+                .Property(d => d.Nome)
+                .HasMaxLength(150);
+
+            builder.Entity<Documento>()
+                .Property(d => d.NomeArquivo)
+                .HasMaxLength(255);
+
+            builder.Entity<Documento>()
+                .Property(d => d.CaminhoArquivo)
+                .HasMaxLength(500);
+
 
             builder.Entity<Estagio>()
                 .HasMany(e => e.Alunos)

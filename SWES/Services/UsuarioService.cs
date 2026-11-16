@@ -387,7 +387,6 @@ namespace SWES.Services
                     Telefone = supervisor.Telefone,
                     CPF = supervisor.CPF,
                     Tipo = "Supervisor",
-                    InstituicaoEnsinoId = supervisor.InstituicaoEnsinoId,
                     Cargo = supervisor.Cargo,
                     UnidadeConcedenteId = supervisor.UnidadeConcedenteId
                 }, supervisor);
@@ -425,11 +424,12 @@ namespace SWES.Services
         {
             if (!model.Id.HasValue) return false;
 
-            if (model.InstituicaoEnsinoId == null ||
-                model.InstituicaoEnsinoId == Guid.Empty ||
-                !await _context.UnidadesConcedentes.AnyAsync(u =>
-                    u.Id == model.InstituicaoEnsinoId.Value &&
-                    u.InstituicaoEnsino))
+            if (model.Tipo != "Supervisor" &&
+                (model.InstituicaoEnsinoId == null ||
+                    model.InstituicaoEnsinoId == Guid.Empty ||
+                    !await _context.UnidadesConcedentes.AnyAsync(u =>
+                        u.Id == model.InstituicaoEnsinoId.Value &&
+                        u.InstituicaoEnsino)))
             {
                 return false;
             }
@@ -536,7 +536,10 @@ namespace SWES.Services
                 if (supervisor == null) return false;
 
                 if (model.UnidadeConcedenteId == null ||
-                    !await _context.UnidadesConcedentes.AnyAsync(u => u.Id == model.UnidadeConcedenteId.Value))
+                    !await _context.UnidadesConcedentes.AnyAsync(u =>
+                        u.Id == model.UnidadeConcedenteId.Value &&
+                        u.Ativo &&
+                        !u.InstituicaoEnsino))
                 {
                     return false;
                 }
@@ -546,8 +549,6 @@ namespace SWES.Services
                     model.Email,
                     model.Telefone,
                     model.CPF);
-
-                supervisor.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
 
                 AplicarDadosPessoais(supervisor, model);
 
@@ -699,11 +700,12 @@ namespace SWES.Services
 
             List<UnidadeConcedente>? instituicoesProfessor = null;
 
-            if (model.InstituicaoEnsinoId == null ||
-                model.InstituicaoEnsinoId == Guid.Empty ||
-                !await _context.UnidadesConcedentes.AnyAsync(u =>
-                    u.Id == model.InstituicaoEnsinoId.Value &&
-                    u.InstituicaoEnsino))
+            if (model.Tipo != "Supervisor" &&
+                (model.InstituicaoEnsinoId == null ||
+                    model.InstituicaoEnsinoId == Guid.Empty ||
+                    !await _context.UnidadesConcedentes.AnyAsync(u =>
+                        u.Id == model.InstituicaoEnsinoId.Value &&
+                        u.InstituicaoEnsino)))
             {
                 return Falha(
                     "InstituicaoInvalida",
@@ -769,9 +771,14 @@ namespace SWES.Services
             else if (model.Tipo == "Supervisor")
             {
                 if (model.UnidadeConcedenteId == null ||
-                    !await _context.UnidadesConcedentes.AnyAsync(u => u.Id == model.UnidadeConcedenteId.Value))
+                    !await _context.UnidadesConcedentes.AnyAsync(u =>
+                        u.Id == model.UnidadeConcedenteId.Value &&
+                        u.Ativo &&
+                        !u.InstituicaoEnsino))
                 {
-                    return Falha("VinculoInvalido", "Selecione uma unidade concedente válida.");
+                    return Falha(
+                        "VinculoInvalido",
+                        "Selecione uma unidade concedente ativa e válida.");
                 }
             }
             else if (model.Tipo != "Coordenador")
@@ -847,8 +854,6 @@ namespace SWES.Services
                     model.Cargo!,
                     model.UnidadeConcedenteId!.Value
                 );
-
-                supervisor.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
 
                 AplicarDadosPessoais(supervisor, model);
                 _context.SupervisoresEstagio.Add(supervisor);

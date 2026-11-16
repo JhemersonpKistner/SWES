@@ -92,7 +92,6 @@ namespace SWES.ViewModels
 
         public Guid? UnidadeConcedenteId { get; set; }
 
-        [Required(ErrorMessage = "Selecione uma instituição de ensino.")]
         public Guid? InstituicaoEnsinoId { get; set; }
 
         public List<Guid> InstituicoesProfessorIds { get; set; } = new();

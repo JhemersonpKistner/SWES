@@ -1,0 +1,208 @@
+@page "{id:int}"
+@model SWES.Pages.Documentos.VisualizarModel
+
+@{
+    ViewData["Title"] = "Visualizar documento";
+}
+
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="bi bi-file-earmark-text"></i>
+            @Model.Documento.Tipo
+        </h2>
+
+        
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" onclick="window.print()">
+                <i class="bi bi-printer"></i>
+                Imprimir / Salvar PDF
+            </button>
+
+            <a href="/Documentos/Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i>
+                Voltar
+            </a>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+
+            <div id="identificacaoDocumento">
+
+                <p class="mb-2">
+                    <strong>Número de protocolo:</strong>
+
+                    @if (Model.Documento.Estagio != null)
+                    {
+                        <span>@Model.Documento.Estagio.Protocolo</span>
+                    }
+                    else
+                    {
+                        <span class="text-muted">Não vinculado</span>
+                    }
+                </p>
+
+                <p class="text-muted">
+                    Documento criado em:
+                    @(Model.Documento.DataCriacao.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))
+                </p>
+
+            </div>
+
+            <hr />
+
+            <h5>Informações do documento</h5>
+
+            
+            
+            <div id="dadosDocumento">
+
+                @if (Model.DadosDocumento != null)
+                {
+                    @foreach (var propriedade in Model.DadosDocumento.RootElement.EnumerateObject())
+                    {
+                        var rotulo = propriedade.Name switch
+                        {
+                            "NomeAluno" => "Nome do aluno",
+                            "InstituicaoEnsino" => "Instituição de ensino",
+                            "UnidadeConcedente" => "Unidade concedente",
+                            "DataInicio" => "Data de início",
+                            "DataFim" => "Data de término",
+                            "Atividades" => "Atividades previstas",
+                            "DataAtividade" => "Data da atividade",
+                            "HorarioEntrada" => "Horário de entrada",
+                            "HorarioSaida" => "Horário de saída",
+                            "AtividadesRealizadas" => "Atividades realizadas",
+                            "AtividadesDesenvolvidas" => "Atividades desenvolvidas",
+                            "ConsideracoesFinais" => "Considerações finais",
+                            _ => propriedade.Name
+                        };
+
+                        var valor = propriedade.Value;
+                        var texto = "Não informado";
+
+                        if (valor.ValueKind == System.Text.Json.JsonValueKind.String &&
+                            !string.IsNullOrWhiteSpace(valor.GetString()))
+                        {
+                            texto = valor.GetString()!;
+
+                            if ((propriedade.Name == "DataInicio" ||
+                                 propriedade.Name == "DataFim" ||
+                                 propriedade.Name == "DataAtividade") &&
+                                DateTime.TryParse(texto, out var data))
+                            {
+                                texto = data.ToString("dd/MM/yyyy");
+                            }
+
+                            if ((propriedade.Name == "HorarioEntrada" ||
+                                 propriedade.Name == "HorarioSaida") &&
+                                TimeSpan.TryParse(texto, out var horario))
+                            {
+                                texto = horario.ToString(@"hh\:mm");
+                            }
+                        }
+                        else if (valor.ValueKind != System.Text.Json.JsonValueKind.Null &&
+                                 valor.ValueKind != System.Text.Json.JsonValueKind.Undefined)
+                        {
+                            texto = valor.ToString();
+                        }
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">
+                                @rotulo
+                            </label>
+
+                            <div class="form-control bg-light">
+                                @texto
+                            </div>
+                        </div>
+                    }
+                }
+
+            </div>
+
+            <div class="mt-5 pt-4" id="assinaturasDocumento">
+                
+                <div class="row text-center justify-content-between g-4">
+                    <div class="col-5">
+                        <div class="border-top border-dark pt-2">
+                            Assinatura do aluno
+                        </div>
+                    </div>
+
+                    <div class="col-5">
+                        <div class="border-top border-dark pt-2">
+                            Assinatura do responsável
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+<style>
+    @@page {
+        size: A4 portrait;
+        margin: 20mm;
+    }
+
+    @@media print {
+        body * {
+            visibility: hidden !important;
+        }
+     
+        .container-fluid,
+        .container-fluid *,
+        #identificacaoDocumento,
+        #identificacaoDocumento *,
+        #dadosDocumento,
+        #dadosDocumento *,
+        #assinaturasDocumento,
+        #assinaturasDocumento * {
+            visibility: visible !important;
+        }
+
+        .container-fluid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 0 !important;
+        }
+
+        .container-fluid button,
+        .container-fluid a {
+            display: none !important;
+        }
+
+        .card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        #assinaturasDocumento {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        #dadosDocumento .mb-3 {
+            break-inside: avoid;
+            page-break-inside: avoid;
+        }
+
+        #dadosDocumento .form-control {
+            border: none !important;
+            padding-left: 0 !important;
+            background: white !important;
+        }
+    }
+</style>

@@ -9,7 +9,8 @@
 
     <div class="instituicoes-header estagios-header">
         <div>
-            <div class="estagios-titulo"><span class="instituicoes-eyebrow"><i class="bi bi-journal-check"></i> GESTÃO ACADÊMICA</span>
+            <div class="estagios-titulo"><span class="instituicoes-eyebrow"><i class="bi bi-journal-check"></i> GESTÃO
+                ACADÊMICA</span>
                 <h1>Estágios Supervisionados</h1>
                 <p class="mb-0">
                     Gerenciamento dos estágios cadastrados no sistema.
@@ -43,7 +44,10 @@
     <form method="get" class="mb-4 estagios-filtros-form">
         <section class="instituicoes-card estagios-filtros-card">
             <div class="instituicoes-card-header">
-                <div><h2>Consultar estágios</h2><p>Pesquise por etapa, professor, aluno, instituição ou situação.</p></div>
+                <div>
+                    <h2>Consultar estágios</h2>
+                    <p>Pesquise por protocolo, etapa, professor, aluno, instituição ou situação.</p>
+                </div>
             </div>
             <div class="estagios-filtros-conteudo">
                 <label asp-for="Pesquisa" class="form-label estagios-label">
@@ -51,33 +55,37 @@
                 </label>
 
                 <div class="estagios-pesquisa-grupo">
-                    <div class="instituicoes-input-wrapper estagios-pesquisa-input"><i class="bi bi-search"></i><input asp-for="Pesquisa"
-                           placeholder="Pesquise por etapa, professor, aluno, instituição ou situação..." /></div>
+                    <div class="instituicoes-input-wrapper estagios-pesquisa-input"><i class="bi bi-search"></i><input
+                        asp-for="Pesquisa"
+                        placeholder="Pesquise por protocolo, etapa, professor, aluno, instituição ou situação..." /></div>
 
-                    <button type="submit" class="instituicoes-btn instituicoes-btn-primary">
-                        <i class="bi bi-search"></i>
-                        Pesquisar
-                    </button>
+                        <button type="submit" class="instituicoes-btn instituicoes-btn-primary">
+                            <i class="bi bi-search"></i>
+                            Pesquisar
+                        </button>
 
-                    <a asp-page="./Index" class="instituicoes-btn instituicoes-btn-secondary">
-                        <i class="bi bi-x-circle"></i>
-                        Limpar
-                    </a>
+                        <a asp-page="./Index" class="instituicoes-btn instituicoes-btn-secondary">
+                            <i class="bi bi-x-circle"></i>
+                            Limpar
+                        </a>
+                    </div>
+
+                    <small class="campo-ajuda">
+                        A pesquisa considera os dados dos estágios cadastrados.
+                    </small>
                 </div>
+            </section>
+        </form>
 
-                <small class="campo-ajuda">
-                    A pesquisa considera os dados dos estágios cadastrados.
-                </small>
+
+        <section class="instituicoes-card estagios-listagem-card">
+            <div class="instituicoes-card-header">
+                <div>
+                    <h2>Estágios cadastrados</h2>
+                    <p>Consulte as vigências, vínculos e situações dos estágios.</p>
+                </div>
+                <span class="instituicoes-contador">@Model.Estagios.Count registro(s)</span>
             </div>
-        </section>
-    </form>
-
-
-    <section class="instituicoes-card estagios-listagem-card">
-        <div class="instituicoes-card-header">
-            <div><h2>Estágios cadastrados</h2><p>Consulte as vigências, vínculos e situações dos estágios.</p></div>
-            <span class="instituicoes-contador">@Model.Estagios.Count registro(s)</span>
-        </div>
 
             @if (Model.Estagios.Any())
             {
@@ -86,6 +94,7 @@
 
                         <thead>
                             <tr>
+                                <th>Protocolo</th>
                                 <th>Etapa</th>
                                 <th>Vigência</th>
                                 <th>Professor orientador</th>
@@ -97,11 +106,19 @@
                         </thead>
 
                         <tbody>
+                            
                             @foreach (var estagio in Model.Estagios)
                             {
                                 <tr>
                                     <td>
+                                        <span class="badge bg-primary">
+                                            @estagio.Protocolo
+                                        </span>
+                                    </td>
+
+                                    <td>
                                         <strong>@estagio.Etapa</strong>
+
                                         <div class="small text-muted">
                                             @estagio.Tipo
                                         </div>
@@ -155,16 +172,14 @@
                                         <div class="d-flex justify-content-center gap-2 estagios-acoes">
 
                                             <a asp-page="./Cadastro" asp-route-id="@estagio.Id"
-                                               class="btn btn-sm btn-outline-primary estagios-acao editar"
-                                               title="Editar estágio">
+                                               class="btn btn-sm btn-outline-primary estagios-acao editar" title="Editar estágio">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
 
                                             <form method="post" asp-page-handler="Inativar" asp-route-id="@estagio.Id"
                                                   onsubmit="return confirm('Deseja realmente inativar este estágio?');">
 
-                                                <button type="submit"
-                                                        class="btn btn-sm btn-outline-warning estagios-acao inativar"
+                                                <button type="submit" class="btn btn-sm btn-outline-warning estagios-acao inativar"
                                                         title="Inativar estágio">
                                                     <i class="bi bi-ban"></i>
                                                 </button>
@@ -213,5 +228,5 @@
                 </div>
             }
 
-    </section>
-</div>
+        </section>
+    </div>

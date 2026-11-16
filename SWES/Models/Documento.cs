@@ -6,6 +6,11 @@ namespace SWES.Models
     {
         public int Id { get; private set; }
         public string Tipo { get; private set; }
+
+        public string? Nome { get; private set; }
+        public string? NomeArquivo { get; private set; }
+        public string? CaminhoArquivo { get; private set; }
+
         public string Status { get; private set; }
         public DateTime DataCriacao { get; private set; }
         public DateTime? DataAtualizacao { get; private set; }
@@ -23,6 +28,23 @@ namespace SWES.Models
             DataCriacao = DateTime.Now;
             EstagioId = estagioId;
         }
+
+
+        public Documento(
+            string tipo,
+            int estagioId,
+            string nome,
+            string nomeArquivo,
+            string caminhoArquivo)
+            : this(tipo, estagioId)
+        {
+            Nome = nome;
+            NomeArquivo = nomeArquivo;
+            CaminhoArquivo = caminhoArquivo;
+            Status = "Enviado";
+            DataEnvio = DateTime.Now;
+        }
+
 
         public void Atualizar(string novoStatus)
         {

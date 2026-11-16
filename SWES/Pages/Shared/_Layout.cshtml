@@ -38,8 +38,7 @@
                     <span><i class="bi bi-people"></i></span>
                     Usuários
                 </a>
-                <a href="#" 
-                    class="menu-item">
+                <a href="#" class="menu-item">
                     <span><i class="bi bi-mortarboard"></i></span>
                     Alunos
                 </a>
@@ -47,19 +46,25 @@
                     <span><i class="bi bi-person-workspace"></i></span>
                     Professores
                 </a>
-                <a href="/UnidadesConcedentes" class="menu-item @(currentPage?.StartsWith("/InstituicoesEnsino") == true ? "menu-item-ativo" : "")">
+                <a href="/UnidadesConcedentes"
+                   class="menu-item @(currentPage?.StartsWith("/InstituicoesEnsino") == true ? "menu-item-ativo" : "")">
                     <span><i class="bi bi-building"></i></span>
                     Concedentes
                 </a>
-                <a href="/InstituicoesEnsino/Index" class="menu-item @(currentPage?.StartsWith("/InstituicoesEnsino") == true ? "menu-item-ativo" : "")">
+                <a href="/InstituicoesEnsino/Index"
+                   class="menu-item @(currentPage?.StartsWith("/InstituicoesEnsino") == true ? "menu-item-ativo" : "")">
                     <span><i class="bi bi-bank"></i></span>
                     Instituições
                 </a>
-                <a href="" class="menu-item">
+                
+                <a href="/Documentos/Index"
+                   class="menu-item @(currentPage?.StartsWith("/Documentos") == true ? "menu-item-ativo" : "")">
                     <span><i class="bi bi-file-earmark-text"></i></span>
                     Documentos
                 </a>
-                <a href="/Estagios/Index" class="menu-item @(currentPage?.StartsWith("/Estagios") == true ? "menu-item-ativo" : "")">
+
+                <a href="/Estagios/Index"
+                   class="menu-item @(currentPage?.StartsWith("/Estagios") == true ? "menu-item-ativo" : "")">
                     <span><i class="bi bi-briefcase"></i></span>
                     Estágios
                 </a>
@@ -67,27 +72,27 @@
                     <span><i class="bi bi-star"></i></span>
                     Avaliações
                 </a>
-            <div class="menu-configuracoes">
-                <button type="button"
-                        class="menu-item menu-toggle @(currentPage?.StartsWith("/Configuracoes") == true || currentPage?.StartsWith("/Cursos") == true ? "menu-item-ativo" : "")"
-                        id="btnConfiguracoes"
-                        aria-expanded="@(currentPage?.StartsWith("/Configuracoes") == true || currentPage?.StartsWith("/Cursos") == true ? "true" : "false")"
-                        aria-controls="submenuConfiguracoes" onclick="alternarSubmenu('submenuConfiguracoes', this)">
-                    <span><i class="bi bi-gear"></i></span>
-                    <span class="menu-item-texto">Configurações</span>
-                    <i class="bi bi-chevron-down submenu-seta"></i>
-                </button>
+                <div class="menu-configuracoes">
+                    <button type="button"
+                            class="menu-item menu-toggle @(currentPage?.StartsWith("/Configuracoes") == true || currentPage?.StartsWith("/Cursos") == true ? "menu-item-ativo" : "")"
+                            id="btnConfiguracoes"
+                            aria-expanded="@(currentPage?.StartsWith("/Configuracoes") == true || currentPage?.StartsWith("/Cursos") == true ? "true" : "false")"
+                            aria-controls="submenuConfiguracoes" onclick="alternarSubmenu('submenuConfiguracoes', this)">
+                        <span><i class="bi bi-gear"></i></span>
+                        <span class="menu-item-texto">Configurações</span>
+                        <i class="bi bi-chevron-down submenu-seta"></i>
+                    </button>
 
-                <div class="submenu @(currentPage?.StartsWith("/Configuracoes") == true || currentPage?.StartsWith("/Cursos") == true ? "submenu-aberto" : "")"
-                     id="submenuConfiguracoes">
+                    <div class="submenu @(currentPage?.StartsWith("/Configuracoes") == true || currentPage?.StartsWith("/Cursos") == true ? "submenu-aberto" : "")"
+                         id="submenuConfiguracoes">
 
-                    <a href="/Cursos/Index"
-                       class="submenu-item @(currentPage?.StartsWith("/Cursos") == true ? "submenu-item-ativo" : "")">
-                        <i class="bi bi-mortarboard"></i>
-                        Cursos
-                    </a>
+                        <a href="/Cursos/Index"
+                           class="submenu-item @(currentPage?.StartsWith("/Cursos") == true ? "submenu-item-ativo" : "")">
+                            <i class="bi bi-mortarboard"></i>
+                            Cursos
+                        </a>
+                    </div>
                 </div>
-            </div>
 
             </nav>
 

@@ -14,6 +14,44 @@ namespace SWES.Services
             _context = context;
         }
 
+        // ==========================================
+        // GERAR PROTOCOLO
+        // ==========================================
+
+        public string GerarProtocolo()
+        {
+            return $"SWES-{DateTime.UtcNow:yyyy}-{Guid.NewGuid():N}"
+                .Substring(0, 30)
+                .ToUpperInvariant();
+        }
+
+
+        public record DocumentoParaSalvar(
+            string Nome,
+            string NomeArquivo,
+            string CaminhoArquivo);
+
+        public IQueryable<Estagio> ConsultarEstagiosPermitidos(string usuarioId)
+        {
+            return _context.Estagios
+                .Where(e =>
+                    e.Alunos.Any(a =>
+                        a.UserId == usuarioId && a.Ativo) ||
+
+                    (e.ProfessorOrientador != null &&
+                        e.ProfessorOrientador.UserId == usuarioId &&
+                        e.ProfessorOrientador.Ativo) ||
+
+                    (e.SupervisorEstagio != null &&
+                        e.SupervisorEstagio.UserId == usuarioId &&
+                        e.SupervisorEstagio.Ativo) ||
+
+                    (e.Coordenador != null &&
+                        e.Coordenador.UserId == usuarioId &&
+                        e.Coordenador.Ativo)
+                );
+        }
+
         // =====================================================
         // LISTAR ESTÁGIOS
         // =====================================================
@@ -33,6 +71,7 @@ namespace SWES.Services
                 var termo = pesquisa.Trim();
 
                 consulta = consulta.Where(e =>
+                    e.Protocolo.Contains(termo) ||
                     e.Etapa.Contains(termo) ||
                     e.Tipo.Contains(termo) ||
                     e.Situacao.Contains(termo) ||
@@ -55,6 +94,7 @@ namespace SWES.Services
             return estagios.Select(e => new EstagioViewModel
             {
                 Id = e.Id,
+                Protocolo = e.Protocolo,
                 Etapa = e.Etapa,
                 Tipo = e.Tipo,
                 DataInicio = e.DataInicio,
@@ -93,6 +133,7 @@ namespace SWES.Services
             return new EstagioCadastroViewModel
             {
                 Id = estagio.Id,
+                Protocolo = estagio.Protocolo,
                 Tipo = estagio.Tipo,
                 Etapa = estagio.Etapa,
                 DataInicio = estagio.DataInicio,
@@ -258,12 +299,15 @@ namespace SWES.Services
         // CADASTRAR ESTÁGIO
         // =====================================================
 
+
         public async Task CadastrarAsync(
             EstagioCadastroViewModel model,
             string? especificacoesArquivo,
             string? nomeArquivoEspecificacoes,
             string? editalArquivo,
-            string? nomeArquivoEdital)
+            string? nomeArquivoEdital,
+            List<DocumentoParaSalvar> documentos)
+
         {
             var professor = await _context.ProfessoresOrientadores
                 .FirstOrDefaultAsync(p =>
@@ -342,6 +386,8 @@ namespace SWES.Services
                 instituicao.Id
             );
 
+            estagio.DefinirProtocolo(model.Protocolo);
+
             var coordenador = model.CoordenadorId.HasValue
                 ? await _context.Coordenadores.FirstOrDefaultAsync(
                     c =>
@@ -384,6 +430,18 @@ namespace SWES.Services
 
             _context.Estagios.Add(estagio);
 
+
+            foreach (var documento in documentos)
+            {
+                estagio.Documentos.Add(new Documento(
+                    "Anexo",
+                    estagio.Id,
+                    documento.Nome,
+                    documento.NomeArquivo,
+                    documento.CaminhoArquivo));
+            }
+
+
             await _context.SaveChangesAsync();
         }
 
@@ -391,12 +449,15 @@ namespace SWES.Services
         // ATUALIZAR ESTÁGIO
         // =====================================================
 
+
         public async Task AtualizarAsync(
             EstagioCadastroViewModel model,
             string? especificacoesArquivo,
             string? nomeArquivoEspecificacoes,
             string? editalArquivo,
-            string? nomeArquivoEdital)
+            string? nomeArquivoEdital,
+            List<DocumentoParaSalvar> documentos)
+
         {
             var estagio = await _context.Estagios
                 .Include(e => e.Alunos)
@@ -527,6 +588,18 @@ namespace SWES.Services
                 editalArquivo ?? model.EditalArquivoAtual,
                 nomeArquivoEdital ?? model.NomeArquivoEditalAtual
             );
+
+
+            foreach (var documento in documentos)
+            {
+                estagio.Documentos.Add(new Documento(
+                    "Anexo",
+                    estagio.Id,
+                    documento.Nome,
+                    documento.NomeArquivo,
+                    documento.CaminhoArquivo));
+            }
+
 
             await _context.SaveChangesAsync();
         }

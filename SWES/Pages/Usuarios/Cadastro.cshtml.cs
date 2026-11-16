@@ -276,6 +276,16 @@ namespace SWES.Pages.Usuarios
 
         private void ValidarCamposEspecificos()
         {
+
+            if (Usuario.Tipo != "Supervisor" &&
+                string.IsNullOrWhiteSpace(Usuario.Tipo) == false &&
+                !Usuario.InstituicaoEnsinoId.HasValue)
+            {
+                ModelState.AddModelError(
+                    "Usuario.InstituicaoEnsinoId",
+                    "Selecione uma instituição de ensino.");
+            }
+
             if (Usuario.Tipo == "Aluno")
             {
                 if (Usuario.Matricula == null &&

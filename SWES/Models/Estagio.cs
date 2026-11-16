@@ -9,6 +9,20 @@ namespace SWES.Models
     {
         public int Id { get; private set; }
 
+        [MaxLength(30)]
+        public string Protocolo { get; private set; } = string.Empty;
+
+        public void DefinirProtocolo(string protocolo)
+        {
+            if (string.IsNullOrWhiteSpace(protocolo))
+                throw new ArgumentException("O protocolo não pode ser vazio.", nameof(protocolo));
+
+            if (!string.IsNullOrEmpty(Protocolo))
+                throw new InvalidOperationException("O protocolo deste estágio já foi definido.");
+
+            Protocolo = protocolo;
+        }
+
         [MaxLength(50)]
         public string Tipo { get; private set; } = string.Empty;
 

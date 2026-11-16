@@ -1,0 +1,157 @@
+@page
+@model SWES.Pages.Documentos.IndexModel
+
+@{
+    ViewData["Title"] = "Documentos";
+}
+
+@if (TempData["Mensagem"] is string mensagem)
+{
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <i class="bi bi-check-circle"></i>
+        @mensagem
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+}
+
+<div class="container-fluid py-4">
+    <h2>
+        <i class="bi bi-file-earmark-text"></i>
+        Documentos
+    </h2>
+
+    <p class="text-muted">
+        Selecione um tipo de documento para realizar
+        seu preenchimento manual.
+    </p>
+
+    <div class="row g-3 mt-3">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Termo de Compromisso
+                    </h5>
+                    <p class="card-text text-muted">
+                        Preencha as informações do termo
+                        de compromisso de estágio.
+                    </p>
+                    
+                    <a href="/Documentos/TermoCompromisso" class="btn btn-primary">
+                        <i class="bi bi-pencil-square"></i>
+                        Preencher documento
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-calendar-check"></i>
+                        Formulário de Frequência
+                    </h5>
+                    <p class="card-text text-muted">
+                        Registre a frequência e as atividades
+                        realizadas durante o estágio.
+                    </p>
+                    
+                    <a href="/Documentos/FormularioFrequencia" class="btn btn-primary">
+                        <i class="bi bi-pencil-square"></i>
+                        Preencher documento
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi bi-journal-text"></i>
+                        Relatório de Estágio
+                    </h5>
+                    <p class="card-text text-muted">
+                        Preencha o relatório das atividades
+                        desenvolvidas no estágio.
+                    </p>
+                    
+                    <a href="/Documentos/RelatorioEstagio" class="btn btn-primary">
+                        <i class="bi bi-pencil-square"></i>
+                        Preencher documento
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4" />
+
+    <h4>
+        <i class="bi bi-folder2-open"></i>
+        Documentos preenchidos
+    </h4>
+
+    @if (Model.DocumentosSalvos.Any())
+    {
+        <div class="table-responsive mt-3">
+            <table class="table table-striped table-hover">
+                
+                <thead>
+                    <tr>
+                        <th>Documento</th>
+                        <th>Protocolo</th>
+                        <th>Data de criação</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var documento in Model.DocumentosSalvos)
+                    {
+                        
+                        
+                        <tr>
+                            <td>@documento.Tipo</td>
+                            <td>
+                                @if (documento.Estagio != null)
+                                {
+                                    <span class="badge bg-primary">
+                                        @documento.Estagio.Protocolo
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Não vinculado</span>
+                                }
+                            </td>
+                            <td>@documento.DataCriacao.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+
+                                <a asp-page="/Documentos/Visualizar" asp-route-id="@documento.Id"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                    Visualizar
+                                </a>
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p class="text-muted mt-3">
+            Nenhum documento preenchido até o momento.
+        </p>
+    }
+
+</div>

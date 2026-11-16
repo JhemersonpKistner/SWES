@@ -203,7 +203,7 @@
 
                 </div>
 
-                <div class="campo">
+                <div class="campo" id="campoInstituicaoEnsino">
 
                     <label asp-for="Usuario.InstituicaoEnsinoId">
                         Instituição de ensino
@@ -689,8 +689,11 @@
                             Unidade concedente
                         </label>
 
-                        <select asp-for="Usuario.UnidadeConcedenteId"
-                                asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Opcoes.UnidadesConcedentes, "Id", "Nome"))">
+                        <select asp-for="Usuario.UnidadeConcedenteId" asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+                                Model.Opcoes.UnidadesConcedentes.Where(u =>
+                                !u.Nome.EndsWith("(Instituição de ensino)")),
+                                "Id",
+                                "Nome"))">
                             <option value="">Selecione...</option>
                         </select>
 
@@ -775,6 +778,17 @@
             document.getElementById("camposProfessor").style.display = tipo === "Professor" ? "block" : "none";
             document.getElementById("camposSupervisor").style.display = tipo === "Supervisor" ? "block" : "none";
             document.getElementById("camposCoordenador").style.display = tipo === "Coordenador" ? "block" : "none";
+            const campoInstituicao = document.getElementById("campoInstituicaoEnsino");
+            const selectInstituicao = document.getElementById("instituicaoEnsino");
+
+            campoInstituicao.style.display = tipo === "Supervisor" ? "none" : "block";
+
+            if (tipo === "Supervisor") {
+                selectInstituicao.value = "";
+                selectInstituicao.disabled = true;
+            } else {
+                selectInstituicao.disabled = false;
+            }
         }
 
         function formatarTelefone(valor) {

@@ -2,11 +2,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SWES.Services;
 using SWES.ViewModels;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SWES.Pages.Estagios
 {
+    [Authorize]
     public class CadastroModel : PageModel
     {
+        private readonly IDataProtector _protetorProtocolo;
         private readonly EstagioService _estagioService;
         private readonly IWebHostEnvironment _environment;
 
@@ -19,14 +23,21 @@ namespace SWES.Pages.Estagios
 
         public CadastroModel(
             EstagioService estagioService,
-            IWebHostEnvironment environment)
+            IWebHostEnvironment environment,
+            IDataProtectionProvider dataProtectionProvider)
         {
             _estagioService = estagioService;
             _environment = environment;
+
+            _protetorProtocolo = dataProtectionProvider.CreateProtector(
+                "SWES.Estagios.Protocolo.v1");
         }
 
         [BindProperty]
         public EstagioCadastroViewModel Estagio { get; set; } = new();
+
+        [BindProperty]
+        public string ProtocoloProtegido { get; set; } = string.Empty;
 
         public OpcoesEstagioViewModel Opcoes { get; set; } = new();
 
@@ -44,14 +55,42 @@ namespace SWES.Pages.Estagios
 
                 Estagio = estagio;
             }
+            else
+            {
+                Estagio.Protocolo = _estagioService.GerarProtocolo();
+
+                ProtocoloProtegido = _protetorProtocolo.Protect(
+                    Estagio.Protocolo);
+            }
 
             await CarregarOpcoesAsync();
-
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
+            if (!Estagio.Id.HasValue)
+            {
+                try
+                {
+                    var protocoloOriginal =
+                        _protetorProtocolo.Unprotect(ProtocoloProtegido);
+
+                    if (protocoloOriginal != Estagio.Protocolo)
+                    {
+                        ModelState.AddModelError(
+                            string.Empty,
+                            "O protocolo foi alterado. Abra novamente o cadastro.");
+                    }
+                }
+                catch (System.Security.Cryptography.CryptographicException)
+                {
+                    ModelState.AddModelError(
+                        string.Empty,
+                        "O protocolo é inválido. Abra novamente o cadastro.");
+                }
+            }
+
             ValidarDatas();
             ValidarArquivos();
 
@@ -67,6 +106,11 @@ namespace SWES.Pages.Estagios
             string? nomeEdital = null;
 
             var arquivosSalvos = new List<string>();
+
+
+            var documentosParaSalvar =
+                new List<EstagioService.DocumentoParaSalvar>();
+
 
             try
             {
@@ -92,6 +136,22 @@ namespace SWES.Pages.Estagios
                     arquivosSalvos.Add(arquivo.CaminhoFisico);
                 }
 
+
+                foreach (var documento in Estagio.Documentos)
+                {
+                    var arquivo = await SalvarArquivoAsync(documento.Arquivo!);
+
+                    arquivosSalvos.Add(arquivo.CaminhoFisico);
+
+                    documentosParaSalvar.Add(
+                        new EstagioService.DocumentoParaSalvar(
+                            documento.Nome.Trim(),
+                            arquivo.NomeOriginal,
+                            arquivo.Caminho
+                        )
+                    );
+                }
+
                 if (Estagio.Id.HasValue)
                 {
                     await _estagioService.AtualizarAsync(
@@ -99,7 +159,8 @@ namespace SWES.Pages.Estagios
                         caminhoEspecificacoes,
                         nomeEspecificacoes,
                         caminhoEdital,
-                        nomeEdital);
+                        nomeEdital,
+                        documentosParaSalvar);
 
                     Mensagem = "Estágio atualizado com sucesso!";
                 }
@@ -110,7 +171,8 @@ namespace SWES.Pages.Estagios
                         caminhoEspecificacoes,
                         nomeEspecificacoes,
                         caminhoEdital,
-                        nomeEdital);
+                        nomeEdital,
+                        documentosParaSalvar);
 
                     Mensagem = "Estágio cadastrado com sucesso!";
                 }
@@ -176,7 +238,7 @@ namespace SWES.Pages.Estagios
 
             return new JsonResult(supervisores);
         }
-                  
+
 
         private async Task CarregarOpcoesAsync()
         {
@@ -206,6 +268,33 @@ namespace SWES.Pages.Estagios
                 Estagio.ArquivoEdital,
                 "Estagio.ArquivoEdital",
                 "edital");
+
+
+            for (int i = 0; i < Estagio.Documentos.Count; i++)
+            {
+                var documento = Estagio.Documentos[i];
+
+                if (string.IsNullOrWhiteSpace(documento.Nome))
+                {
+                    ModelState.AddModelError(
+                        $"Estagio.Documentos[{i}].Nome",
+                        "Informe o nome do documento.");
+                }
+
+                if (documento.Arquivo == null || documento.Arquivo.Length == 0)
+                {
+                    ModelState.AddModelError(
+                        $"Estagio.Documentos[{i}].Arquivo",
+                        "Selecione um arquivo válido.");
+                    continue;
+                }
+
+                ValidarArquivo(
+                    documento.Arquivo,
+                    $"Estagio.Documentos[{i}].Arquivo",
+                    $"documento '{documento.Nome}'");
+            }
+
         }
 
         private void ValidarArquivo(
