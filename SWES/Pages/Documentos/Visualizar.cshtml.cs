@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace SWES.Pages.Documentos
 {
-    [Authorize]
+    [AllowAnonymous]
     public class VisualizarModel : PageModel
     {
         private readonly ApplicationDbContext _context;

@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace SWES.Pages.Documentos
 {
-    [Authorize]
+    [AllowAnonymous]
     public class IndexModel : PageModel
     {
 

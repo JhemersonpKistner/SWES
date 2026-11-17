@@ -11,7 +11,7 @@ using SWES.Services;
 
 namespace SWES.Pages.Documentos
 {
-    [Authorize]
+    [AllowAnonymous]
     public class RelatorioEstagioModel : PageModel
     {
 

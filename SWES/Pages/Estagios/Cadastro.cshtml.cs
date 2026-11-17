@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace SWES.Pages.Estagios
 {
-    [Authorize]
+    [AllowAnonymous]
     public class CadastroModel : PageModel
     {
         private readonly IDataProtector _protetorProtocolo;
