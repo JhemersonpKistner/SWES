@@ -5,101 +5,101 @@
     ViewData["Title"] = "Termo de Compromisso";
 }
 
-<div class="container-fluid py-4">
-    <h2>
-        <i class="bi bi-file-earmark-text"></i>
-        Termo de Compromisso
-    </h2>
+<div class="documentos-page documentos-form-page">
+    <div class="documentos-header">
+        <div>
+            <span class="documentos-eyebrow"><i class="bi bi-file-earmark-text"></i> DOCUMENTAÇÃO DE ESTÁGIO</span>
+            <h1>Termo de Compromisso</h1>
+            <p>Preencha os dados necessários para formalizar o termo de compromisso de estágio.</p>
+        </div>
+        <a href="/Documentos/Index" class="documentos-btn documentos-btn-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar para documentos
+        </a>
+    </div>
 
-    <p class="text-muted">
-        Preencha os dados do termo de compromisso de estágio.
-    </p>
-
-    <form method="post">
-
-        <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title mb-4">
-                    Informações do documento
-                </h5>
-
-                <div class="mb-3">
-                    <label asp-for="EstagioId" class="form-label">
-                        Estágio / Número de protocolo
-                    </label>
-
-                    <select asp-for="EstagioId" class="form-select" required>
-                        <option value="">Selecione um estágio...</option>
-
-                        @foreach (var estagio in Model.EstagiosDisponiveis)
-                        {
-                            <option value="@estagio.Id">
-                                @estagio.Protocolo - @estagio.Tipo
-                            </option>
-                        }
-                    </select>
-
-                    <span asp-validation-for="EstagioId" class="text-danger"></span>
-                </div>
-
-
-                <div class="mb-3">
-                    <label for="nomeAluno" class="form-label">
-                        Nome do aluno
-                    </label>
-                    <input type="text" id="nomeAluno" name="NomeAluno" class="form-control" required />
-                </div>
-
-                <div class="mb-3">
-                    <label for="instituicaoEnsino" class="form-label">
-                        Instituição de ensino
-                    </label>
-                    <input type="text" id="instituicaoEnsino" name="InstituicaoEnsino" class="form-control" required />
-                </div>
-
-                <div class="mb-3">
-                    <label for="unidadeConcedente" class="form-label">
-                        Unidade concedente
-                    </label>
-                    <input type="text" id="unidadeConcedente" name="UnidadeConcedente" class="form-control" required />
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label for="dataInicio" class="form-label">
-                            Data de início
-                        </label>
-                        <input type="date" id="dataInicio" name="DataInicio" class="form-control" required />
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label for="dataFim" class="form-label">
-                            Data de término
-                        </label>
-                        <input type="date" id="dataFim" name="DataFim" class="form-control" required />
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="atividades" class="form-label">
-                        Atividades previstas
-                    </label>
-                    <textarea id="atividades" name="Atividades" class="form-control" rows="4"></textarea>
-                </div>
+    <div class="documentos-form-card">
+        <div class="documentos-form-cabecalho">
+            <div class="documentos-form-icone azul"><i class="bi bi-file-earmark-text"></i></div>
+            <div>
+                <h2>Informações do documento</h2>
+                <p>Informe os dados do estágio, do aluno e das instituições envolvidas.</p>
             </div>
         </div>
 
-        <div class="d-flex gap-2 mt-4">
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check-circle"></i>
-                Salvar documento
-            </button>
+        <form method="post">
+            <div class="documentos-form-grid">
+                <div class="documentos-campo documentos-campo-largo">
+                    <label asp-for="EstagioId">Estágio / Número de protocolo <span class="campo-obrigatorio">*</span></label>
+                    <div class="documentos-input">
+                        <i class="bi bi-card-list"></i>
+                        <select asp-for="EstagioId" required>
+                            <option value="">Selecione um estágio...</option>
+                            @foreach (var estagio in Model.EstagiosDisponiveis)
+                            {
+                                <option value="@estagio.Id">@estagio.Protocolo - @estagio.Tipo</option>
+                            }
+                        </select>
+                    </div>
+                    <span asp-validation-for="EstagioId" class="documentos-validacao"></span>
+                </div>
 
-            <a href="/Documentos/Index" class="btn btn-outline-secondary">
-                Voltar
-            </a>
-        </div>
-    </form>
+                <div class="documentos-campo">
+                    <label for="nomeAluno">Nome do aluno <span class="campo-obrigatorio">*</span></label>
+                    <div class="documentos-input">
+                        <i class="bi bi-person"></i>
+                        <input type="text" id="nomeAluno" name="NomeAluno" placeholder="Nome completo do aluno" required />
+                    </div>
+                </div>
+
+                <div class="documentos-campo">
+                    <label for="instituicaoEnsino">Instituição de ensino <span class="campo-obrigatorio">*</span></label>
+                    <div class="documentos-input">
+                        <i class="bi bi-mortarboard"></i>
+                        <input type="text" id="instituicaoEnsino" name="InstituicaoEnsino" placeholder="Nome da instituição" required />
+                    </div>
+                </div>
+
+                <div class="documentos-campo documentos-campo-largo">
+                    <label for="unidadeConcedente">Unidade concedente <span class="campo-obrigatorio">*</span></label>
+                    <div class="documentos-input">
+                        <i class="bi bi-building"></i>
+                        <input type="text" id="unidadeConcedente" name="UnidadeConcedente" placeholder="Nome da empresa ou instituição concedente" required />
+                    </div>
+                </div>
+
+                <div class="documentos-campo">
+                    <label for="dataInicio">Data de início <span class="campo-obrigatorio">*</span></label>
+                    <div class="documentos-input">
+                        <i class="bi bi-calendar3"></i>
+                        <input type="date" id="dataInicio" name="DataInicio" required />
+                    </div>
+                </div>
+
+                <div class="documentos-campo">
+                    <label for="dataFim">Data de término <span class="campo-obrigatorio">*</span></label>
+                    <div class="documentos-input">
+                        <i class="bi bi-calendar-check"></i>
+                        <input type="date" id="dataFim" name="DataFim" required />
+                    </div>
+                </div>
+
+                <div class="documentos-campo documentos-campo-largo">
+                    <label for="atividades">Atividades previstas</label>
+                    <textarea id="atividades" name="Atividades" rows="5" placeholder="Descreva as atividades previstas para o estágio..."></textarea>
+                </div>
+            </div>
+
+            <div class="documentos-form-nota">
+                <i class="bi bi-info-circle"></i>
+                Os campos marcados com asterisco são obrigatórios.
+            </div>
+
+            <div class="documentos-form-acoes">
+                <a href="/Documentos/Index" class="documentos-btn documentos-btn-secondary">Cancelar</a>
+                <button type="submit" class="documentos-btn documentos-btn-primary">
+                    <i class="bi bi-check-lg"></i> Salvar documento
+                </button>
+            </div>
+        </form>
+    </div>
 </div>

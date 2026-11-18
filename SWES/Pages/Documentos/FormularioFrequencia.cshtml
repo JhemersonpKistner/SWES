@@ -5,79 +5,99 @@
     ViewData["Title"] = "Formulário de Frequência";
 }
 
-<div class="container-fluid py-4">
-    <h2>
-        <i class="bi bi-calendar-check"></i>
-        Formulário de Frequência
-    </h2>
+<div class="documentos-page documentos-form-page">
+    <div class="documentos-header">
+        <div>
+            <span class="documentos-eyebrow"><i class="bi bi-calendar-check"></i> DOCUMENTAÇÃO DE ESTÁGIO</span>
+            <h1>Formulário de Frequência</h1>
+            <p>Preencha as informações de frequência e atividades realizadas durante o estágio.</p>
+        </div>
+        <a href="/Documentos/Index" class="documentos-btn documentos-btn-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar para documentos
+        </a>
+    </div>
 
-    <p class="text-muted">
-        Preencha as informações de frequência
-        e atividades realizadas durante o estágio.
-    </p>
-
-    <form method="post">
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title mb-4">
-                    Informações de frequência
-                </h5>
-
-                <div class="mb-3">
-                    <label asp-for="EstagioId" class="form-label">
-                        Estágio / Número de protocolo
-                    </label>
-
-                    <select asp-for="EstagioId" class="form-select" required>
-                        <option value="">Selecione um estágio...</option>
-
-                        @foreach (var estagio in Model.EstagiosDisponiveis)
-                        {
-                            <option value="@estagio.Id">
-                                @estagio.Protocolo - @estagio.Tipo
-                            </option>
-                        }
-                    </select>
-
-                    <span asp-validation-for="EstagioId" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Nome do aluno</label>
-                    <input asp-for="NomeAluno" class="form-control" />
-                    <span asp-validation-for="NomeAluno" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Data da atividade</label>
-                    <input asp-for="DataAtividade" type="date" class="form-control" />
-                    <span asp-validation-for="DataAtividade" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Horário de entrada</label>
-                    <input asp-for="HorarioEntrada" type="time" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Horário de saída</label>
-                    <input asp-for="HorarioSaida" type="time" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Atividades realizadas</label>
-                    <textarea asp-for="AtividadesRealizadas" class="form-control" rows="4"></textarea>
-                </div>
+    <div class="documentos-form-card">
+        <div class="documentos-form-cabecalho">
+            <div class="documentos-form-icone verde"><i class="bi bi-calendar-check"></i></div>
+            <div>
+                <h2>Informações de frequência</h2>
+                <p>Informe o estágio e os dados referentes às atividades realizadas.</p>
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary me-2">
-            <i class="bi bi-check-circle"></i>
-            Salvar frequência
-        </button>
-    </form>
+        <form method="post">
+            <div class="documentos-form-grid">
+                <div class="documentos-campo documentos-campo-largo">
+                    <label asp-for="EstagioId">Estágio / Número de protocolo <span class="campo-obrigatorio">*</span></label>
+                    <div class="documentos-input">
+                        <i class="bi bi-card-list"></i>
+                        <select asp-for="EstagioId" required>
+                            <option value="">Selecione um estágio...</option>
+                            @foreach (var estagio in Model.EstagiosDisponiveis)
+                            {
+                                <option value="@estagio.Id">@estagio.Protocolo - @estagio.Tipo</option>
+                            }
+                        </select>
+                    </div>
+                    <span asp-validation-for="EstagioId" class="documentos-validacao"></span>
+                </div>
 
-    <a href="/Documentos/Index" class="btn btn-outline-secondary">
-        Voltar
-    </a>
+                <div class="documentos-campo documentos-campo-largo">
+                    <label asp-for="NomeAluno">Nome do aluno</label>
+                    <div class="documentos-input">
+                        <i class="bi bi-person"></i>
+                        <input asp-for="NomeAluno" placeholder="Informe o nome completo do aluno" />
+                    </div>
+                    <span asp-validation-for="NomeAluno" class="documentos-validacao"></span>
+                </div>
+
+                <div class="documentos-campo">
+                    <label asp-for="DataAtividade">Data da atividade</label>
+                    <div class="documentos-input">
+                        <i class="bi bi-calendar3"></i>
+                        <input asp-for="DataAtividade" type="date" />
+                    </div>
+                    <span asp-validation-for="DataAtividade" class="documentos-validacao"></span>
+                </div>
+
+                <div class="documentos-campo">
+                    <label asp-for="HorarioEntrada">Horário de entrada</label>
+                    <div class="documentos-input">
+                        <i class="bi bi-clock"></i>
+                        <input asp-for="HorarioEntrada" type="time" />
+                    </div>
+                </div>
+
+                <div class="documentos-campo">
+                    <label asp-for="HorarioSaida">Horário de saída</label>
+                    <div class="documentos-input">
+                        <i class="bi bi-clock-history"></i>
+                        <input asp-for="HorarioSaida" type="time" />
+                    </div>
+                </div>
+
+                <div class="documentos-campo documentos-campo-largo">
+                    <label asp-for="AtividadesRealizadas">Atividades realizadas</label>
+                    <textarea asp-for="AtividadesRealizadas" rows="5" placeholder="Descreva as atividades realizadas durante o período..."></textarea>
+                </div>
+            </div>
+
+            <div class="documentos-form-nota">
+                <i class="bi bi-info-circle"></i>
+                Confira as informações antes de salvar o formulário.
+            </div>
+
+            <div class="documentos-form-acoes">
+                <a href="/Documentos/Index" class="documentos-btn documentos-btn-secondary">Cancelar</a>
+                <button type="submit" class="documentos-btn documentos-btn-primary">
+                    <i class="bi bi-check-lg"></i> Salvar frequência
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

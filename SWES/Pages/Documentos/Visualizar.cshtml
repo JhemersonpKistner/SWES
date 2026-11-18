@@ -5,148 +5,114 @@
     ViewData["Title"] = "Visualizar documento";
 }
 
-<div class="container-fluid py-4">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>
-            <i class="bi bi-file-earmark-text"></i>
-            @Model.Documento.Tipo
-        </h2>
-
-        
-        <div class="d-flex gap-2">
-            <button type="button" class="btn btn-primary" onclick="window.print()">
-                <i class="bi bi-printer"></i>
-                Imprimir / Salvar PDF
+<div class="documentos-page documentos-visualizar-page">
+    <div class="documentos-header documentos-header-visualizar">
+        <div>
+            <span class="documentos-eyebrow"><i class="bi bi-file-earmark-check"></i> DOCUMENTAÇÃO DE ESTÁGIO</span>
+            <h1>@Model.Documento.Tipo</h1>
+            <p>Visualize os dados registrados e imprima ou salve uma cópia do documento.</p>
+        </div>
+        <div class="documentos-header-acoes">
+            <button type="button" class="documentos-btn documentos-btn-primary" onclick="window.print()">
+                <i class="bi bi-printer"></i> Imprimir / Salvar PDF
             </button>
-
-            <a href="/Documentos/Index" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i>
-                Voltar
+            <a href="/Documentos/Index" class="documentos-btn documentos-btn-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
             </a>
         </div>
-
     </div>
 
-    <div class="card">
-        <div class="card-body">
-
-            <div id="identificacaoDocumento">
-
-                <p class="mb-2">
-                    <strong>Número de protocolo:</strong>
-
-                    @if (Model.Documento.Estagio != null)
-                    {
-                        <span>@Model.Documento.Estagio.Protocolo</span>
-                    }
-                    else
-                    {
-                        <span class="text-muted">Não vinculado</span>
-                    }
-                </p>
-
-                <p class="text-muted">
-                    Documento criado em:
-                    @(Model.Documento.DataCriacao.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))
-                </p>
-
-            </div>
-
-            <hr />
-
-            <h5>Informações do documento</h5>
-
-            
-            
-            <div id="dadosDocumento">
-
-                @if (Model.DadosDocumento != null)
+    <div class="documentos-visualizacao-card">
+        <div id="identificacaoDocumento" class="documentos-protocolo-info">
+            <div>
+                <span class="documentos-dado-label">Número de protocolo</span>
+                @if (Model.Documento.Estagio != null)
                 {
-                    @foreach (var propriedade in Model.DadosDocumento.RootElement.EnumerateObject())
-                    {
-                        var rotulo = propriedade.Name switch
-                        {
-                            "NomeAluno" => "Nome do aluno",
-                            "InstituicaoEnsino" => "Instituição de ensino",
-                            "UnidadeConcedente" => "Unidade concedente",
-                            "DataInicio" => "Data de início",
-                            "DataFim" => "Data de término",
-                            "Atividades" => "Atividades previstas",
-                            "DataAtividade" => "Data da atividade",
-                            "HorarioEntrada" => "Horário de entrada",
-                            "HorarioSaida" => "Horário de saída",
-                            "AtividadesRealizadas" => "Atividades realizadas",
-                            "AtividadesDesenvolvidas" => "Atividades desenvolvidas",
-                            "ConsideracoesFinais" => "Considerações finais",
-                            _ => propriedade.Name
-                        };
-
-                        var valor = propriedade.Value;
-                        var texto = "Não informado";
-
-                        if (valor.ValueKind == System.Text.Json.JsonValueKind.String &&
-                            !string.IsNullOrWhiteSpace(valor.GetString()))
-                        {
-                            texto = valor.GetString()!;
-
-                            if ((propriedade.Name == "DataInicio" ||
-                                 propriedade.Name == "DataFim" ||
-                                 propriedade.Name == "DataAtividade") &&
-                                DateTime.TryParse(texto, out var data))
-                            {
-                                texto = data.ToString("dd/MM/yyyy");
-                            }
-
-                            if ((propriedade.Name == "HorarioEntrada" ||
-                                 propriedade.Name == "HorarioSaida") &&
-                                TimeSpan.TryParse(texto, out var horario))
-                            {
-                                texto = horario.ToString(@"hh\:mm");
-                            }
-                        }
-                        else if (valor.ValueKind != System.Text.Json.JsonValueKind.Null &&
-                                 valor.ValueKind != System.Text.Json.JsonValueKind.Undefined)
-                        {
-                            texto = valor.ToString();
-                        }
-
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">
-                                @rotulo
-                            </label>
-
-                            <div class="form-control bg-light">
-                                @texto
-                            </div>
-                        </div>
-                    }
+                    <strong>@Model.Documento.Estagio.Protocolo</strong>
                 }
-
+                else
+                {
+                    <strong class="text-muted">Não vinculado</strong>
+                }
             </div>
-
-            <div class="mt-5 pt-4" id="assinaturasDocumento">
-                
-                <div class="row text-center justify-content-between g-4">
-                    <div class="col-5">
-                        <div class="border-top border-dark pt-2">
-                            Assinatura do aluno
-                        </div>
-                    </div>
-
-                    <div class="col-5">
-                        <div class="border-top border-dark pt-2">
-                            Assinatura do responsável
-                        </div>
-                    </div>
-                </div>
-
+            <div>
+                <span class="documentos-dado-label">Documento criado em</span>
+                <strong>@Model.Documento.DataCriacao.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</strong>
             </div>
+        </div>
 
+        <div class="documentos-visualizacao-titulo">
+            <div class="documentos-form-icone azul"><i class="bi bi-file-earmark-text"></i></div>
+            <div>
+                <h2>Informações do documento</h2>
+                <p>Dados informados no momento do preenchimento.</p>
+            </div>
+        </div>
 
+        <div id="dadosDocumento" class="documentos-dados-grid">
+            @if (Model.DadosDocumento != null)
+            {
+                @foreach (var propriedade in Model.DadosDocumento.RootElement.EnumerateObject())
+                {
+                    var rotulo = propriedade.Name switch
+                    {
+                        "NomeAluno" => "Nome do aluno",
+                        "InstituicaoEnsino" => "Instituição de ensino",
+                        "UnidadeConcedente" => "Unidade concedente",
+                        "DataInicio" => "Data de início",
+                        "DataFim" => "Data de término",
+                        "Atividades" => "Atividades previstas",
+                        "DataAtividade" => "Data da atividade",
+                        "HorarioEntrada" => "Horário de entrada",
+                        "HorarioSaida" => "Horário de saída",
+                        "AtividadesRealizadas" => "Atividades realizadas",
+                        "AtividadesDesenvolvidas" => "Atividades desenvolvidas",
+                        "ConsideracoesFinais" => "Considerações finais",
+                        _ => propriedade.Name
+                    };
+
+                    var valor = propriedade.Value;
+                    var texto = "Não informado";
+
+                    if (valor.ValueKind == System.Text.Json.JsonValueKind.String &&
+                        !string.IsNullOrWhiteSpace(valor.GetString()))
+                    {
+                        texto = valor.GetString()!;
+
+                        if ((propriedade.Name == "DataInicio" ||
+                             propriedade.Name == "DataFim" ||
+                             propriedade.Name == "DataAtividade") &&
+                            DateTime.TryParse(texto, out var data))
+                        {
+                            texto = data.ToString("dd/MM/yyyy");
+                        }
+
+                        if ((propriedade.Name == "HorarioEntrada" ||
+                             propriedade.Name == "HorarioSaida") &&
+                            TimeSpan.TryParse(texto, out var horario))
+                        {
+                            texto = horario.ToString(@"hh\:mm");
+                        }
+                    }
+                    else if (valor.ValueKind != System.Text.Json.JsonValueKind.Null &&
+                             valor.ValueKind != System.Text.Json.JsonValueKind.Undefined)
+                    {
+                        texto = valor.ToString();
+                    }
+
+                    <div class="documentos-dado">
+                        <span class="documentos-dado-label">@rotulo</span>
+                        <div class="documentos-dado-valor">@texto</div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="documentos-assinaturas" id="assinaturasDocumento">
+            <div><span>Assinatura do aluno</span></div>
+            <div><span>Assinatura do responsável</span></div>
         </div>
     </div>
-
 </div>
 
 <style>
@@ -159,9 +125,9 @@
         body * {
             visibility: hidden !important;
         }
-     
-        .container-fluid,
-        .container-fluid *,
+
+        .documentos-visualizar-page,
+        .documentos-visualizar-page *,
         #identificacaoDocumento,
         #identificacaoDocumento *,
         #dadosDocumento,
@@ -171,22 +137,23 @@
             visibility: visible !important;
         }
 
-        .container-fluid {
+        .documentos-visualizar-page {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             padding: 0 !important;
+            margin: 0 !important;
         }
 
-        .container-fluid button,
-        .container-fluid a {
+        .documentos-header-acoes {
             display: none !important;
         }
 
-        .card {
+        .documentos-visualizacao-card {
             border: none !important;
             box-shadow: none !important;
+            padding: 0 !important;
         }
 
         #assinaturasDocumento {
@@ -194,12 +161,12 @@
             page-break-inside: avoid;
         }
 
-        #dadosDocumento .mb-3 {
+        #dadosDocumento .documentos-dado {
             break-inside: avoid;
             page-break-inside: avoid;
         }
 
-        #dadosDocumento .form-control {
+        .documentos-dado-valor {
             border: none !important;
             padding-left: 0 !important;
             background: white !important;

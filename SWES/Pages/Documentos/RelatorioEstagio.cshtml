@@ -5,103 +5,109 @@
     ViewData["Title"] = "Relatório de Estágio";
 }
 
-<div class="container-fluid py-4">
-    <h2>
-        <i class="bi bi-journal-text"></i>
-        Relatório de Estágio
-    </h2>
+<div class="documentos-page documentos-form-page">
+    <div class="documentos-header">
+        <div>
+            <span class="documentos-eyebrow"><i class="bi bi-journal-text"></i> DOCUMENTAÇÃO DE ESTÁGIO</span>
+            <h1>Relatório de Estágio</h1>
+            <p>Preencha as informações sobre as atividades desenvolvidas durante o estágio.</p>
+        </div>
+        <a href="/Documentos/Index" class="documentos-btn documentos-btn-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar para documentos
+        </a>
+    </div>
 
-    <p class="text-muted">
-        Preencha as informações sobre as atividades
-        desenvolvidas durante o estágio.
-    </p>
-
-    <form method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title mb-4">
-                    Informações do relatório
-                </h5>
-
-                <div class="mb-3">
-                    <label asp-for="EstagioId" class="form-label">
-                        Estágio / Número de protocolo
-                    </label>
-
-                    <select asp-for="EstagioId" class="form-select" required>
-                        <option value="">Selecione um estágio...</option>
-
-                        @foreach (var estagio in Model.EstagiosDisponiveis)
-                        {
-                            <option value="@estagio.Id">
-                                @estagio.Protocolo - @estagio.Tipo
-                            </option>
-                        }
-                    </select>
-
-                    <span asp-validation-for="EstagioId" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="NomeAluno" class="form-label">
-                        Nome do aluno
-                    </label>
-                    <input asp-for="NomeAluno" class="form-control" />
-                    <span asp-validation-for="NomeAluno" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="UnidadeConcedente" class="form-label">
-                        Unidade concedente
-                    </label>
-                    <input asp-for="UnidadeConcedente" class="form-control" />
-                    <span asp-validation-for="UnidadeConcedente" class="text-danger"></span>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="DataInicio" class="form-label">
-                            Data de início
-                        </label>
-                        <input asp-for="DataInicio" type="date" class="form-control" />
-                        <span asp-validation-for="DataInicio" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="DataFim" class="form-label">
-                            Data de término
-                        </label>
-                        <input asp-for="DataFim" type="date" class="form-control" />
-                        <span asp-validation-for="DataFim" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="AtividadesDesenvolvidas" class="form-label">
-                        Atividades desenvolvidas
-                    </label>
-                    <textarea asp-for="AtividadesDesenvolvidas" class="form-control" rows="5"></textarea>
-                    <span asp-validation-for="AtividadesDesenvolvidas" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="ConsideracoesFinais" class="form-label">
-                        Considerações finais
-                    </label>
-                    <textarea asp-for="ConsideracoesFinais" class="form-control" rows="4"></textarea>
-                </div>
+    <div class="documentos-form-card">
+        <div class="documentos-form-cabecalho">
+            <div class="documentos-form-icone roxo"><i class="bi bi-journal-text"></i></div>
+            <div>
+                <h2>Informações do relatório</h2>
+                <p>Registre os dados do vínculo e as atividades desenvolvidas.</p>
             </div>
         </div>
 
-        <button type="submit" class="btn btn-primary me-2">
-            <i class="bi bi-check-circle"></i>
-            Salvar relatório
-        </button>
-    </form>
+        <div asp-validation-summary="ModelOnly" class="documentos-validacao-resumo" role="alert"></div>
 
-    <a href="/Documentos/Index" class="btn btn-outline-secondary">
-        Voltar
-    </a>
+        <form method="post">
+            <div class="documentos-form-grid">
+                <div class="documentos-campo documentos-campo-largo">
+                    <label asp-for="EstagioId">Estágio / Número de protocolo <span class="campo-obrigatorio">*</span></label>
+                    <div class="documentos-input">
+                        <i class="bi bi-card-list"></i>
+                        <select asp-for="EstagioId" required>
+                            <option value="">Selecione um estágio...</option>
+                            @foreach (var estagio in Model.EstagiosDisponiveis)
+                            {
+                                <option value="@estagio.Id">@estagio.Protocolo - @estagio.Tipo</option>
+                            }
+                        </select>
+                    </div>
+                    <span asp-validation-for="EstagioId" class="documentos-validacao"></span>
+                </div>
+
+                <div class="documentos-campo">
+                    <label asp-for="NomeAluno">Nome do aluno</label>
+                    <div class="documentos-input">
+                        <i class="bi bi-person"></i>
+                        <input asp-for="NomeAluno" placeholder="Nome completo do aluno" />
+                    </div>
+                    <span asp-validation-for="NomeAluno" class="documentos-validacao"></span>
+                </div>
+
+                <div class="documentos-campo">
+                    <label asp-for="UnidadeConcedente">Unidade concedente</label>
+                    <div class="documentos-input">
+                        <i class="bi bi-building"></i>
+                        <input asp-for="UnidadeConcedente" placeholder="Nome da empresa ou instituição" />
+                    </div>
+                    <span asp-validation-for="UnidadeConcedente" class="documentos-validacao"></span>
+                </div>
+
+                <div class="documentos-campo">
+                    <label asp-for="DataInicio">Data de início</label>
+                    <div class="documentos-input">
+                        <i class="bi bi-calendar3"></i>
+                        <input asp-for="DataInicio" type="date" />
+                    </div>
+                    <span asp-validation-for="DataInicio" class="documentos-validacao"></span>
+                </div>
+
+                <div class="documentos-campo">
+                    <label asp-for="DataFim">Data de término</label>
+                    <div class="documentos-input">
+                        <i class="bi bi-calendar-check"></i>
+                        <input asp-for="DataFim" type="date" />
+                    </div>
+                    <span asp-validation-for="DataFim" class="documentos-validacao"></span>
+                </div>
+
+                <div class="documentos-campo documentos-campo-largo">
+                    <label asp-for="AtividadesDesenvolvidas">Atividades desenvolvidas</label>
+                    <textarea asp-for="AtividadesDesenvolvidas" rows="5" placeholder="Descreva as principais atividades realizadas durante o estágio..."></textarea>
+                    <span asp-validation-for="AtividadesDesenvolvidas" class="documentos-validacao"></span>
+                </div>
+
+                <div class="documentos-campo documentos-campo-largo">
+                    <label asp-for="ConsideracoesFinais">Considerações finais</label>
+                    <textarea asp-for="ConsideracoesFinais" rows="4" placeholder="Registre suas considerações sobre a experiência de estágio..."></textarea>
+                </div>
+            </div>
+
+            <div class="documentos-form-nota">
+                <i class="bi bi-info-circle"></i>
+                Revise os dados e as descrições antes de salvar o relatório.
+            </div>
+
+            <div class="documentos-form-acoes">
+                <a href="/Documentos/Index" class="documentos-btn documentos-btn-secondary">Cancelar</a>
+                <button type="submit" class="documentos-btn documentos-btn-primary">
+                    <i class="bi bi-check-lg"></i> Salvar relatório
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
