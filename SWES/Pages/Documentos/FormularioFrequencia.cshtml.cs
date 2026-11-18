@@ -27,7 +27,8 @@ namespace SWES.Pages.Documentos
         }
 
         [BindProperty]
-        [Required(ErrorMessage = "Informe o nome do aluno.")]
+        [Required(ErrorMessage = "Informe o nome completo do aluno.")]
+        [StringLength(150, ErrorMessage = "O nome do aluno deve ter no máximo 150 caracteres.")]
         public string NomeAluno { get; set; } = string.Empty;
 
         [BindProperty]
