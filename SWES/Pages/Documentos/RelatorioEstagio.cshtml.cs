@@ -57,13 +57,8 @@ namespace SWES.Pages.Documentos
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrEmpty(usuarioId))
-                return Challenge();
-
             EstagiosDisponiveis = await _estagioService
-                .ConsultarEstagiosPermitidos(usuarioId)
+                .ConsultarEstagiosPermitidos()
                 .AsNoTracking()
                 .OrderByDescending(e => e.Id)
                 .ToListAsync();
@@ -73,11 +68,6 @@ namespace SWES.Pages.Documentos
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrEmpty(usuarioId))
-                return Challenge();
-
             if (DataInicio.HasValue &&
                 DataFim.HasValue &&
                 DataFim.Value.Date < DataInicio.Value.Date)
@@ -90,21 +80,21 @@ namespace SWES.Pages.Documentos
             if (EstagioId.HasValue)
             {
                 var estagioPermitido = await _estagioService
-                    .ConsultarEstagiosPermitidos(usuarioId)
+                    .ConsultarEstagiosPermitidos()
                     .AnyAsync(e => e.Id == EstagioId.Value);
 
                 if (!estagioPermitido)
                 {
                     ModelState.AddModelError(
                         nameof(EstagioId),
-                        "O estágio selecionado não existe ou você não possui permissão para acessá-lo.");
+                        "O estágio selecionado não existe.");
                 }
             }
 
             if (!ModelState.IsValid)
             {
                 EstagiosDisponiveis = await _estagioService
-                    .ConsultarEstagiosPermitidos(usuarioId)
+                    .ConsultarEstagiosPermitidos()
                     .AsNoTracking()
                     .OrderByDescending(e => e.Id)
                     .ToListAsync();
@@ -127,7 +117,7 @@ namespace SWES.Pages.Documentos
                 Tipo = "Relatório de Estágio",
                 DadosJson = JsonSerializer.Serialize(dados),
                 DataCriacao = DateTime.UtcNow,
-                UsuarioId = usuarioId,
+                UsuarioId = null,
                 EstagioId = EstagioId
             };
 

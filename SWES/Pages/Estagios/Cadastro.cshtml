@@ -81,11 +81,14 @@
 
                 <div class="col-md-4 estagios-campo">
                     <label asp-for="Estagio.Tipo" class="form-label estagios-label">
-                        Tipo
+                        Tipo de estágio
                     </label>
 
-                    <input asp-for="Estagio.Tipo" class="form-control estagios-input"
-                           placeholder="Ex.: Supervisionado" />
+                    <select asp-for="Estagio.Tipo" class="form-select estagios-input">
+                        <option value="">Selecione</option>
+                        <option value="Interno">Interno</option>
+                        <option value="Externo">Externo</option>
+                    </select>
 
                     <span asp-validation-for="Estagio.Tipo" class="text-danger"></span>
                 </div>
@@ -636,28 +639,84 @@
                 </div>
             </div>
 
-            <label asp-for="Estagio.ArquivoEspecificacoes" class="form-label mt-3">
-                Ou anexar arquivo com as especificações
-            </label>
+            <!-- ARQUIVOS DE ESPECIFICAÇÕES -->
+            <div class="mt-4 pt-3 border-top">
 
-            <input asp-for="Estagio.ArquivoEspecificacoes" type="file"
-                   class="form-control estagios-input estagios-arquivo" accept=".pdf,.doc,.docx,.txt" />
+                <h6 class="secao-estagio-titulo">
+                    <i class="bi bi-files"></i>
+                    Arquivos de especificações
+                </h6>
 
-            <span asp-validation-for="Estagio.ArquivoEspecificacoes" class="text-danger"></span>
+                <p class="campo-ajuda">
+                    Anexe um ou mais arquivos contendo as especificações do estágio.
+                    Os arquivos já cadastrados também aparecem nesta lista.
+                </p>
 
-            <div class="campo-ajuda mt-1">
-                Formatos permitidos: PDF, DOC, DOCX e TXT. Limite de 10 MB.
-            </div>
+                <button type="button" class="btn btn-outline-primary estagios-btn-selecao" data-bs-toggle="modal"
+                        data-bs-target="#modalDocumentos">
+                    <i class="bi bi-plus-circle"></i>
+                    Adicionar arquivos de especificações
+                </button>
 
-            @if (!string.IsNullOrWhiteSpace(Model.Estagio.EspecificacoesArquivoAtual))
-            {
-                <div class="mt-2">
-                    Arquivo atual:
-                    <a href="@Model.Estagio.EspecificacoesArquivoAtual" target="_blank" rel="noopener">
-                        @Model.Estagio.NomeArquivoEspecificacoesAtual
-                    </a>
+                <div id="listaDocumentosAdicionados" class="mt-3">
+
+                    @if (Model.Estagio.DocumentosExistentes != null &&
+                         Model.Estagio.DocumentosExistentes.Any())
+                    {
+                        @foreach (var documento in Model.Estagio.DocumentosExistentes)
+                        {
+                            <div class="documento-existente d-flex justify-content-between align-items-center gap-3 border rounded p-3 mb-2"
+                                 data-documento-id="@documento.Id">
+
+                                <div class="text-break">
+                                    <strong>@documento.Nome</strong>
+
+                                    <div class="text-muted small">
+                                        @if (!string.IsNullOrWhiteSpace(documento.NomeArquivo))
+                                        {
+                                            @documento.NomeArquivo
+                                        }
+                                        else
+                                        {
+                                            <span>Arquivo anexado</span>
+                                        }
+                                    </div>
+
+                                    @if (!string.IsNullOrWhiteSpace(documento.CaminhoArquivo))
+                                    {
+                                        <a href="@documento.CaminhoArquivo" target="_blank" rel="noopener" class="small">
+                                            Visualizar arquivo
+                                        </a>
+                                    }
+                                </div>
+
+                                <button type="button" class="btn btn-outline-danger btn-sm remover-documento-existente"
+                                        data-documento-id="@documento.Id">
+                                    Remover
+                                </button>
+
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p id="nenhumDocumentoExistente" class="text-muted mb-2">
+                            Nenhum arquivo de especificações cadastrado.
+                        </p>
+                    }
+
                 </div>
-            }
+
+                <!-- Campos enviados pelo formulário -->
+                <div id="camposDocumentos" class="d-none"></div>
+                <div id="camposDocumentosRemover" class="d-none"></div>
+
+                <div class="campo-ajuda mt-2">
+                    Formatos permitidos: PDF, DOC, DOCX e TXT.
+                    Limite de 10 MB por arquivo.
+                </div>
+
+            </div>
         </section>
 
 
@@ -693,28 +752,6 @@
             }
         </section>
 
-        <!-- DOCUMENTOS DO ESTÁGIO -->
-        <section class="secao-estagio">
-            <h5 class="secao-estagio-titulo">
-                <i class="bi bi-files"></i>
-                Documentos do estágio
-            </h5>
-
-            <p class="campo-ajuda">
-                Anexe os documentos relacionados ao estágio,
-                identificando cada arquivo com um nome explicativo.
-            </p>
-
-            <button type="button" class="btn btn-outline-primary estagios-btn-selecao" data-bs-toggle="modal"
-                    data-bs-target="#modalDocumentos">
-                <i class="bi bi-plus-circle"></i>
-                Adicionar documentos
-            </button>
-
-            <div id="listaDocumentosAdicionados" class="mt-3"></div>
-
-            <div id="camposDocumentos" class="d-none"></div>
-        </section>
 
         <!-- BOTÕES -->
 
@@ -746,7 +783,7 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="tituloModalDocumentos">
                     <i class="bi bi-files"></i>
-                    Adicionar documentos ao estágio
+                    Adicionar arquivos de especificações
                 </h5>
 
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
@@ -785,7 +822,7 @@
 
                 <button type="button" class="btn btn-primary" id="confirmarDocumento">
                     <i class="bi bi-plus-circle"></i>
-                    Adicionar documento
+                    Adicionar arquivo
                 </button>
             </div>
 
@@ -1442,7 +1479,7 @@
             });
 
         // ==========================================
-        // DOCUMENTOS DO ESTÁGIO
+        // DOCUMENTOS COMPLEMENTARES DO ESTÁGIO
         // ==========================================
 
         const documentosAdicionados = [];
@@ -1457,9 +1494,38 @@
         const camposDocumentos =
             document.getElementById('camposDocumentos');
 
+        const camposDocumentosRemover =
+            document.getElementById('camposDocumentosRemover');
+
+        // Marca documentos persistidos para exclusão no servidor.
+        document.querySelectorAll('.remover-documento-existente')
+            .forEach(function (botao) {
+                botao.addEventListener('click', function () {
+                    const documentoId = this.dataset.documentoId;
+                    const linha = this.closest('.documento-existente');
+
+                    if (!documentoId || !linha) {
+                        return;
+                    }
+
+                    const jaMarcado = camposDocumentosRemover.querySelector(
+                        `input[name="Estagio.DocumentosRemoverIds"][value="${documentoId}"]`
+                    );
+
+                    if (!jaMarcado) {
+                        const campoId = document.createElement('input');
+                        campoId.type = 'hidden';
+                        campoId.name = 'Estagio.DocumentosRemoverIds';
+                        campoId.value = documentoId;
+                        camposDocumentosRemover.appendChild(campoId);
+                    }
+
+                    linha.remove();
+                });
+            });
+
         document.getElementById('confirmarDocumento')
             .addEventListener('click', function () {
-
                 const nome = nomeDocumento.value.trim();
                 const arquivo = arquivoDocumento.files[0];
 
@@ -1507,11 +1573,9 @@
                 renderizarDocumentos();
             });
 
-
         function renderizarDocumentos() {
-            listaDocumentosAdicionados.innerHTML = '';
-
-
+            // Remove e recria somente os campos dos documentos novos.
+            // Os documentos já persistidos permanecem na lista.
             camposDocumentos.innerHTML = '';
 
             documentosAdicionados.forEach(function (documento, indice) {
@@ -1532,10 +1596,17 @@
                 camposDocumentos.appendChild(campoArquivo);
             });
 
+            // Remove da tela apenas as linhas de documentos novos.
+            listaDocumentosAdicionados
+                .querySelectorAll('.documento-novo')
+                .forEach(function (linha) {
+                    linha.remove();
+                });
+
             documentosAdicionados.forEach(function (documento, indice) {
                 const linha = document.createElement('div');
                 linha.className =
-                    'd-flex justify-content-between align-items-center gap-3 border rounded p-3 mb-2';
+                    'documento-novo d-flex justify-content-between align-items-center gap-3 border rounded p-3 mb-2';
 
                 const informacoes = document.createElement('div');
                 informacoes.className = 'text-break';
@@ -1565,9 +1636,13 @@
 
                 listaDocumentosAdicionados.appendChild(linha);
             });
+
+            const mensagemVazia = document.getElementById('nenhumDocumentoExistente');
+            if (mensagemVazia &&
+                listaDocumentosAdicionados.querySelectorAll('.documento-existente, .documento-novo').length > 0) {
+                mensagemVazia.remove();
+            }
         }
 
     </script>
-}
-
 }

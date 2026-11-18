@@ -664,7 +664,6 @@ namespace SWES.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UsuarioId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

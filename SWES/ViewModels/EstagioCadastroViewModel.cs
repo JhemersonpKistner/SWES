@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,12 +10,12 @@ namespace SWES.ViewModels
 
         public string Protocolo { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Selecione o tipo de estágio.")]
+        [Required(ErrorMessage = "Selecione a etapa do estágio.")]
         public string Etapa { get; set; } = "Estágio I";
 
-        [Required(ErrorMessage = "Informe o tipo de estágio.")]
+        [Required(ErrorMessage = "Selecione o tipo de estágio.")]
         [StringLength(50)]
-        public string Tipo { get; set; } = "Supervisionado";
+        public string Tipo { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Informe a data de início.")]
         [DataType(DataType.Date)]
@@ -57,18 +58,30 @@ namespace SWES.ViewModels
         [StringLength(500)]
         public string Observacao { get; set; } = string.Empty;
 
+        // Conteúdo único das especificações do estágio.
         public string? EspecificacoesHtml { get; set; }
 
+        // Arquivo principal das especificações.
         public IFormFile? ArquivoEspecificacoes { get; set; }
 
+        // Arquivo do edital, independente das especificações.
         public IFormFile? ArquivoEdital { get; set; }
 
+        // Novos documentos enviados durante o cadastro ou edição.
         public List<DocumentoAnexoViewModel> Documentos { get; set; } = new();
 
+        // Documentos que já estão persistidos no banco.
+        public List<DocumentoExistenteViewModel> DocumentosExistentes { get; set; } = new();
+
+        // IDs dos documentos persistidos que o usuário solicitou excluir.
+        public List<int> DocumentosRemoverIds { get; set; } = new();
+
+        // Arquivo atual das especificações.
         public string? EspecificacoesArquivoAtual { get; set; }
 
         public string? NomeArquivoEspecificacoesAtual { get; set; }
 
+        // Arquivo atual do edital.
         public string? EditalArquivoAtual { get; set; }
 
         public string? NomeArquivoEditalAtual { get; set; }

@@ -11,7 +11,7 @@ namespace SWES.Models
 
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
 
-        public string UsuarioId { get; set; } = string.Empty;
+        public string? UsuarioId { get; set; }
 
         public int? EstagioId { get; set; }
 

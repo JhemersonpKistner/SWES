@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SWES.Data;
 using SWES.Models;
-using System.Security.Claims;
 using System.Text.Json;
 
 namespace SWES.Pages.Documentos
@@ -25,18 +24,10 @@ namespace SWES.Pages.Documentos
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            var usuarioId = User.FindFirstValue(
-                ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrEmpty(usuarioId))
-                return Challenge();
-
             var documento = await _context.DocumentosPreenchidos
                 .AsNoTracking()
                 .Include(d => d.Estagio)
-                .FirstOrDefaultAsync(d =>
-                    d.Id == id &&
-                    d.UsuarioId == usuarioId);
+                .FirstOrDefaultAsync(d => d.Id == id);
 
             if (documento == null)
                 return NotFound();

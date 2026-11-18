@@ -25,39 +25,22 @@ namespace SWES.Services
                 .ToUpperInvariant();
         }
 
-
         public record DocumentoParaSalvar(
             string Nome,
             string NomeArquivo,
             string CaminhoArquivo);
 
-        public IQueryable<Estagio> ConsultarEstagiosPermitidos(string usuarioId)
+        public IQueryable<Estagio> ConsultarEstagiosPermitidos()
         {
-            return _context.Estagios
-                .Where(e =>
-                    e.Alunos.Any(a =>
-                        a.UserId == usuarioId && a.Ativo) ||
-
-                    (e.ProfessorOrientador != null &&
-                        e.ProfessorOrientador.UserId == usuarioId &&
-                        e.ProfessorOrientador.Ativo) ||
-
-                    (e.SupervisorEstagio != null &&
-                        e.SupervisorEstagio.UserId == usuarioId &&
-                        e.SupervisorEstagio.Ativo) ||
-
-                    (e.Coordenador != null &&
-                        e.Coordenador.UserId == usuarioId &&
-                        e.Coordenador.Ativo)
-                );
+            return _context.Estagios;
         }
 
         // =====================================================
         // LISTAR ESTÁGIOS
         // =====================================================
 
-
-        public async Task<List<EstagioViewModel>> ListarEstagiosAsync(string? pesquisa = null)
+        public async Task<List<EstagioViewModel>> ListarEstagiosAsync(
+            string? pesquisa = null)
         {
             IQueryable<Estagio> consulta = _context.Estagios
                 .Include(e => e.ProfessorOrientador)
@@ -102,11 +85,17 @@ namespace SWES.Services
                 Horario = e.Horario,
                 Situacao = e.Situacao,
 
-                ProfessorOrientador = e.ProfessorOrientador?.Nome ?? "Não informado",
-                Supervisor = e.SupervisorEstagio?.Nome ?? "Não informado",
+                ProfessorOrientador =
+                    e.ProfessorOrientador?.Nome ?? "Não informado",
 
-                UnidadeConcedente = e.UnidadeConcedente?.RazaoSocial ?? "Não informada",
-                InstituicaoEnsino = e.InstituicaoEnsino?.RazaoSocial ?? "Não informada",
+                Supervisor =
+                    e.SupervisorEstagio?.Nome ?? "Não informado",
+
+                UnidadeConcedente =
+                    e.UnidadeConcedente?.RazaoSocial ?? "Não informada",
+
+                InstituicaoEnsino =
+                    e.InstituicaoEnsino?.RazaoSocial ?? "Não informada",
 
                 Alunos = e.Alunos
                     .Select(a => a.Nome)
@@ -125,6 +114,7 @@ namespace SWES.Services
         {
             var estagio = await _context.Estagios
                 .Include(e => e.Alunos)
+                .Include(e => e.Documentos)
                 .FirstOrDefaultAsync(e => e.Id == id);
 
             if (estagio == null)
@@ -157,11 +147,27 @@ namespace SWES.Services
 
                 EspecificacoesHtml = estagio.EspecificacoesHtml,
                 EspecificacoesArquivoAtual = estagio.EspecificacoesArquivo,
-                NomeArquivoEspecificacoesAtual = estagio.NomeArquivoEspecificacoes,
+                NomeArquivoEspecificacoesAtual =
+                    estagio.NomeArquivoEspecificacoes,
+
                 EditalArquivoAtual = estagio.EditalArquivo,
-                NomeArquivoEditalAtual = estagio.NomeArquivoEdital
+                NomeArquivoEditalAtual = estagio.NomeArquivoEdital,
+
+                DocumentosExistentes = estagio.Documentos
+                    .Select(d => new DocumentoExistenteViewModel
+                    {
+                        Id = d.Id,
+                        Nome = d.Nome ?? "Documento sem nome",
+                        NomeArquivo = d.NomeArquivo,
+                        CaminhoArquivo = d.CaminhoArquivo
+                    })
+                    .ToList()
             };
         }
+
+        // =====================================================
+        // BUSCAR PROFESSORES POR INSTITUIÇÃO
+        // =====================================================
 
         public async Task<List<OpcaoEstagioViewModel>>
             ObterProfessoresPorInstituicaoAsync(Guid instituicaoId)
@@ -179,8 +185,12 @@ namespace SWES.Services
                 .ToListAsync();
         }
 
+        // =====================================================
+        // BUSCAR ALUNOS POR INSTITUIÇÃO
+        // =====================================================
+
         public async Task<List<OpcaoEstagioViewModel>>
-    ObterAlunosPorInstituicaoAsync(Guid instituicaoId)
+            ObterAlunosPorInstituicaoAsync(Guid instituicaoId)
         {
             return await _context.Alunos
                 .Where(a => a.Ativo &&
@@ -194,8 +204,12 @@ namespace SWES.Services
                 .ToListAsync();
         }
 
+        // =====================================================
+        // BUSCAR COORDENADORES POR INSTITUIÇÃO
+        // =====================================================
+
         public async Task<List<OpcaoEstagioViewModel>>
-    ObterCoordenadoresPorInstituicaoAsync(Guid instituicaoId)
+            ObterCoordenadoresPorInstituicaoAsync(Guid instituicaoId)
         {
             return await _context.Coordenadores
                 .Where(c => c.Ativo &&
@@ -209,8 +223,12 @@ namespace SWES.Services
                 .ToListAsync();
         }
 
+        // =====================================================
+        // BUSCAR SUPERVISORES POR UNIDADE
+        // =====================================================
+
         public async Task<List<OpcaoEstagioViewModel>>
-    ObterSupervisoresPorUnidadeAsync(Guid unidadeConcedenteId)
+            ObterSupervisoresPorUnidadeAsync(Guid unidadeConcedenteId)
         {
             return await _context.SupervisoresEstagio
                 .Where(s => s.Ativo &&
@@ -299,7 +317,6 @@ namespace SWES.Services
         // CADASTRAR ESTÁGIO
         // =====================================================
 
-
         public async Task CadastrarAsync(
             EstagioCadastroViewModel model,
             string? especificacoesArquivo,
@@ -307,17 +324,14 @@ namespace SWES.Services
             string? editalArquivo,
             string? nomeArquivoEdital,
             List<DocumentoParaSalvar> documentos)
-
         {
             var professor = await _context.ProfessoresOrientadores
                 .FirstOrDefaultAsync(p =>
                     p.Id == model.ProfessorOrientadorId &&
                     p.Ativo &&
-                    (
-                        p.InstituicaoEnsinoId == model.InstituicaoEnsinoId ||
-                        p.InstituicoesEnsino.Any(i =>
-                            i.Id == model.InstituicaoEnsinoId)
-                    ));
+                    (p.InstituicaoEnsinoId == model.InstituicaoEnsinoId ||
+                     p.InstituicoesEnsino.Any(i =>
+                         i.Id == model.InstituicaoEnsinoId)));
 
             var supervisor = await _context.SupervisoresEstagio
                 .FirstOrDefaultAsync(s =>
@@ -340,32 +354,32 @@ namespace SWES.Services
             if (professor == null)
             {
                 throw new InvalidOperationException(
-                    $"Professor não encontrado ou não vinculado à instituição selecionada. ID recebido: {model.ProfessorOrientadorId}");
+                    "Professor não encontrado ou não vinculado à instituição selecionada.");
             }
 
             if (supervisor == null)
             {
                 throw new InvalidOperationException(
-                    $"Supervisor não encontrado ou não vinculado à unidade concedente selecionada. ID recebido: {model.SupervisorEstagioId}");
+                    "Supervisor não encontrado ou não vinculado à unidade concedente selecionada.");
             }
 
             if (unidade == null)
             {
                 throw new InvalidOperationException(
-                    $"Unidade concedente não encontrada ou inativa. ID recebido: {model.UnidadeConcedenteId}");
+                    "Unidade concedente não encontrada ou inativa.");
             }
 
             if (instituicao == null)
             {
                 throw new InvalidOperationException(
-                    $"Instituição de ensino não encontrada ou inativa. ID recebido: {model.InstituicaoEnsinoId}");
+                    "Instituição de ensino não encontrada ou inativa.");
             }
 
             var alunos = await _context.Alunos
                 .Where(a =>
                     model.AlunosIds.Contains(a.Id) &&
-                        a.Ativo &&
-                        a.InstituicaoEnsinoId == model.InstituicaoEnsinoId)
+                    a.Ativo &&
+                    a.InstituicaoEnsinoId == model.InstituicaoEnsinoId)
                 .ToListAsync();
 
             if (alunos.Count != model.AlunosIds.Distinct().Count())
@@ -389,8 +403,7 @@ namespace SWES.Services
             estagio.DefinirProtocolo(model.Protocolo);
 
             var coordenador = model.CoordenadorId.HasValue
-                ? await _context.Coordenadores.FirstOrDefaultAsync(
-                    c =>
+                ? await _context.Coordenadores.FirstOrDefaultAsync(c =>
                     c.Id == model.CoordenadorId.Value &&
                     c.Ativo &&
                     c.InstituicaoEnsinoId == model.InstituicaoEnsinoId)
@@ -430,7 +443,6 @@ namespace SWES.Services
 
             _context.Estagios.Add(estagio);
 
-
             foreach (var documento in documentos)
             {
                 estagio.Documentos.Add(new Documento(
@@ -441,7 +453,6 @@ namespace SWES.Services
                     documento.CaminhoArquivo));
             }
 
-
             await _context.SaveChangesAsync();
         }
 
@@ -449,18 +460,17 @@ namespace SWES.Services
         // ATUALIZAR ESTÁGIO
         // =====================================================
 
-
-        public async Task AtualizarAsync(
+        public async Task<List<string>> AtualizarAsync(
             EstagioCadastroViewModel model,
             string? especificacoesArquivo,
             string? nomeArquivoEspecificacoes,
             string? editalArquivo,
             string? nomeArquivoEdital,
             List<DocumentoParaSalvar> documentos)
-
         {
             var estagio = await _context.Estagios
                 .Include(e => e.Alunos)
+                .Include(e => e.Documentos)
                 .FirstOrDefaultAsync(e => e.Id == model.Id);
 
             if (estagio == null)
@@ -470,11 +480,9 @@ namespace SWES.Services
                 .FirstOrDefaultAsync(p =>
                     p.Id == model.ProfessorOrientadorId &&
                     p.Ativo &&
-                    (
-                         p.InstituicaoEnsinoId == model.InstituicaoEnsinoId ||
-                        p.InstituicoesEnsino.Any(i =>
-                            i.Id == model.InstituicaoEnsinoId)
-                    ));
+                    (p.InstituicaoEnsinoId == model.InstituicaoEnsinoId ||
+                     p.InstituicoesEnsino.Any(i =>
+                         i.Id == model.InstituicaoEnsinoId)));
 
             var supervisor = await _context.SupervisoresEstagio
                 .FirstOrDefaultAsync(s =>
@@ -497,25 +505,25 @@ namespace SWES.Services
             if (professor == null)
             {
                 throw new InvalidOperationException(
-                    $"Professor não encontrado ou não vinculado à instituição selecionada. ID recebido: {model.ProfessorOrientadorId}");
+                    "Professor não encontrado ou não vinculado à instituição selecionada.");
             }
 
             if (supervisor == null)
             {
                 throw new InvalidOperationException(
-                    $"Supervisor não encontrado ou não vinculado à unidade concedente selecionada. ID recebido: {model.SupervisorEstagioId}");
+                    "Supervisor não encontrado ou não vinculado à unidade concedente selecionada.");
             }
 
             if (unidade == null)
             {
                 throw new InvalidOperationException(
-                    $"Unidade concedente não encontrada ou inativa. ID recebido: {model.UnidadeConcedenteId}");
+                    "Unidade concedente não encontrada ou inativa.");
             }
 
             if (instituicao == null)
             {
                 throw new InvalidOperationException(
-                    $"Instituição de ensino não encontrada ou inativa. ID recebido: {model.InstituicaoEnsinoId}");
+                    "Instituição de ensino não encontrada ou inativa.");
             }
 
             var alunos = await _context.Alunos
@@ -532,8 +540,7 @@ namespace SWES.Services
             }
 
             var coordenador = model.CoordenadorId.HasValue
-                ? await _context.Coordenadores.FirstOrDefaultAsync(
-                    c =>
+                ? await _context.Coordenadores.FirstOrDefaultAsync(c =>
                     c.Id == model.CoordenadorId.Value &&
                     c.Ativo &&
                     c.InstituicaoEnsinoId == model.InstituicaoEnsinoId)
@@ -544,6 +551,8 @@ namespace SWES.Services
                 throw new InvalidOperationException(
                     "O coordenador selecionado não foi encontrado.");
             }
+
+            // Atualiza os relacionamentos do estágio.
 
             _context.Entry(estagio)
                 .Reference(e => e.ProfessorOrientador)
@@ -565,12 +574,17 @@ namespace SWES.Services
                 .Reference(e => e.Coordenador)
                 .CurrentValue = coordenador;
 
+            // Atualiza os alunos vinculados.
+
             estagio.Alunos.Clear();
 
             foreach (var aluno in alunos)
             {
                 estagio.AdicionarAluno(aluno);
             }
+
+            // Atualiza as informações principais.
+            // Se não houver novo arquivo, mantém o arquivo atual.
 
             estagio.AtualizarInformacoes(
                 model.Tipo.Trim(),
@@ -589,6 +603,49 @@ namespace SWES.Services
                 nomeArquivoEdital ?? model.NomeArquivoEditalAtual
             );
 
+            // =================================================
+            // REMOVER DOCUMENTOS SELECIONADOS
+            // =================================================
+
+            var idsParaRemover = model.DocumentosRemoverIds
+                .Where(id => id > 0)
+                .Distinct()
+                .ToList();
+
+            var caminhosArquivosRemovidos = new List<string>();
+
+            if (idsParaRemover.Any())
+            {
+                // Busca somente documentos pertencentes ao estágio atual.
+                var documentosParaRemover = estagio.Documentos
+                    .Where(d => idsParaRemover.Contains(d.Id))
+                    .ToList();
+
+                // Impede que IDs de documentos de outro estágio
+                // sejam utilizados nesta operação.
+                if (documentosParaRemover.Count != idsParaRemover.Count)
+                {
+                    throw new InvalidOperationException(
+                        "Um ou mais documentos selecionados para exclusão não pertencem a este estágio ou não foram encontrados.");
+                }
+
+                foreach (var documento in documentosParaRemover)
+                {
+                    if (!string.IsNullOrWhiteSpace(documento.CaminhoArquivo))
+                    {
+                        caminhosArquivosRemovidos.Add(
+                            documento.CaminhoArquivo);
+                    }
+
+                    estagio.Documentos.Remove(documento);
+
+                    _context.Remove(documento);
+                }
+            }
+
+            // =================================================
+            // ADICIONAR NOVOS DOCUMENTOS
+            // =================================================
 
             foreach (var documento in documentos)
             {
@@ -600,8 +657,13 @@ namespace SWES.Services
                     documento.CaminhoArquivo));
             }
 
+            // Persiste todas as alterações.
+            // Os caminhos dos arquivos removidos só serão
+            // devolvidos após a conclusão bem-sucedida.
 
             await _context.SaveChangesAsync();
+
+            return caminhosArquivosRemovidos;
         }
 
         // =====================================================
@@ -634,6 +696,10 @@ namespace SWES.Services
 
             return true;
         }
+
+        // =====================================================
+        // INATIVAR ESTÁGIO
+        // =====================================================
 
         public async Task<bool> InativarAsync(int id)
         {
