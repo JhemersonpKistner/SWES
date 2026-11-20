@@ -28,7 +28,9 @@ namespace SWES.Services
                 .Select(c => new OpcaoViewModel
                 {
                     Id = c.Id,
-                    Nome = c.Nome + " - " + c.Instituicao.RazaoSocial
+                    Nome = c.Nome + " - " + c.Instituicao.RazaoSocial,
+                    InstituicaoId = c.InstituicaoId,
+                    Periodo = c.Periodo
                 })
                 .ToList();
 
@@ -60,10 +62,46 @@ namespace SWES.Services
                 return null;
 
             var cursos = await _context.Cursos
-                .Where(c => distintos.Contains(c.Id))
+                .Where(c => distintos.Contains(c.Id) && c.Ativo)
                 .ToListAsync();
 
             return cursos.Count == distintos.Count ? cursos : null;
+        }
+
+        private static string NormalizarDocumento(string? valor)
+        {
+            return new string((valor ?? string.Empty)
+                .Where(char.IsLetterOrDigit)
+                .Select(char.ToUpperInvariant)
+                .ToArray());
+        }
+
+        public async Task<string?> ValidarDocumentosDuplicadosAsync(
+            string? cpf, string? rg, Guid? ignorarId = null)
+        {
+            var cpfNormalizado = NormalizarDocumento(cpf);
+            var rgNormalizado = NormalizarDocumento(rg);
+
+            var registros = await _context.Alunos.AsNoTracking()
+                .Select(u => new { u.Id, u.CPF, u.RG }).ToListAsync();
+            registros.AddRange(await _context.Coordenadores.AsNoTracking()
+                .Select(u => new { u.Id, u.CPF, u.RG }).ToListAsync());
+            registros.AddRange(await _context.ProfessoresOrientadores.AsNoTracking()
+                .Select(u => new { u.Id, u.CPF, u.RG }).ToListAsync());
+            registros.AddRange(await _context.SupervisoresEstagio.AsNoTracking()
+                .Select(u => new { u.Id, u.CPF, u.RG }).ToListAsync());
+
+            var existentes = registros.Where(u => !ignorarId.HasValue || u.Id != ignorarId.Value);
+
+            if (!string.IsNullOrWhiteSpace(cpfNormalizado) &&
+                existentes.Any(u => NormalizarDocumento(u.CPF) == cpfNormalizado))
+                return "Já existe um usuário cadastrado com este CPF.";
+
+            if (!string.IsNullOrWhiteSpace(rgNormalizado) &&
+                existentes.Any(u => NormalizarDocumento(u.RG) == rgNormalizado))
+                return "Já existe um usuário cadastrado com este RG.";
+
+            return null;
         }
 
         private static IdentityResult Falha(string codigo, string mensagem)
@@ -424,11 +462,15 @@ namespace SWES.Services
         {
             if (!model.Id.HasValue) return false;
 
-            if (model.Tipo != "Supervisor" &&
+            if (await ValidarDocumentosDuplicadosAsync(model.CPF, model.RG, model.Id) != null)
+                return false;
+
+            if (model.Tipo != "Supervisor" && model.Tipo != "Professor" &&
                 (model.InstituicaoEnsinoId == null ||
                     model.InstituicaoEnsinoId == Guid.Empty ||
                     !await _context.UnidadesConcedentes.AnyAsync(u =>
                         u.Id == model.InstituicaoEnsinoId.Value &&
+                        u.Ativo &&
                         u.InstituicaoEnsino)))
             {
                 return false;
@@ -445,6 +487,7 @@ namespace SWES.Services
                 if (model.CursoId == null ||
                     !await _context.Cursos.AnyAsync(c =>
                         c.Id == model.CursoId.Value &&
+                        c.Ativo &&
                         c.InstituicaoId == model.InstituicaoEnsinoId!.Value))
                 {
                     return false;
@@ -459,6 +502,11 @@ namespace SWES.Services
                 aluno.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
 
                 AplicarDadosPessoais(aluno, model);
+
+                model.Turno = await _context.Cursos
+                    .Where(c => c.Id == model.CursoId.Value && c.Ativo)
+                    .Select(c => c.Periodo)
+                    .FirstAsync();
 
                 aluno.AtualizarDadosAcademicos(
                     (int)model.Matricula!,
@@ -484,15 +532,13 @@ namespace SWES.Services
                     .Distinct()
                     .ToList();
 
-                if (idsInstituicoes.Count == 0 ||
-                    !idsInstituicoes.Contains(model.InstituicaoEnsinoId!.Value))
-                {
+                if (idsInstituicoes.Count == 0)
                     return false;
-                }
 
                 var instituicoesProfessor = await _context.UnidadesConcedentes
                     .Where(u =>
                         idsInstituicoes.Contains(u.Id) &&
+                        u.Ativo &&
                         u.InstituicaoEnsino)
                     .ToListAsync();
 
@@ -513,7 +559,8 @@ namespace SWES.Services
                     model.Telefone,
                     model.CPF);
 
-                professor.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
+                professor.DefinirInstituicaoEnsino(instituicoesProfessor
+                    .OrderBy(i => i.RazaoSocial).First().Id);
 
                 AplicarDadosPessoais(professor, model);
 
@@ -694,17 +741,22 @@ namespace SWES.Services
 
         public async Task<IdentityResult> CadastrarUsuario(UsuarioCadastroViewModel model)
         {
+            var erroDocumento = await ValidarDocumentosDuplicadosAsync(model.CPF, model.RG);
+            if (erroDocumento != null)
+                return Falha("DocumentoDuplicado", erroDocumento);
+
             // Valida os vínculos ANTES de criar o usuário no Identity,
             // para não deixar usuário "órfão" se algo estiver errado.
             List<Curso>? cursosProfessor = null;
 
             List<UnidadeConcedente>? instituicoesProfessor = null;
 
-            if (model.Tipo != "Supervisor" &&
+            if (model.Tipo != "Supervisor" && model.Tipo != "Professor" &&
                 (model.InstituicaoEnsinoId == null ||
                     model.InstituicaoEnsinoId == Guid.Empty ||
                     !await _context.UnidadesConcedentes.AnyAsync(u =>
                         u.Id == model.InstituicaoEnsinoId.Value &&
+                        u.Ativo &&
                         u.InstituicaoEnsino)))
             {
                 return Falha(
@@ -717,6 +769,7 @@ namespace SWES.Services
                 if (model.CursoId == null ||
                     !await _context.Cursos.AnyAsync(c =>
                         c.Id == model.CursoId.Value &&
+                        c.Ativo &&
                         c.InstituicaoId == model.InstituicaoEnsinoId!.Value))
                 {
                     return Falha(
@@ -738,17 +791,17 @@ namespace SWES.Services
                     .Distinct()
                     .ToList();
 
-                if (idsInstituicoes.Count == 0 ||
-                    !idsInstituicoes.Contains(model.InstituicaoEnsinoId!.Value))
+                if (idsInstituicoes.Count == 0)
                 {
                     return Falha(
                         "InstituicaoInvalida",
-                        "Selecione as instituições do professor, incluindo a instituição principal.");
+                        "Selecione pelo menos uma instituição de ensino para o professor.");
                 }
 
                 instituicoesProfessor = await _context.UnidadesConcedentes
                     .Where(u =>
                         idsInstituicoes.Contains(u.Id) &&
+                        u.Ativo &&
                         u.InstituicaoEnsino)
                     .ToListAsync();
 
@@ -803,6 +856,11 @@ namespace SWES.Services
 
             if (model.Tipo == "Aluno")
             {
+                model.Turno = await _context.Cursos
+                    .Where(c => c.Id == model.CursoId!.Value && c.Ativo)
+                    .Select(c => c.Periodo)
+                    .FirstAsync();
+
                 var aluno = new Aluno(
                     identityUser.Id,
                     model.Nome,
@@ -832,7 +890,8 @@ namespace SWES.Services
                     (int)model.Registro!
                 );
 
-                professor.DefinirInstituicaoEnsino(model.InstituicaoEnsinoId!.Value);
+                professor.DefinirInstituicaoEnsino(instituicoesProfessor!
+                    .OrderBy(i => i.RazaoSocial).First().Id);
 
                 foreach (var instituicao in instituicoesProfessor!)
                 {

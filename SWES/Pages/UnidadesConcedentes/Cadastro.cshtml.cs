@@ -46,7 +46,7 @@ namespace SWES.Pages.UnidadesConcedentes
                 RazaoSocial = existente.RazaoSocial,
                 Cnpj = existente.Cnpj,
                 Endereco = existente.Endereco,
-                Telefone = existente.Telefone,
+                Telefone = FormatarTelefone(existente.Telefone),
                 Email = existente.Email,
                 InstituicaoEnsino = existente.InstituicaoEnsino
             };
@@ -60,6 +60,9 @@ namespace SWES.Pages.UnidadesConcedentes
         {
             if (!ModelState.IsValid)
                 return Page();
+
+            UnidadeConcedente.Telefone = new string(
+                UnidadeConcedente.Telefone.Where(char.IsDigit).ToArray());
 
             var cnpj = new string(
                 UnidadeConcedente.Cnpj
@@ -130,6 +133,15 @@ namespace SWES.Pages.UnidadesConcedentes
             return SomenteInstituicao
                 ? RedirectToPage("/InstituicoesEnsino/Index")
                 : RedirectToPage("/UnidadesConcedentes/Index");
+        }
+
+        private static string FormatarTelefone(string? valor)
+        {
+            var numeros = new string((valor ?? string.Empty).Where(char.IsDigit).ToArray());
+            if (numeros.Length <= 2) return numeros;
+            if (numeros.Length <= 6) return $"({numeros[..2]}) {numeros[2..]}";
+            if (numeros.Length <= 10) return $"({numeros[..2]}) {numeros[2..6]}-{numeros[6..]}";
+            return $"({numeros[..2]}) {numeros[2..7]}-{numeros[7..]}";
         }
     }
 }

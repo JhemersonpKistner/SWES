@@ -4452,3 +4452,12 @@ textarea.estagios-input { min-height: 100px; resize: vertical; }
         min-width: 650px;
     }
 }
+
+
+/* Destaque dos vínculos selecionados no formulário de estágio. */
+.estagios-selecao-valor.selecionado {
+    border-color: #0050a0;
+    background: #0d6efd;
+    color: #fff;
+    font-weight: 650;
+}

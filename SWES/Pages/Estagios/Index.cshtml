@@ -177,7 +177,7 @@
                                             </a>
 
                                             <form method="post" asp-page-handler="Inativar" asp-route-id="@estagio.Id"
-                                                  onsubmit="return confirm('Deseja realmente inativar este estágio?');">
+                                                  onsubmit="return abrirConfirmacaoEstagio(this);">
 
                                                 <button type="submit" class="btn btn-sm btn-outline-warning estagios-acao inativar"
                                                         title="Inativar estágio">
@@ -230,3 +230,48 @@
 
         </section>
     </div>
+
+<!-- Modal padronizado de confirmação de inativação -->
+<div class="swes-modal-overlay" id="modalConfirmacaoEstagio" aria-hidden="true">
+    <section class="swes-modal" role="dialog" aria-modal="true" aria-labelledby="tituloConfirmacaoEstagio">
+        <div class="swes-modal-icone"><i class="bi bi-exclamation-triangle"></i></div>
+        <h2 id="tituloConfirmacaoEstagio">Inativar estágio</h2>
+        <p>Deseja realmente inativar este estágio?</p>
+        <div class="swes-modal-acoes">
+            <button type="button" class="swes-modal-cancelar" onclick="fecharConfirmacaoEstagio()">Cancelar</button>
+            <button type="button" class="swes-modal-confirmar" onclick="confirmarInativacaoEstagio()">Inativar</button>
+        </div>
+    </section>
+</div>
+
+<script>
+    let formularioEstagioPendente = null;
+
+    function abrirConfirmacaoEstagio(formulario) {
+        formularioEstagioPendente = formulario;
+        const modal = document.getElementById('modalConfirmacaoEstagio');
+        modal.classList.add('aberto');
+        modal.setAttribute('aria-hidden', 'false');
+        modal.querySelector('.swes-modal-confirmar')?.focus();
+        return false;
+    }
+
+    function fecharConfirmacaoEstagio() {
+        const modal = document.getElementById('modalConfirmacaoEstagio');
+        modal.classList.remove('aberto');
+        modal.setAttribute('aria-hidden', 'true');
+        formularioEstagioPendente = null;
+    }
+
+    function confirmarInativacaoEstagio() {
+        if (formularioEstagioPendente) formularioEstagioPendente.submit();
+    }
+
+    document.getElementById('modalConfirmacaoEstagio')?.addEventListener('click', function (event) {
+        if (event.target === this) fecharConfirmacaoEstagio();
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') fecharConfirmacaoEstagio();
+    });
+</script>

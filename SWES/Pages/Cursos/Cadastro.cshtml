@@ -49,7 +49,10 @@
                     <label asp-for="Dados.QuantidadeSemestres">Quantidade de semestres <span class="campo-obrigatorio">*</span></label>
                     <div class="instituicoes-form-input">
                         <i class="bi bi-calendar3"></i>
-                        <input asp-for="Dados.QuantidadeSemestres" type="number" min="1" max="20" placeholder="Ex.: 8" required />
+                        <input asp-for="Dados.QuantidadeSemestres" type="number" min="1" max="20"
+                               placeholder="Ex.: 8" required
+                               oninvalid="this.setCustomValidity('Informe uma quantidade entre 1 e 20 semestres.')"
+                               oninput="this.setCustomValidity('')" />
                     </div>
                     <span asp-validation-for="Dados.QuantidadeSemestres" class="instituicoes-validacao-campo"></span>
                     <small class="instituicoes-ajuda">Informe um valor entre 1 e 20 semestres.</small>

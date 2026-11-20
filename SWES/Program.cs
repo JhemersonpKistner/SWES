@@ -44,6 +44,8 @@ namespace SWES
 
             app.UseRouting();
 
+            // Mantém a ordem correta do pipeline para autenticação/autorização do Identity.
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();

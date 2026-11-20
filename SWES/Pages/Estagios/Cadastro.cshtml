@@ -28,29 +28,10 @@
     <form method="post" enctype="multipart/form-data" class="estagios-formulario">
 
         <input type="hidden" asp-for="Estagio.Id" />
+        <input type="hidden" asp-for="Estagio.Protocolo" />
         <input type="hidden" asp-for="ProtocoloProtegido" />
 
         <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-
-        <!-- PROTOCOLO DO ESTÁGIO -->
-        <section class="secao-estagio">
-            <h5 class="secao-estagio-titulo">
-                <i class="bi bi-upc-scan"></i>
-                Protocolo do estágio
-            </h5>
-
-            <div class="estagios-campo">
-                <label asp-for="Estagio.Protocolo" class="form-label estagios-label">
-                    Número do protocolo
-                </label>
-
-                <input asp-for="Estagio.Protocolo" class="form-control estagios-input" readonly />
-
-                <div class="campo-ajuda mt-1">
-                    Protocolo gerado automaticamente para identificar este estágio e seus documentos.
-                </div>
-            </div>
-        </section>
 
         <!-- INFORMAÇÕES GERAIS -->
 
@@ -231,7 +212,7 @@
                             Selecionar instituição
                         </button>
 
-                        <span id="instituicaoSelecionada" class="estagios-selecao-valor">
+                        <span id="instituicaoSelecionada" class="estagios-selecao-valor @(instituicaoSelecionada != null ? "selecionado" : "")">
                             @(instituicaoSelecionada?.Nome ?? "Nenhuma instituição selecionada")
                         </span>
                     </div>
@@ -252,7 +233,7 @@
                             Selecionar coordenador
                         </button>
 
-                        <span id="coordenadorSelecionado" class="estagios-selecao-valor">
+                        <span id="coordenadorSelecionado" class="estagios-selecao-valor @(coordenadorSelecionado != null ? "selecionado" : "")">
                             @(coordenadorSelecionado?.Nome ?? "Nenhum coordenador selecionado")
                         </span>
                     </div>
@@ -271,7 +252,7 @@
                             Selecionar professor
                         </button>
 
-                        <span id="professorSelecionado" class="estagios-selecao-valor">
+                        <span id="professorSelecionado" class="estagios-selecao-valor @(professorSelecionado != null ? "selecionado" : "")">
                             @(professorSelecionado?.Nome ?? "Nenhum professor selecionado")
                         </span>
                     </div>
@@ -292,7 +273,7 @@
                             Selecionar unidade
                         </button>
 
-                        <span id="unidadeSelecionada" class="estagios-selecao-valor">
+                        <span id="unidadeSelecionada" class="estagios-selecao-valor @(unidadeSelecionada != null ? "selecionado" : "")">
                             @(unidadeSelecionada?.Nome ?? "Nenhuma unidade selecionada")
                         </span>
                     </div>
@@ -313,7 +294,7 @@
                             Selecionar supervisor
                         </button>
 
-                        <span id="supervisorSelecionado" class="estagios-selecao-valor">
+                        <span id="supervisorSelecionado" class="estagios-selecao-valor @(supervisorSelecionado != null ? "selecionado" : "")">
                             @(supervisorSelecionado?.Nome ?? "Nenhum supervisor selecionado")
                         </span>
                     </div>
@@ -966,6 +947,7 @@
 
                 document.getElementById('instituicaoEnsinoId').value = instituicaoId;
                 document.getElementById('instituicaoSelecionada').textContent = instituicaoNome;
+                atualizarDestaqueSelecao('instituicaoSelecionada', true);
 
                 // Só limpa os vínculos se a instituição realmente mudou.
                 if (instituicaoAnterior !== instituicaoId) {
@@ -991,22 +973,29 @@
         // FUNÇÕES PARA LIMPAR SELEÇÕES
         // ==========================================
 
+        function atualizarDestaqueSelecao(id, possuiSelecao) {
+            document.getElementById(id)?.classList.toggle('selecionado', possuiSelecao);
+        }
+
         function limparProfessor() {
             document.getElementById('professorOrientadorId').value = '';
             document.getElementById('professorSelecionado').textContent =
                 'Nenhum professor selecionado';
+            atualizarDestaqueSelecao('professorSelecionado', false);
         }
 
         function limparCoordenador() {
             document.getElementById('coordenadorId').value = '';
             document.getElementById('coordenadorSelecionado').textContent =
                 'Nenhum coordenador selecionado';
+            atualizarDestaqueSelecao('coordenadorSelecionado', false);
         }
 
         function limparSupervisor() {
             document.getElementById('supervisorEstagioId').value = '';
             document.getElementById('supervisorSelecionado').textContent =
                 'Nenhum supervisor selecionado';
+            atualizarDestaqueSelecao('supervisorSelecionado', false);
         }
 
         function limparAlunos() {
@@ -1066,6 +1055,7 @@
                     function (id, nome) {
                         document.getElementById('professorOrientadorId').value = id;
                         document.getElementById('professorSelecionado').textContent = nome;
+                        atualizarDestaqueSelecao('professorSelecionado', true);
 
                         bootstrap.Modal.getOrCreateInstance(
                             document.getElementById('modalProfessor')
@@ -1150,6 +1140,7 @@
 
                 document.getElementById('unidadeConcedenteId').value = unidadeId;
                 document.getElementById('unidadeSelecionada').textContent = unidadeNome;
+                        atualizarDestaqueSelecao('unidadeSelecionada', true);
 
                 if (unidadeAnterior !== unidadeId) {
                     limparSupervisor();
@@ -1196,6 +1187,7 @@
                     function (id, nome) {
                         document.getElementById('supervisorEstagioId').value = id;
                         document.getElementById('supervisorSelecionado').textContent = nome;
+                        atualizarDestaqueSelecao('supervisorSelecionado', true);
 
                         bootstrap.Modal.getOrCreateInstance(
                             document.getElementById('modalSupervisor')
@@ -1272,6 +1264,7 @@
                     function (id, nome) {
                         document.getElementById('coordenadorId').value = id;
                         document.getElementById('coordenadorSelecionado').textContent = nome;
+                        atualizarDestaqueSelecao('coordenadorSelecionado', true);
 
                         bootstrap.Modal.getOrCreateInstance(
                             document.getElementById('modalCoordenador')

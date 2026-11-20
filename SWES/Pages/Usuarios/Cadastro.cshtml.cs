@@ -51,8 +51,32 @@ namespace SWES.Pages.Usuarios
             // perca as máscaras quando o servidor precisar devolver o formulário.
             CorrigirErroDeConversaoDaMatricula();
 
-            // Validação do nome
+            // Para professores, a instituição principal é definida internamente
+            // a partir das instituições marcadas na seleção múltipla.
+            if (Usuario.Tipo == "Professor")
+            {
+                var instituicoesSelecionadas = Usuario.InstituicoesProfessorIds?
+                    .Distinct()
+                    .ToList() ?? new List<Guid>();
+
+                Usuario.InstituicaoEnsinoId = instituicoesSelecionadas.Count > 0
+                    ? instituicoesSelecionadas[0]
+                    : null;
+            }
+
+            // Validação do nome e unicidade dos documentos.
             ValidarNome();
+
+            var erroDocumento = await _usuarioService.ValidarDocumentosDuplicadosAsync(
+                Usuario.CPF, Usuario.RG, Usuario.Id);
+
+            if (erroDocumento != null)
+            {
+                if (erroDocumento.Contains("CPF", StringComparison.OrdinalIgnoreCase))
+                    ModelState.AddModelError("Usuario.CPF", erroDocumento);
+                else
+                    ModelState.AddModelError("Usuario.RG", erroDocumento);
+            }
 
             // Cadastro de novo usuário
             if (!Usuario.Id.HasValue)
@@ -93,6 +117,10 @@ namespace SWES.Pages.Usuarios
             // Remove as máscaras somente depois que todas as validações foram concluídas.
             Usuario.Telefone = ApenasNumeros(Usuario.Telefone);
             Usuario.CPF = ApenasNumeros(Usuario.CPF);
+            Usuario.RG = new string(Usuario.RG
+                .Where(char.IsLetterOrDigit)
+                .Select(char.ToUpperInvariant)
+                .ToArray());
 
             // Dados pessoais
             Usuario.CEP = ApenasNumeros(Usuario.CEP);
@@ -278,6 +306,7 @@ namespace SWES.Pages.Usuarios
         {
 
             if (Usuario.Tipo != "Supervisor" &&
+                Usuario.Tipo != "Professor" &&
                 string.IsNullOrWhiteSpace(Usuario.Tipo) == false &&
                 !Usuario.InstituicaoEnsinoId.HasValue)
             {
@@ -301,13 +330,6 @@ namespace SWES.Pages.Usuarios
                     ModelState.AddModelError(
                         "Usuario.CursoId",
                         "O curso é obrigatório.");
-                }
-
-                if (string.IsNullOrWhiteSpace(Usuario.Turno))
-                {
-                    ModelState.AddModelError(
-                        "Usuario.Turno",
-                        "O turno é obrigatório.");
                 }
 
                 if (string.IsNullOrWhiteSpace(Usuario.Semestre))
@@ -428,6 +450,9 @@ namespace SWES.Pages.Usuarios
 
                 "DuplicateEmail" =>
                     "Já existe um usuário cadastrado com este e-mail.",
+
+                "DocumentoDuplicado" =>
+                    erro.Description,
 
                 "VinculoInvalido" or "TipoInvalido" or "InstituicaoInvalida" =>
                     erro.Description,

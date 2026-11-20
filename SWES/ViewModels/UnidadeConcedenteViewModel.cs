@@ -22,7 +22,8 @@ namespace SWES.ViewModels
         public string Endereco { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "O telefone é obrigatório.")]
-        [MaxLength(12, ErrorMessage = "O telefone deve ter no máximo 12 caracteres.")]
+        [RegularExpression(@"^(\d{10,11}|\(\d{2}\) \d{4,5}-\d{4})$", ErrorMessage = "Informe um telefone válido com DDD.")]
+        [MaxLength(15, ErrorMessage = "O telefone deve ter no máximo 15 caracteres.")]
         public string Telefone { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "O e-mail é obrigatório.")]

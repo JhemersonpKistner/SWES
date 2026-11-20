@@ -203,13 +203,15 @@
 
                 </div>
 
-                <div class="campo" id="campoInstituicaoEnsino">
+                <div class="campo" id="campoInstituicaoEnsino"
+                     style="display:@(Model.Usuario.Tipo == "Aluno" || Model.Usuario.Tipo == "Coordenador" ? "block" : "none")">
 
                     <label asp-for="Usuario.InstituicaoEnsinoId">
                         Instituição de ensino
                     </label>
 
-                    <select asp-for="Usuario.InstituicaoEnsinoId" id="instituicaoEnsino">
+                    <select asp-for="Usuario.InstituicaoEnsinoId" id="instituicaoEnsino"
+                            disabled="@(Model.Usuario.Tipo != "Aluno" && Model.Usuario.Tipo != "Coordenador")">
 
                         <option value="">Selecione...</option>
 
@@ -439,9 +441,16 @@
                             Curso
                         </label>
 
-                        <select asp-for="Usuario.CursoId"
-                                asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(Model.Opcoes.Cursos, "Id", "Nome"))">
-                            <option value="">Selecione...</option>
+                        <select asp-for="Usuario.CursoId" id="cursoAluno">
+                            <option value="">Selecione a instituição primeiro...</option>
+                            @foreach (var curso in Model.Opcoes.Cursos)
+                            {
+                                <option value="@curso.Id"
+                                        data-instituicao-id="@curso.InstituicaoId"
+                                        data-periodo="@curso.Periodo">
+                                    @curso.Nome
+                                </option>
+                            }
                         </select>
 
                         <span asp-validation-for="Usuario.CursoId" class="text-danger">
@@ -456,29 +465,8 @@
                             Turno
                         </label>
 
-                        <select asp-for="Usuario.Turno">
-
-                            <option value="">
-                                Selecione...
-                            </option>
-
-                            <option value="Matutino">
-                                Matutino
-                            </option>
-
-                            <option value="Vespertino">
-                                Vespertino
-                            </option>
-
-                            <option value="Noturno">
-                                Noturno
-                            </option>
-
-                            <option value="Integral">
-                                Integral
-                            </option>
-
-                        </select>
+                        <input asp-for="Usuario.Turno" id="turnoAluno" readonly
+                               placeholder="Preenchido automaticamente pelo curso" />
 
                         <span asp-validation-for="Usuario.Turno" class="text-danger">
                         </span>
@@ -611,6 +599,7 @@
                                 <label class="opcao-curso-professor">
 
                                     <input type="checkbox" name="Usuario.InstituicoesProfessorIds" value="@unidade.Id"
+                                           data-instituicao-id="@unidade.Id"
                                            checked="@(Model.Usuario.InstituicoesProfessorIds.Contains(unidade.Id))" />
 
                                     <span>@unidade.Nome</span>
@@ -636,8 +625,9 @@
 
                         @foreach (var curso in Model.Opcoes.Cursos)
                         {
-                            <label class="opcao-curso-professor">
+                            <label class="opcao-curso-professor" data-instituicao-id="@curso.InstituicaoId">
                                 <input type="checkbox" name="Usuario.CursosProfessorIds" value="@curso.Id"
+                                       data-instituicao-id="@curso.InstituicaoId"
                                        checked="@(Model.Usuario.CursosProfessorIds.Contains(curso.Id))" />
 
                                 <span>@curso.Nome</span>
@@ -781,13 +771,12 @@
             const campoInstituicao = document.getElementById("campoInstituicaoEnsino");
             const selectInstituicao = document.getElementById("instituicaoEnsino");
 
-            campoInstituicao.style.display = tipo === "Supervisor" ? "none" : "block";
+            const exigeInstituicaoUnica = tipo === "Aluno" || tipo === "Coordenador";
+            campoInstituicao.style.display = exigeInstituicaoUnica ? "block" : "none";
+            selectInstituicao.disabled = !exigeInstituicaoUnica;
 
-            if (tipo === "Supervisor") {
+            if (!exigeInstituicaoUnica) {
                 selectInstituicao.value = "";
-                selectInstituicao.disabled = true;
-            } else {
-                selectInstituicao.disabled = false;
             }
         }
 
@@ -817,38 +806,71 @@
             return numeros;
         }
 
-        function sincronizarInstituicaoProfessor() {
-            const tipo = document.getElementById("tipoUsuario").value;
-            const instituicao = document.getElementById("instituicaoEnsino");
+        // Cursos de alunos: somente os cursos da instituição selecionada.
+        const instituicaoSelect = document.getElementById("instituicaoEnsino");
+        const cursoAluno = document.getElementById("cursoAluno");
+        const turnoAluno = document.getElementById("turnoAluno");
 
-            if (tipo !== "Professor" || !instituicao.value) {
-                return;
-            }
+        function filtrarCursosAluno() {
+            if (!cursoAluno) return;
+            const instituicaoId = instituicaoSelect.value;
+            const valorAnterior = cursoAluno.value;
+            let cursoAindaDisponivel = false;
 
-            const checkbox = document.querySelector(
-                `input[name="Usuario.InstituicoesProfessorIds"][value="${instituicao.value}"]`
-            );
+            Array.from(cursoAluno.options).forEach((option, index) => {
+                if (index === 0) return;
+                const corresponde = instituicaoId &&
+                    option.dataset.instituicaoId === instituicaoId;
+                option.hidden = !corresponde;
+                option.disabled = !corresponde;
+                if (corresponde && option.value === valorAnterior)
+                    cursoAindaDisponivel = true;
+            });
 
-            if (checkbox) {
-                checkbox.checked = true;
+            if (!cursoAindaDisponivel) {
+                cursoAluno.value = "";
+                if (turnoAluno) turnoAluno.value = "";
             }
         }
 
-        document.getElementById("instituicaoEnsino")
-            .addEventListener("change", sincronizarInstituicaoProfessor);
+        function atualizarTurnoAluno() {
+            if (!cursoAluno || !turnoAluno) return;
+            const option = cursoAluno.selectedOptions[0];
+            turnoAluno.value = option?.dataset.periodo || "";
+        }
 
-        document.getElementById("tipoUsuario")
-            .addEventListener("change", sincronizarInstituicaoProfessor);
-
-        sincronizarInstituicaoProfessor();
-
-        document.querySelectorAll(
+        // Cursos de professores: disponíveis somente quando a instituição
+        // correspondente estiver marcada na seleção múltipla.
+        const instituicoesProfessor = Array.from(document.querySelectorAll(
             'input[name="Usuario.InstituicoesProfessorIds"]'
-        ).forEach(checkbox => {
-            checkbox.addEventListener("change", function () {
-                sincronizarInstituicaoProfessor();
+        ));
+        const cursosProfessor = Array.from(document.querySelectorAll(
+            'input[name="Usuario.CursosProfessorIds"]'
+        ));
+
+        function filtrarCursosProfessor() {
+            const selecionadas = new Set(
+                instituicoesProfessor.filter(c => c.checked).map(c => c.value)
+            );
+
+            cursosProfessor.forEach(checkbox => {
+                const label = checkbox.closest("label");
+                const permitido = selecionadas.has(checkbox.dataset.instituicaoId);
+                if (label) label.hidden = !permitido;
+                checkbox.disabled = !permitido;
+                if (!permitido) checkbox.checked = false;
             });
-        });
+        }
+
+        instituicaoSelect?.addEventListener("change", filtrarCursosAluno);
+        cursoAluno?.addEventListener("change", atualizarTurnoAluno);
+        instituicoesProfessor.forEach(checkbox =>
+            checkbox.addEventListener("change", filtrarCursosProfessor)
+        );
+
+        filtrarCursosAluno();
+        atualizarTurnoAluno();
+        filtrarCursosProfessor();
 
         const tipoUsuario = document.getElementById("tipoUsuario");
         tipoUsuario.addEventListener("change", atualizarCamposEspecificos);
