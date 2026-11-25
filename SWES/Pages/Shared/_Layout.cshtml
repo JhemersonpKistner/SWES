@@ -106,7 +106,10 @@ else
             <img src="~/images/logo.unidesc.webp" alt="Logo da instituição" />
             <span>SWES</span>
         </a>
-        <a asp-page="/Login" class="btn btn-primary"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+        <a asp-page="/Login" class="public-action-btn public-login-btn">
+    <i class="bi bi-box-arrow-in-right"></i>
+    Login
+</a>
     </header>
     <main class="public-content">
         @RenderBody()
