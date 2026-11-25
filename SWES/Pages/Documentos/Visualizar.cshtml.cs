@@ -4,18 +4,22 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SWES.Data;
 using SWES.Models;
+using SWES.Services;
+using SWES.Authorization;
 using System.Text.Json;
 
 namespace SWES.Pages.Documentos
 {
-    [AllowAnonymous]
+    [Authorize(Roles = PerfisSistema.Todos)]
     public class VisualizarModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly EstagioService _estagioService;
 
-        public VisualizarModel(ApplicationDbContext context)
+        public VisualizarModel(ApplicationDbContext context, EstagioService estagioService)
         {
             _context = context;
+            _estagioService = estagioService;
         }
 
         public DocumentoPreenchido Documento { get; set; } = null!;
@@ -31,6 +35,21 @@ namespace SWES.Pages.Documentos
 
             if (documento == null)
                 return NotFound();
+
+            if (!User.IsInRole(PerfisSistema.Administrador) &&
+                !User.IsInRole(PerfisSistema.Coordenador))
+            {
+                if (!documento.EstagioId.HasValue)
+                    return Forbid();
+
+                var idsPermitidos = await _estagioService
+                    .ConsultarEstagiosPermitidos()
+                    .Select(e => e.Id)
+                    .ToListAsync();
+
+                if (!idsPermitidos.Contains(documento.EstagioId.Value))
+                    return Forbid();
+            }
 
             Documento = documento;
 

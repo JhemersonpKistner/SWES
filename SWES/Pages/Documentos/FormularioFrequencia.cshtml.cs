@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
+using SWES.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using SWES.Data;
 using SWES.Models;
@@ -11,7 +12,7 @@ using SWES.Services;
 
 namespace SWES.Pages.Documentos
 {
-    [AllowAnonymous]
+    [Authorize(Roles = PerfisSistema.Todos)]
     public class FormularioFrequenciaModel : PageModel
     {
 
@@ -114,7 +115,7 @@ namespace SWES.Pages.Documentos
                 Tipo = "Formulário de Frequência",
                 DadosJson = JsonSerializer.Serialize(dados),
                 DataCriacao = DateTime.UtcNow,
-                UsuarioId = null,
+                UsuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier),
                 EstagioId = EstagioId
             };
 

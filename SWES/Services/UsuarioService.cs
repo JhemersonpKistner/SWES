@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SWES.Data;
+using SWES.Authorization;
 using SWES.Models;
 using SWES.ViewModels;
 
@@ -476,8 +477,24 @@ namespace SWES.Services
                 return false;
             }
 
-            if (model.Tipo == "Aluno")
+            // Localiza a conta Identity vinculada ao perfil que será atualizado.
+            string? identityUserId = model.Tipo switch
+            {
+                "Aluno" => await _context.Alunos.Where(x => x.Id == model.Id.Value)
+                    .Select(x => x.UserId).FirstOrDefaultAsync(),
+                "Professor" => await _context.ProfessoresOrientadores.Where(x => x.Id == model.Id.Value)
+                    .Select(x => x.UserId).FirstOrDefaultAsync(),
+                "Supervisor" => await _context.SupervisoresEstagio.Where(x => x.Id == model.Id.Value)
+                    .Select(x => x.UserId).FirstOrDefaultAsync(),
+                "Coordenador" => await _context.Coordenadores.Where(x => x.Id == model.Id.Value)
+                    .Select(x => x.UserId).FirstOrDefaultAsync(),
+                _ => null
+            };
 
+            if (string.IsNullOrWhiteSpace(identityUserId))
+                return false;
+
+            if (model.Tipo == "Aluno")
             {
                 var aluno = _context.Alunos
                     .FirstOrDefault(a => a.Id == model.Id.Value);
@@ -625,6 +642,47 @@ namespace SWES.Services
             else
             {
                 return false;
+            }
+
+            // Mantém o e-mail de login sincronizado com o e-mail do perfil.
+            var identityUser = await _userManager.FindByIdAsync(identityUserId);
+            if (identityUser == null)
+                return false;
+
+            identityUser.Email = model.Email.Trim();
+            identityUser.UserName = model.Email.Trim();
+            identityUser.EmailConfirmed = true;
+
+            var resultadoIdentity = await _userManager.UpdateAsync(identityUser);
+            if (!resultadoIdentity.Succeeded)
+                return false;
+
+            // Garante que o papel de autorização corresponda ao tipo do cadastro.
+            var perfilCorreto = PerfisSistema.ParaTipoUsuario(model.Tipo);
+            var perfisConhecidos = new[]
+            {
+                PerfisSistema.Aluno,
+                PerfisSistema.Professor,
+                PerfisSistema.Supervisor,
+                PerfisSistema.Coordenador
+            };
+            var perfisAtuais = await _userManager.GetRolesAsync(identityUser);
+            var perfisRemover = perfisAtuais
+                .Where(r => perfisConhecidos.Contains(r) && r != perfilCorreto)
+                .ToList();
+
+            if (perfisRemover.Count > 0)
+            {
+                var removidos = await _userManager.RemoveFromRolesAsync(identityUser, perfisRemover);
+                if (!removidos.Succeeded)
+                    return false;
+            }
+
+            if (!await _userManager.IsInRoleAsync(identityUser, perfilCorreto))
+            {
+                var adicionado = await _userManager.AddToRoleAsync(identityUser, perfilCorreto);
+                if (!adicionado.Succeeded)
+                    return false;
             }
 
             await _context.SaveChangesAsync();
@@ -841,8 +899,9 @@ namespace SWES.Services
 
             var identityUser = new IdentityUser
             {
-                UserName = model.Email,
-                Email = model.Email
+                UserName = model.Email.Trim(),
+                Email = model.Email.Trim(),
+                EmailConfirmed = true
             };
 
             var resultado = await _userManager.CreateAsync(
@@ -852,6 +911,14 @@ namespace SWES.Services
             if (!resultado.Succeeded)
             {
                 return resultado;
+            }
+
+            var perfil = PerfisSistema.ParaTipoUsuario(model.Tipo);
+            var resultadoPerfil = await _userManager.AddToRoleAsync(identityUser, perfil);
+            if (!resultadoPerfil.Succeeded)
+            {
+                await _userManager.DeleteAsync(identityUser);
+                return resultadoPerfil;
             }
 
             if (model.Tipo == "Aluno")

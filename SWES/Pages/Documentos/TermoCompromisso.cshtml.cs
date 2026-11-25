@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using SWES.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +12,7 @@ using SWES.Services;
 
 namespace SWES.Pages.Documentos
 {
-    [AllowAnonymous]
+    [Authorize(Roles = PerfisSistema.Todos)]
     public class TermoCompromissoModel : PageModel
     {
 
@@ -121,7 +122,7 @@ namespace SWES.Pages.Documentos
                 Tipo = "Termo de Compromisso",
                 DadosJson = JsonSerializer.Serialize(dados),
                 DataCriacao = DateTime.UtcNow,
-                UsuarioId = null,
+                UsuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier),
                 EstagioId = EstagioId
             };
 

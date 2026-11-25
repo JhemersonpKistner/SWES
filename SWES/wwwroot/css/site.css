@@ -4461,3 +4461,110 @@ textarea.estagios-input { min-height: 100px; resize: vertical; }
     color: #fff;
     font-weight: 650;
 }
+
+
+/* Autenticação e página inicial pública do SWES */
+.public-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem clamp(1rem, 5vw, 4rem);
+    background: #fff;
+    border-bottom: 1px solid #e8edf3;
+}
+.public-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .75rem;
+    color: #173b66;
+    text-decoration: none;
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+.public-brand img { width: 42px; height: 42px; object-fit: contain; }
+.public-content { min-height: calc(100vh - 75px); }
+.home-publica {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr);
+    align-items: center;
+    gap: clamp(2rem, 6vw, 6rem);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: clamp(3rem, 8vw, 7rem) 1.5rem;
+}
+.home-publica-etiqueta, .login-eyebrow {
+    color: #316da8;
+    font-size: .78rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+}
+.home-publica h1 {
+    margin: 1rem 0;
+    color: #173b66;
+    font-size: clamp(2.3rem, 5vw, 4.3rem);
+    line-height: 1.08;
+    font-weight: 800;
+}
+.home-publica p {
+    max-width: 650px;
+    color: #5c6b7b;
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+.home-publica-cta { margin-top: 1rem; padding: .85rem 1.4rem; }
+.home-publica-ilustracao {
+    min-height: 330px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: 32px;
+    background: linear-gradient(145deg, #e9f3ff, #f8fbff);
+    color: #2d6ea9;
+}
+.home-publica-ilustracao > i { font-size: clamp(8rem, 17vw, 14rem); }
+.home-publica-selo {
+    position: absolute;
+    right: -12px;
+    bottom: 28px;
+    padding: .85rem 1.1rem;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 12px 30px rgba(28, 65, 105, .12);
+    color: #2b5c3e;
+    font-weight: 700;
+}
+.login-page {
+    min-height: calc(100vh - 75px);
+    display: grid;
+    place-items: center;
+    padding: 2rem 1rem;
+    background: #f5f8fc;
+}
+.login-card {
+    width: min(100%, 460px);
+    padding: clamp(1.5rem, 5vw, 2.5rem);
+    border: 1px solid #e7edf4;
+    border-radius: 24px;
+    background: #fff;
+    box-shadow: 0 18px 55px rgba(24, 58, 95, .09);
+}
+.login-logo { text-align: center; margin-bottom: 1rem; }
+.login-logo img { width: 64px; height: 64px; object-fit: contain; }
+.login-card h1 { margin-top: .5rem; color: #173b66; font-weight: 800; }
+.login-card .form-control { min-height: 48px; }
+.login-submit { min-height: 48px; margin-top: .5rem; font-weight: 700; }
+.login-voltar { display: block; margin-top: 1.5rem; text-align: center; text-decoration: none; }
+.sidebar-user { padding: .75rem 1rem 1.25rem; overflow: hidden; }
+.sidebar-user-role { display: block; color: #1f3b4d; font-weight: 700; }
+.sidebar-user-email { display: block; color: #526879; font-size: .78rem; overflow-wrap: anywhere; }
+.sidebar-footer { margin-top: auto; padding: 1rem; }
+.sidebar-footer form { margin: 0; }
+.sidebar-logout { width: 100%; border: 0; background: transparent; color: inherit; text-align: left; }
+.sidebar-logout:hover { cursor: pointer; }
+@media (max-width: 800px) {
+    .home-publica { grid-template-columns: 1fr; }
+    .home-publica-ilustracao { min-height: 230px; }
+    .home-publica-selo { right: 10px; }
+}

@@ -1,166 +1,128 @@
 @page
 @model IndexModel
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = User.Identity?.IsAuthenticated == true ? "Dashboard" : "Página inicial";
+    var autenticado = User.Identity?.IsAuthenticated == true;
+    var perfil = User.IsInRole("Administrador") ? "Administrador"
+        : User.IsInRole("Coordenador") ? "Coordenador"
+        : User.IsInRole("Professor") ? "Professor orientador"
+        : User.IsInRole("Supervisor") ? "Supervisor"
+        : User.IsInRole("Aluno") ? "Aluno" : "Usuário";
 }
 
-<div class="dashboard-page">
+@if (!autenticado)
+{
+    <section class="home-publica">
+        <div class="home-publica-conteudo">
+            <span class="home-publica-etiqueta">GESTÃO DE ESTÁGIO SUPERVISIONADO</span>
+            <h1>Seu estágio acompanhado em um só lugar.</h1>
+            <p>
+                O SWES facilita o acompanhamento das etapas do estágio supervisionado,
+                a consulta de documentos e a comunicação entre alunos, orientadores,
+                supervisores e coordenação.
+            </p>
+            <a asp-page="/Login" class="btn btn-primary btn-lg home-publica-cta">
+                <i class="bi bi-box-arrow-in-right"></i> Entrar no sistema
+            </a>
+        </div>
+        <div class="home-publica-ilustracao" aria-hidden="true">
+            <i class="bi bi-journal-check"></i>
+            <span class="home-publica-selo"><i class="bi bi-check-circle-fill"></i> Estágio acompanhado</span>
+        </div>
+    </section>
+}
+else
+{
+    <div class="dashboard-page">
+        <header class="dashboard-header">
+            <h1>Dashboard</h1>
+            <p>Visão geral do sistema de gerenciamento de estágios</p>
+            <span class="admin-label">@perfil</span>
+        </header>
 
-
-       <header class="dashboard-header">
-
-    <h1>Dashboard</h1>
-
-    <p>
-        Visão geral do sistema de gerenciamento de estágios
-    </p>
-
-    <span class="admin-label">
-        Administrador
-    </span>
-
-</header>
-
-        <!-- CARDS -->
         <section class="cards">
-
-            <div class="card">
-                <h3>ALUNOS</h3>
-                <strong>248</strong>
-            </div>
-
-            <div class="card">
-                <h3>ESTÁGIOS</h3>
-                <strong>86</strong>
-            </div>
-
-            <div class="card">
-                <h3>DOCUMENTOS</h3>
-                <strong>32</strong>
-            </div>
-
-            <div class="card">
-                <h3>EMPRESAS</h3>
-                <strong>54</strong>
-            </div>
-
+            <div class="card"><h3>ALUNOS</h3><strong>248</strong></div>
+            <div class="card"><h3>ESTÁGIOS</h3><strong>86</strong></div>
+            <div class="card"><h3>DOCUMENTOS</h3><strong>32</strong></div>
+            <div class="card"><h3>EMPRESAS</h3><strong>54</strong></div>
         </section>
 
-
-        <!-- ÁREA DOS GRÁFICOS -->
         <section class="charts">
-
             <div class="chart-box">
                 <h3>Estágios por Situação</h3>
-
-                <div class="chart-container">
-                    <canvas id="graficoSituacao"></canvas>
-                </div>
+                <div class="chart-container"><canvas id="graficoSituacao"></canvas></div>
             </div>
-
-
             <div class="chart-box">
                 <h3>Estágios Cadastrados por mês</h3>
-
-                <div class="chart-container">
-                    <canvas id="graficoMensal"></canvas>
-                </div>
+                <div class="chart-container"><canvas id="graficoMensal"></canvas></div>
             </div>
-
-
             <div class="chart-box">
                 <h3>Estágios por tipo</h3>
-
-                <div class="chart-container">
-                    <canvas id="graficoTipo"></canvas>
-                </div>
+                <div class="chart-container"><canvas id="graficoTipo"></canvas></div>
             </div>
-
-
-            <!-- ATIVIDADES RECENTES -->
             <div class="activities">
-
                 <h3>Atividades Recentes</h3>
-
-                <div class="activity">
-                    João Silva
-                </div>
-
-                <div class="activity">
-                    Maria Souza
-                </div>
-
-                <div class="activity">
-                    Pedro Santos
-                </div>
-
+                <div class="activity">Atividades recentes do sistema</div>
             </div>
-
         </section>
-
-</div>
+    </div>
+}
 
 @section Scripts {
-    <script>
-        // Os gráficos usam contêineres com altura responsiva e são
-        // redimensionados automaticamente pelo Chart.js.
-        const ctxSituacao = document.getElementById('graficoSituacao');
-        const ctxMensal = document.getElementById('graficoMensal');
-        const ctxTipo = document.getElementById('graficoTipo');
+    @if (autenticado)
+    {
+        <script>
+            const ctxSituacao = document.getElementById('graficoSituacao');
+            const ctxMensal = document.getElementById('graficoMensal');
+            const ctxTipo = document.getElementById('graficoTipo');
 
-        if (ctxSituacao) {
-            new Chart(ctxSituacao, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Em andamento', 'Concluídos', 'Cancelados'],
-                    datasets: [{ data: [42, 35, 9] }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    resizeDelay: 100,
-                    plugins: { legend: { position: 'bottom' } }
-                }
-            });
-        }
+            if (ctxSituacao) {
+                new Chart(ctxSituacao, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Em andamento', 'Concluídos', 'Cancelados'],
+                        datasets: [{ data: [42, 35, 9] }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+            }
 
-        if (ctxMensal) {
-            new Chart(ctxMensal, {
-                type: 'line',
-                data: {
-                    labels: ['Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set'],
-                    datasets: [{
-                        label: 'Estágios cadastrados',
-                        data: [8, 12, 15, 10, 18, 23],
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    resizeDelay: 100,
-                    scales: { y: { beginAtZero: true } },
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
+            if (ctxMensal) {
+                new Chart(ctxMensal, {
+                    type: 'line',
+                    data: {
+                        labels: ['Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set'],
+                        datasets: [{
+                            label: 'Estágios cadastrados',
+                            data: [8, 12, 15, 10, 18, 23],
+                            tension: 0.3, fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
 
-        if (ctxTipo) {
-            new Chart(ctxTipo, {
-                type: 'bar',
-                data: {
-                    labels: ['Interno', 'Externo'],
-                    datasets: [{ label: 'Quantidade', data: [34, 52] }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    resizeDelay: 100,
-                    scales: { y: { beginAtZero: true } },
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
-    </script>
+            if (ctxTipo) {
+                new Chart(ctxTipo, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Interno', 'Externo'],
+                        datasets: [{ label: 'Quantidade', data: [34, 52] }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+        </script>
+    }
 }

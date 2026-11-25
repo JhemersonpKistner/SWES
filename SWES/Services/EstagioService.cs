@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
+using SWES.Authorization;
 using SWES.Data;
 using SWES.Models;
 using SWES.ViewModels;
@@ -8,10 +11,12 @@ namespace SWES.Services
     public class EstagioService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public EstagioService(ApplicationDbContext context)
+        public EstagioService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         // ==========================================
@@ -32,7 +37,26 @@ namespace SWES.Services
 
         public IQueryable<Estagio> ConsultarEstagiosPermitidos()
         {
-            return _context.Estagios;
+            var usuario = _httpContextAccessor.HttpContext?.User;
+            if (usuario?.Identity?.IsAuthenticated != true)
+                return _context.Estagios.Where(e => false);
+
+            if (usuario.IsInRole(PerfisSistema.Administrador) ||
+                usuario.IsInRole(PerfisSistema.Coordenador))
+                return _context.Estagios;
+
+            var userId = usuario.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrWhiteSpace(userId))
+                return _context.Estagios.Where(e => false);
+
+            var professor = usuario.IsInRole(PerfisSistema.Professor);
+            var supervisor = usuario.IsInRole(PerfisSistema.Supervisor);
+            var aluno = usuario.IsInRole(PerfisSistema.Aluno);
+
+            return _context.Estagios.Where(e =>
+                (professor && e.ProfessorOrientador.UserId == userId) ||
+                (supervisor && e.SupervisorEstagio.UserId == userId) ||
+                (aluno && e.Alunos.Any(a => a.UserId == userId)));
         }
 
         // =====================================================

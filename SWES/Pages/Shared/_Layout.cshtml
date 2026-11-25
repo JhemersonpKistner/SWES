@@ -1,124 +1,121 @@
 ﻿@{
-    var currentPage = ViewContext.RouteData.Values["page"]?.ToString();
+    var currentPage = ViewContext.RouteData.Values["page"]?.ToString() ?? "";
+    var autenticado = User.Identity?.IsAuthenticated == true;
+    var administrador = User.IsInRole("Administrador");
+    var coordenador = User.IsInRole("Coordenador");
+    var aluno = User.IsInRole("Aluno");
+    var professor = User.IsInRole("Professor");
+    var supervisor = User.IsInRole("Supervisor");
+    var nomePerfil = administrador ? "Administrador"
+        : coordenador ? "Coordenador"
+        : professor ? "Professor orientador"
+        : supervisor ? "Supervisor"
+        : aluno ? "Aluno" : "Usuário";
 }
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>@ViewData["Title"] - SWES</title>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SWES.styles.css" asp-append-version="true" />
 </head>
-
 <body>
+@if (autenticado)
+{
     <div class="app-shell">
         <aside class="sidebar" id="menuLateral">
             <button type="button" class="btn-fechar-menu" onclick="fecharMenu()" aria-label="Fechar menu">
                 <i class="bi bi-x-lg"></i>
             </button>
-
             <div class="sidebar-header">
-                <img src="~/images/logo.unidesc.webp" alt="Logo da UNIDESC" class="logo-faculdade" />
+                <img src="~/images/logo.unidesc.webp" alt="Logo da instituição" class="logo-faculdade" />
                 <h2>SISTEMA DE ESTÁGIOS</h2>
             </div>
-
+            <div class="sidebar-user">
+                <span class="sidebar-user-role">@nomePerfil</span>
+                <span class="sidebar-user-email">@User.Identity?.Name</span>
+            </div>
             <nav class="menu" aria-label="Menu principal">
                 <a href="/" class="menu-item @(currentPage == "/Index" ? "menu-item-ativo" : "")">
-                    <span><i class="bi bi-speedometer2"></i></span>
-                    Dashboard
-                </a>
-                <a href="/Usuarios/Index"
-                   class="menu-item @(currentPage?.StartsWith("/Usuarios") == true ? "menu-item-ativo" : "")">
-                    <span><i class="bi bi-people"></i></span>
-                    Usuários
-                </a>
-                <a href="#" class="menu-item">
-                    <span><i class="bi bi-mortarboard"></i></span>
-                    Alunos
-                </a>
-                <a href="#" class="menu-item">
-                    <span><i class="bi bi-person-workspace"></i></span>
-                    Professores
-                </a>
-                <a href="/UnidadesConcedentes"
-                   class="menu-item @(currentPage?.StartsWith("/InstituicoesEnsino") == true ? "menu-item-ativo" : "")">
-                    <span><i class="bi bi-building"></i></span>
-                    Concedentes
-                </a>
-                <a href="/InstituicoesEnsino/Index"
-                   class="menu-item @(currentPage?.StartsWith("/InstituicoesEnsino") == true ? "menu-item-ativo" : "")">
-                    <span><i class="bi bi-bank"></i></span>
-                    Instituições
-                </a>
-                
-                <a href="/Documentos/Index"
-                   class="menu-item @(currentPage?.StartsWith("/Documentos") == true ? "menu-item-ativo" : "")">
-                    <span><i class="bi bi-file-earmark-text"></i></span>
-                    Documentos
+                    <span><i class="bi bi-speedometer2"></i></span> Dashboard
                 </a>
 
-                <a href="/Estagios/Index"
-                   class="menu-item @(currentPage?.StartsWith("/Estagios") == true ? "menu-item-ativo" : "")">
-                    <span><i class="bi bi-briefcase"></i></span>
-                    Estágios
-                </a>
-                <a href="#" class="menu-item">
-                    <span><i class="bi bi-star"></i></span>
-                    Avaliações
-                </a>
-                <div class="menu-configuracoes">
-                    <button type="button"
-                            class="menu-item menu-toggle @(currentPage?.StartsWith("/Configuracoes") == true || currentPage?.StartsWith("/Cursos") == true ? "menu-item-ativo" : "")"
-                            id="btnConfiguracoes"
-                            aria-expanded="@(currentPage?.StartsWith("/Configuracoes") == true || currentPage?.StartsWith("/Cursos") == true ? "true" : "false")"
-                            aria-controls="submenuConfiguracoes" onclick="alternarSubmenu('submenuConfiguracoes', this)">
-                        <span><i class="bi bi-gear"></i></span>
-                        <span class="menu-item-texto">Configurações</span>
-                        <i class="bi bi-chevron-down submenu-seta"></i>
-                    </button>
+                @if (administrador)
+                {
+                    <a href="/Usuarios/Index" class="menu-item @(currentPage.StartsWith("/Usuarios") ? "menu-item-ativo" : "")">
+                        <span><i class="bi bi-people"></i></span> Usuários
+                    </a>
+                    <a href="/Cursos/Index" class="menu-item @(currentPage.StartsWith("/Cursos") ? "menu-item-ativo" : "")">
+                        <span><i class="bi bi-mortarboard"></i></span> Cursos
+                    </a>
+                    <a href="/InstituicoesEnsino/Index" class="menu-item @(currentPage.StartsWith("/InstituicoesEnsino") ? "menu-item-ativo" : "")">
+                        <span><i class="bi bi-bank"></i></span> Instituições de ensino
+                    </a>
+                    <a href="/UnidadesConcedentes/Index" class="menu-item @(currentPage.StartsWith("/UnidadesConcedentes") ? "menu-item-ativo" : "")">
+                        <span><i class="bi bi-building"></i></span> Unidades concedentes
+                    </a>
+                }
+                else if (coordenador)
+                {
+                    <a href="/Cursos/Index" class="menu-item @(currentPage.StartsWith("/Cursos") ? "menu-item-ativo" : "")">
+                        <span><i class="bi bi-mortarboard"></i></span> Cursos
+                    </a>
+                    <a href="/InstituicoesEnsino/Index" class="menu-item @(currentPage.StartsWith("/InstituicoesEnsino") ? "menu-item-ativo" : "")">
+                        <span><i class="bi bi-bank"></i></span> Instituições
+                    </a>
+                    <a href="/UnidadesConcedentes/Index" class="menu-item @(currentPage.StartsWith("/UnidadesConcedentes") ? "menu-item-ativo" : "")">
+                        <span><i class="bi bi-building"></i></span> Unidades concedentes
+                    </a>
+                }
 
-                    <div class="submenu @(currentPage?.StartsWith("/Configuracoes") == true || currentPage?.StartsWith("/Cursos") == true ? "submenu-aberto" : "")"
-                         id="submenuConfiguracoes">
-
-                        <a href="/Cursos/Index"
-                           class="submenu-item @(currentPage?.StartsWith("/Cursos") == true ? "submenu-item-ativo" : "")">
-                            <i class="bi bi-mortarboard"></i>
-                            Cursos
-                        </a>
-                    </div>
-                </div>
-
+                @if (administrador || coordenador || aluno || professor || supervisor)
+                {
+                    <a href="/Estagios/Index" class="menu-item @(currentPage.StartsWith("/Estagios") ? "menu-item-ativo" : "")">
+                        <span><i class="bi bi-briefcase"></i></span> @((aluno) ? "Meus estágios" : "Estágios")
+                    </a>
+                    <a href="/Documentos/Index" class="menu-item @(currentPage.StartsWith("/Documentos") ? "menu-item-ativo" : "")">
+                        <span><i class="bi bi-file-earmark-text"></i></span> Documentos
+                    </a>
+                }
             </nav>
-
-            
-
-
+            <div class="sidebar-footer">
+                <form method="post" asp-page="/Logout">
+                    <button type="submit" class="menu-item sidebar-logout">
+                        <span><i class="bi bi-box-arrow-left"></i></span> Sair
+                    </button>
+                </form>
+            </div>
         </aside>
-
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="fecharMenu()"></div>
-
         <main class="app-content">
             <button type="button" class="btn-menu-mobile" onclick="abrirMenu()" aria-label="Abrir menu">
                 <i class="bi bi-list"></i>
             </button>
-
             @RenderBody()
         </main>
     </div>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
-    @await RenderSectionAsync("Scripts", required: false)
-
+}
+else
+{
+    <header class="public-topbar">
+        <a asp-page="/Index" class="public-brand">
+            <img src="~/images/logo.unidesc.webp" alt="Logo da instituição" />
+            <span>SWES</span>
+        </a>
+        <a asp-page="/Login" class="btn btn-primary"><i class="bi bi-box-arrow-in-right"></i> Login</a>
+    </header>
+    <main class="public-content">
+        @RenderBody()
+    </main>
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
 </body>
-
 </html>

@@ -18,10 +18,13 @@
             </div>
         </div>
 
-        <a asp-page="./Cadastro" class="instituicoes-btn instituicoes-btn-primary estagios-btn-primary">
-            <i class="bi bi-plus-circle"></i>
-            Novo estágio
-        </a>
+        @if (Model.PodeGerenciar)
+        {
+            <a asp-page="./Cadastro" class="instituicoes-btn instituicoes-btn-primary estagios-btn-primary">
+                <i class="bi bi-plus-circle"></i>
+                Novo estágio
+            </a>
+        }
     </div>
 
     @if (!string.IsNullOrWhiteSpace(Model.Mensagem))
@@ -169,23 +172,26 @@
                                     </td>
 
                                     <td class="text-center estagios-acoes-coluna">
-                                        <div class="d-flex justify-content-center gap-2 estagios-acoes">
-
-                                            <a asp-page="./Cadastro" asp-route-id="@estagio.Id"
-                                               class="btn btn-sm btn-outline-primary estagios-acao editar" title="Editar estágio">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-
-                                            <form method="post" asp-page-handler="Inativar" asp-route-id="@estagio.Id"
-                                                  onsubmit="return abrirConfirmacaoEstagio(this);">
-
-                                                <button type="submit" class="btn btn-sm btn-outline-warning estagios-acao inativar"
-                                                        title="Inativar estágio">
-                                                    <i class="bi bi-ban"></i>
-                                                </button>
-                                            </form>
-
-                                        </div>
+                                        @if (Model.PodeGerenciar)
+                                        {
+                                            <div class="d-flex justify-content-center gap-2 estagios-acoes">
+                                                <a asp-page="./Cadastro" asp-route-id="@estagio.Id"
+                                                   class="btn btn-sm btn-outline-primary estagios-acao editar" title="Editar estágio">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <form method="post" asp-page-handler="Inativar" asp-route-id="@estagio.Id"
+                                                      onsubmit="return abrirConfirmacaoEstagio(this);">
+                                                    <button type="submit" class="btn btn-sm btn-outline-warning estagios-acao inativar"
+                                                            title="Inativar estágio">
+                                                        <i class="bi bi-ban"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">Somente consulta</span>
+                                        }
                                     </td>
                                 </tr>
                             }

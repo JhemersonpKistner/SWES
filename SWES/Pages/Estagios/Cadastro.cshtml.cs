@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Authorization;
+using SWES.Authorization;
 using Microsoft.AspNetCore.Http;
 using SWES.Services;
 using SWES.ViewModels;
@@ -9,7 +10,7 @@ using System.Security.Cryptography;
 
 namespace SWES.Pages.Estagios
 {
-    [AllowAnonymous]
+    [Authorize(Roles = PerfisSistema.Gestores)]
     public class CadastroModel : PageModel
     {
         private readonly IDataProtector _protetorProtocolo;

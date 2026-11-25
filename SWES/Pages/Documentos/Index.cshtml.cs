@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
+using SWES.Authorization;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using SWES.Data;
@@ -6,7 +8,7 @@ using SWES.Models;
 
 namespace SWES.Pages.Documentos
 {
-    [AllowAnonymous]
+    [Authorize(Roles = PerfisSistema.Todos)]
     public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -20,9 +22,32 @@ namespace SWES.Pages.Documentos
 
         public async Task OnGetAsync()
         {
-            DocumentosSalvos = await _context.DocumentosPreenchidos
+            var consulta = _context.DocumentosPreenchidos
                 .AsNoTracking()
                 .Include(d => d.Estagio)
+                .AsQueryable();
+
+            if (!User.IsInRole(PerfisSistema.Administrador) &&
+                !User.IsInRole(PerfisSistema.Coordenador))
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    DocumentosSalvos.Clear();
+                    return;
+                }
+
+                var professor = User.IsInRole(PerfisSistema.Professor);
+                var supervisor = User.IsInRole(PerfisSistema.Supervisor);
+                var aluno = User.IsInRole(PerfisSistema.Aluno);
+
+                consulta = consulta.Where(d =>
+                    (professor && d.Estagio.ProfessorOrientador.UserId == userId) ||
+                    (supervisor && d.Estagio.SupervisorEstagio.UserId == userId) ||
+                    (aluno && d.Estagio.Alunos.Any(a => a.UserId == userId)));
+            }
+
+            DocumentosSalvos = await consulta
                 .OrderByDescending(d => d.DataCriacao)
                 .ToListAsync();
         }
